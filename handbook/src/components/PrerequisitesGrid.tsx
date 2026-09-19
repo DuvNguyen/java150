@@ -109,9 +109,11 @@ interface Props {
 
 export default function PrerequisitesGrid({ topicId }: Props) {
   const items = TOPIC_PREREQUISITES_MAP[topicId] || [];
+  const [isMounted, setIsMounted] = useState(false);
   const [checkedMap, setCheckedMap] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
+    setIsMounted(true);
     try {
       const saved = localStorage.getItem(`prereqs_${topicId}`);
       if (saved) {
@@ -124,7 +126,7 @@ export default function PrerequisitesGrid({ topicId }: Props) {
 
   if (items.length === 0) return null;
 
-  const completedCount = items.filter((item) => checkedMap[item.title]).length;
+  const completedCount = isMounted ? items.filter((item) => checkedMap[item.title]).length : 0;
 
   function toggleItem(title: string) {
     setCheckedMap((prev) => {
@@ -195,7 +197,7 @@ export default function PrerequisitesGrid({ topicId }: Props) {
         }}
       >
         {items.map((item) => {
-          const isDone = !!checkedMap[item.title];
+          const isDone = isMounted && !!checkedMap[item.title];
           return (
             <div
               key={item.title}
@@ -236,7 +238,7 @@ export default function PrerequisitesGrid({ topicId }: Props) {
                 <input
                   type="checkbox"
                   checked={isDone}
-                  onChange={() => {}} // handled by parent onClick
+                  readOnly
                   style={{
                     cursor: 'pointer',
                     accentColor: 'var(--color-tertiary)',

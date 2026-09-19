@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -8,10 +9,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="vi">
-      <body>
+    <html lang="vi" suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <header className="site-header">
-          <a href="/"><h1>Java DSA</h1></a>
+          <Link href="/">
+            <h1>Java DSA</h1>
+          </Link>
           <span className="subtitle">Syntax Reference</span>
         </header>
         {children}
