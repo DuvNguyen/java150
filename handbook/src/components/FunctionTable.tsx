@@ -136,25 +136,27 @@ export default function FunctionTable({ entries, topicId, onRefresh }: Props) {
                 </td>
                 <td>{entry.description ? <FormattedText text={entry.description} /> : <span style={{ color: '#807973' }}>—</span>}</td>
                 <td className="actions">
-                  {confirmDelete === i ? (
-                    <>
-                      <button className="btn btn-danger btn-sm" onClick={() => handleDelete(i)}>
-                        Confirm
-                      </button>
-                      <button className="btn btn-ghost btn-sm" onClick={() => setConfirmDelete(null)}>
-                        Cancel
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <button className="btn btn-ghost btn-sm" onClick={() => openEdit(i)}>
-                        Edit
-                      </button>
-                      <button className="btn btn-danger btn-sm" onClick={() => setConfirmDelete(i)}>
-                        Delete
-                      </button>
-                    </>
-                  )}
+                  <div className="actions-group">
+                    {confirmDelete === i ? (
+                      <>
+                        <button className="btn btn-danger btn-sm" onClick={() => handleDelete(i)}>
+                          Confirm
+                        </button>
+                        <button className="btn btn-ghost btn-sm" onClick={() => setConfirmDelete(null)}>
+                          Cancel
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button className="btn btn-ghost btn-sm" onClick={() => openEdit(i)}>
+                          Edit
+                        </button>
+                        <button className="btn btn-danger btn-sm" onClick={() => setConfirmDelete(i)}>
+                          Delete
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}
