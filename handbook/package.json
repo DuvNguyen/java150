@@ -9,11 +9,13 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "katex": "^0.18.7",
     "next": "16.3.5",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
   "devDependencies": {
+    "@types/katex": "^0.16.8",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

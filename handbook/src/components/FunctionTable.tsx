@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import FormattedText from './FormattedText';
 
 export interface Entry {
   topic?: string;
@@ -133,7 +134,7 @@ export default function FunctionTable({ entries, topicId, onRefresh }: Props) {
                 <td>
                   {entry.syntax ? <code>{entry.syntax}</code> : <span style={{ color: '#807973' }}>—</span>}
                 </td>
-                <td>{entry.description || <span style={{ color: '#807973' }}>—</span>}</td>
+                <td>{entry.description ? <FormattedText text={entry.description} /> : <span style={{ color: '#807973' }}>—</span>}</td>
                 <td className="actions">
                   {confirmDelete === i ? (
                     <>
