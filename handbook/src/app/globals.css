@@ -1079,12 +1079,13 @@ code, pre {
 .complexity-badge {
   display: inline-flex;
   align-items: baseline;
-  gap: 4px;
-  padding: 2px 8px;
+  gap: 3px;
+  padding: 1px 7px;
   border-radius: 4px;
   font-family: var(--font-label);
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.4;
 }
 
 .complexity-badge.time {
@@ -1103,7 +1104,9 @@ code, pre {
   font-family: var(--font-mono);
   background: transparent;
   padding: 0;
-  font-weight: 700;
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
 }
 
 .pattern-tag-pill {
