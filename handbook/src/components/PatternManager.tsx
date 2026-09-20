@@ -33,9 +33,23 @@ export default function PatternManager({ topicId, topicName }: Props) {
   const [previewCodeInModal, setPreviewCodeInModal] = useState(false);
   const [cardTabs, setCardTabs] = useState<Record<string, CardTabType>>({});
   const [toast, setToast] = useState('');
+  const [openActionMenuId, setOpenActionMenuId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   const storageKey = `patterns_data_${topicId}`;
+
+  // Close action dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.action-dropdown-wrap')) {
+        setOpenActionMenuId(null);
+        setConfirmDeleteId(null);
+      }
+    }
+    window.addEventListener('click', handleClickOutside);
+    return () => window.removeEventListener('click', handleClickOutside);
+  }, []);
 
   // Load patterns from localStorage + default patterns
   const loadPatterns = useCallback(() => {
@@ -404,44 +418,64 @@ public void solve() {
                     </div>
                   </div>
 
-                  {/* Actions */}
+                  {/* Action Dropdown Menu */}
                   <div
-                    style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                    className="action-dropdown-wrap"
                     onClick={(e) => e.stopPropagation()}
                   >
                     <button
                       type="button"
-                      className="btn btn-ghost btn-sm"
-                      onClick={() => openEdit(pat)}
+                      className={`action-menu-trigger ${openActionMenuId === pat.id ? 'active' : ''}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setOpenActionMenuId(openActionMenuId === pat.id ? null : pat.id);
+                        setConfirmDeleteId(null);
+                      }}
+                      title="Actions"
+                      aria-label="Actions"
                     >
-                      Edit
+                      ⋮
                     </button>
 
-                    {confirmDeleteId === pat.id ? (
-                      <>
+                    {openActionMenuId === pat.id && (
+                      <div className="action-dropdown-menu">
                         <button
                           type="button"
-                          className="btn btn-danger btn-sm"
-                          onClick={() => handleDelete(pat.id)}
+                          className="action-menu-item"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setOpenActionMenuId(null);
+                            openEdit(pat);
+                          }}
                         >
-                          Confirm
+                          Edit
                         </button>
-                        <button
-                          type="button"
-                          className="btn btn-ghost btn-sm"
-                          onClick={() => setConfirmDeleteId(null)}
-                        >
-                          Cancel
-                        </button>
-                      </>
-                    ) : (
-                      <button
-                        type="button"
-                        className="btn btn-danger btn-sm"
-                        onClick={() => setConfirmDeleteId(pat.id)}
-                      >
-                        Delete
-                      </button>
+
+                        {confirmDeleteId === pat.id ? (
+                          <button
+                            type="button"
+                            className="action-menu-item delete"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDelete(pat.id);
+                            }}
+                            style={{ fontWeight: 700, color: '#b91c1c' }}
+                          >
+                            Confirm delete
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            className="action-menu-item delete"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setConfirmDeleteId(pat.id);
+                            }}
+                          >
+                            Delete
+                          </button>
+                        )}
+                      </div>
                     )}
                   </div>
                 </div>
@@ -519,6 +553,13 @@ public void solve() {
           })}
         </div>
       )}
+
+      {/* Add Button at Bottom of Patterns List */}
+      <div className="add-row-bar" style={{ marginTop: '16px' }}>
+        <button id="add-pattern-btn-bottom" className="btn btn-primary" onClick={openAdd}>
+          Add entry
+        </button>
+      </div>
 
       {/* Add / Edit Pattern Modal with Subtabs */}
       {modal.open && (
