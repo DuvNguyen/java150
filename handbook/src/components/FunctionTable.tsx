@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import FormattedText from './FormattedText';
 import NoteModal, { getNoteStorageKey, getNoteUpdatedAt } from './NoteModal';
+import SortCombobox from './SortCombobox';
 
 export interface Entry {
   topic?: string;
@@ -198,23 +199,9 @@ export default function FunctionTable({ entries, topicId, onRefresh, pageSize = 
 
   return (
     <>
-      {/* Table Toolbar with Sort Controls */}
+      {/* Table Toolbar with Custom Sort Combobox */}
       <div className="table-header-toolbar">
-        <div className="sort-group">
-          <label htmlFor="table-sort-select">Sort by:</label>
-          <select
-            id="table-sort-select"
-            className="sort-select"
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as SortOption)}
-          >
-            <option value="default">Default order</option>
-            <option value="name-asc">Name (A → Z)</option>
-            <option value="name-desc">Name (Z → A)</option>
-            <option value="date-desc">Date modified (Newest)</option>
-            <option value="date-asc">Date modified (Oldest)</option>
-          </select>
-        </div>
+        <SortCombobox value={sortBy} onChange={setSortBy} />
       </div>
 
       {/* Table */}
