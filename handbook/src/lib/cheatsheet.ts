@@ -5,6 +5,7 @@ export interface Entry {
   topic?: string;
   method: string;
   syntax: string;
+  returns?: string;
   description: string;
 }
 
@@ -69,7 +70,9 @@ function getCheatsheetDir(): string {
 export function getSubtopicName(file: string, content: string): string {
   const titleMatch = content.match(/^#\s+(.+?)(?:\s+Cheatsheet)?\s*$/m);
   if (titleMatch) {
-    return titleMatch[1].replace(/Cheatsheet/i, '').trim();
+    let name = titleMatch[1].replace(/Cheatsheet/i, '').replace(/`/g, '').trim();
+    name = name.replace(/\s*\([^)]*\)$/, '').trim();
+    if (name) return name;
   }
   const base = file.replace(/\.md$/, '').toLowerCase();
   const map: Record<string, string> = {
@@ -115,10 +118,21 @@ export function parseTable(content: string, subtopic?: string): Entry[] {
         .slice(1, -1)
         .map((c) => c.trim().replace(/`/g, ''));
 
+      if (cells.length >= 4) {
+        return {
+          topic: subtopic || '',
+          method: cells[0] ?? '',
+          syntax: cells[1] ?? '',
+          returns: cells[2] ?? '',
+          description: cells[3] ?? '',
+        };
+      }
+
       return {
         topic: subtopic || '',
         method: cells[0] ?? '',
         syntax: cells[1] ?? '',
+        returns: '',
         description: cells[2] ?? '',
       };
     });
@@ -126,9 +140,12 @@ export function parseTable(content: string, subtopic?: string): Entry[] {
 
 export function serializeTable(entries: Entry[], existingContent: string): string {
   const tableHeader =
-    '| Phương thức | Cú pháp | Mô tả |\n| :--- | :--- | :--- |';
+    '| Phương thức | Cú pháp | Giá trị trả về | Mô tả |\n| :--- | :--- | :--- | :--- |';
   const tableRows = entries
-    .map((e) => `| \`${e.method}\` | \`${e.syntax}\` | ${e.description} |`)
+    .map(
+      (e) =>
+        `| \`${e.method}\` | \`${e.syntax}\` | ${e.returns && e.returns !== '—' ? `\`${e.returns}\`` : '—'} | ${e.description} |`,
+    )
     .join('\n');
   const newTable = `${tableHeader}\n${tableRows}`;
 
@@ -169,12 +186,18 @@ export function getTopicEntries(topicId: string): { topic: Topic; entries: Entry
   };
 }
 
-export function searchAll(query: string): { topicId: string; topicName: string; entries: Entry[] }[] {
-  const q = query.toLowerCase();
+export function searchAll(
+  query: string,
+  topicFilter?: string,
+): { topicId: string; topicName: string; entries: Entry[] }[] {
+  const q = query.toLowerCase().trim();
+  const tf = topicFilter?.toLowerCase().trim();
   const results: { topicId: string; topicName: string; entries: Entry[] }[] = [];
   const dir = getCheatsheetDir();
 
   for (const [topicId, { name, files }] of Object.entries(TOPIC_FILE_MAP)) {
+    const isMainTopicMatch = !tf || tf === 'all' || topicId.toLowerCase() === tf || name.toLowerCase().includes(tf);
+
     const allEntries: Entry[] = [];
     for (const file of files) {
       const filePath = path.join(dir, file);
@@ -183,13 +206,23 @@ export function searchAll(query: string): { topicId: string; topicName: string; 
       const subtopic = getSubtopicName(file, content);
       allEntries.push(...parseTable(content, subtopic));
     }
-    const matched = allEntries.filter(
-      (e) =>
+
+    const matched = allEntries.filter((e) => {
+      const matchesTopic =
+        isMainTopicMatch ||
+        (e.topic && (e.topic.toLowerCase() === tf || e.topic.toLowerCase().includes(tf)));
+      if (!matchesTopic) return false;
+
+      if (!q) return true;
+      return (
         (e.topic && e.topic.toLowerCase().includes(q)) ||
         e.method.toLowerCase().includes(q) ||
         e.syntax.toLowerCase().includes(q) ||
-        e.description.toLowerCase().includes(q),
-    );
+        (e.returns && e.returns.toLowerCase().includes(q)) ||
+        e.description.toLowerCase().includes(q)
+      );
+    });
+
     if (matched.length > 0) {
       results.push({ topicId, topicName: name, entries: matched });
     }
@@ -197,18 +230,27 @@ export function searchAll(query: string): { topicId: string; topicName: string; 
   return results;
 }
 
-export function searchInTopic(topicId: string, query: string): Entry[] | null {
+export function searchInTopic(topicId: string, query: string, topicFilter?: string): Entry[] | null {
   const topicData = getTopicEntries(topicId);
   if (!topicData) return null;
 
-  const q = query.toLowerCase();
-  return topicData.entries.filter(
-    (e) =>
+  const q = query.toLowerCase().trim();
+  const tf = topicFilter?.toLowerCase().trim();
+
+  return topicData.entries.filter((e) => {
+    const matchesTopic =
+      !tf || tf === 'all' || (e.topic && (e.topic.toLowerCase() === tf || e.topic.toLowerCase().includes(tf)));
+    if (!matchesTopic) return false;
+
+    if (!q) return true;
+    return (
       (e.topic && e.topic.toLowerCase().includes(q)) ||
       e.method.toLowerCase().includes(q) ||
       e.syntax.toLowerCase().includes(q) ||
-      e.description.toLowerCase().includes(q),
-  );
+      (e.returns && e.returns.toLowerCase().includes(q)) ||
+      e.description.toLowerCase().includes(q)
+    );
+  });
 }
 
 export function addEntry(topicId: string, entry: Partial<Entry>): Entry[] | null {
@@ -219,7 +261,7 @@ export function addEntry(topicId: string, entry: Partial<Entry>): Entry[] | null
   const primaryFile = path.join(dir, topicDef.files[0]);
   let content = fs.existsSync(primaryFile)
     ? fs.readFileSync(primaryFile, 'utf-8')
-    : `# ${topicDef.name} Cheatsheet\n\n| Phương thức | Cú pháp | Mô tả |\n| :--- | :--- | :--- |\n`;
+    : `# ${topicDef.name} Cheatsheet\n\n| Phương thức | Cú pháp | Giá trị trả về | Mô tả |\n| :--- | :--- | :--- | :--- |\n`;
 
   const subtopic = getSubtopicName(topicDef.files[0], content);
   const entries = parseTable(content, subtopic);
@@ -227,6 +269,7 @@ export function addEntry(topicId: string, entry: Partial<Entry>): Entry[] | null
     topic: entry.topic || subtopic,
     method: entry.method ?? '',
     syntax: entry.syntax ?? '',
+    returns: entry.returns ?? '',
     description: entry.description ?? '',
   });
 
@@ -252,6 +295,7 @@ export function updateEntry(topicId: string, rowIndex: number, entry: Partial<En
     topic: entry.topic ?? entries[rowIndex].topic,
     method: entry.method ?? entries[rowIndex].method,
     syntax: entry.syntax ?? entries[rowIndex].syntax,
+    returns: entry.returns ?? entries[rowIndex].returns ?? '',
     description: entry.description ?? entries[rowIndex].description,
   };
 

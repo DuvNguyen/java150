@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useState, useCallback, use } from 'react';
+import { useEffect, useState, useCallback, use, useMemo } from 'react';
 import Link from 'next/link';
 import SearchBar from '@/components/SearchBar';
 import FunctionTable, { Entry } from '@/components/FunctionTable';
 import PrerequisitesGrid from '@/components/PrerequisitesGrid';
+import TopicFilter from '@/components/TopicFilter';
 
 const API = '/api';
 
@@ -16,9 +17,9 @@ interface TopicData {
 export default function TopicPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const [data, setData] = useState<TopicData | null>(null);
-  const [filtered, setFiltered] = useState<Entry[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
+  const [selectedTopic, setSelectedTopic] = useState('');
 
   const fetchTopic = useCallback(async () => {
     setLoading(true);
@@ -26,8 +27,8 @@ export default function TopicPage({ params }: { params: Promise<{ id: string }> 
       const res = await fetch(`${API}/topics/${id}`);
       const json: TopicData = await res.json();
       setData(json);
-      setFiltered(json.entries);
       setQuery('');
+      setSelectedTopic('');
     } catch {
       setData(null);
     } finally {
@@ -39,19 +40,99 @@ export default function TopicPage({ params }: { params: Promise<{ id: string }> 
     fetchTopic();
   }, [fetchTopic]);
 
-  const handleSearch = useCallback(
-    async (q: string) => {
-      setQuery(q);
-      if (!q.trim()) {
-        setFiltered(data?.entries ?? []);
-        return;
+  // Extract unique subtopics/topics present in the entries
+  const availableTopics = useMemo(() => {
+    if (!data?.entries) return [];
+    const set = new Set<string>();
+    for (const e of data.entries) {
+      if (e.topic && e.topic.trim()) {
+        set.add(e.topic.trim());
       }
-      const res = await fetch(`${API}/topics/${id}/search?q=${encodeURIComponent(q)}`);
-      const entries: Entry[] = await res.json();
-      setFiltered(entries);
-    },
-    [id, data],
-  );
+    }
+    return Array.from(set);
+  }, [data?.entries]);
+
+  // Filter entries based on both query and selectedTopic
+  const filteredEntries = useMemo(() => {
+    if (!data?.entries) return [];
+    const q = query.toLowerCase().trim();
+    const sel = selectedTopic.toLowerCase().trim();
+
+    return data.entries.filter((entry) => {
+      // Topic filter check
+      if (sel && sel !== 'all') {
+        const topicVal = entry.topic?.toLowerCase() ?? '';
+        if (topicVal !== sel && !topicVal.includes(sel)) {
+          return false;
+        }
+      }
+
+      // Query search check
+      if (q) {
+        const matches =
+          (entry.topic && entry.topic.toLowerCase().includes(q)) ||
+          entry.method.toLowerCase().includes(q) ||
+          entry.syntax.toLowerCase().includes(q) ||
+          entry.description.toLowerCase().includes(q);
+        if (!matches) return false;
+      }
+
+      return true;
+    });
+  }, [data?.entries, query, selectedTopic]);
+
+  // Dynamic counts for each topic badge under current search query
+  const topicCounts = useMemo(() => {
+    if (!data?.entries) return {};
+    const q = query.toLowerCase().trim();
+    const counts: Record<string, number> = {};
+
+    for (const topic of availableTopics) {
+      const topicLower = topic.toLowerCase();
+      const count = data.entries.filter((entry) => {
+        const topicVal = entry.topic?.toLowerCase() ?? '';
+        const matchesTopic = topicVal === topicLower || topicVal.includes(topicLower);
+        if (!matchesTopic) return false;
+        if (!q) return true;
+        return (
+          topicVal.includes(q) ||
+          entry.method.toLowerCase().includes(q) ||
+          entry.syntax.toLowerCase().includes(q) ||
+          entry.description.toLowerCase().includes(q)
+        );
+      }).length;
+      counts[topic] = count;
+    }
+
+    return counts;
+  }, [data?.entries, availableTopics, query]);
+
+  // Count of items matching query across all topics
+  const totalMatchingQueryCount = useMemo(() => {
+    if (!data?.entries) return 0;
+    const q = query.toLowerCase().trim();
+    if (!q) return data.entries.length;
+    return data.entries.filter(
+      (e) =>
+        (e.topic && e.topic.toLowerCase().includes(q)) ||
+        e.method.toLowerCase().includes(q) ||
+        e.syntax.toLowerCase().includes(q) ||
+        e.description.toLowerCase().includes(q),
+    ).length;
+  }, [data?.entries, query]);
+
+  const handleSearch = useCallback((q: string) => {
+    setQuery(q);
+  }, []);
+
+  const handleSelectTopic = useCallback((topic: string) => {
+    setSelectedTopic(topic);
+  }, []);
+
+  const handleResetFilters = useCallback(() => {
+    setQuery('');
+    setSelectedTopic('');
+  }, []);
 
   if (loading) return <main className="page-container"><p className="loading-text">Loading...</p></main>;
 
@@ -61,6 +142,8 @@ export default function TopicPage({ params }: { params: Promise<{ id: string }> 
       <Link href="/">Back to roadmap</Link>
     </main>
   );
+
+  const hasActiveFilters = Boolean(query.trim() || selectedTopic);
 
   return (
     <main className="page-container">
@@ -72,10 +155,22 @@ export default function TopicPage({ params }: { params: Promise<{ id: string }> 
 
       <div className="topic-header" style={{ marginBottom: '16px', paddingBottom: '12px' }}>
         <h1>{data.topic.name}</h1>
-        <p className="entry-count">
-          {filtered.length} {filtered.length === 1 ? 'entry' : 'entries'}
-          {query ? ` matching "${query}"` : ''}
-        </p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+          <p className="entry-count" style={{ margin: 0 }}>
+            {filteredEntries.length} of {data.entries.length} {data.entries.length === 1 ? 'entry' : 'entries'}
+            {query ? ` matching "${query}"` : ''}
+            {selectedTopic ? ` in ${selectedTopic}` : ''}
+          </p>
+          {hasActiveFilters && (
+            <button
+              onClick={handleResetFilters}
+              className="btn btn-ghost btn-sm"
+              style={{ padding: '2px 8px', fontSize: '0.75rem' }}
+            >
+              Reset filters
+            </button>
+          )}
+        </div>
       </div>
 
       {/* NeetCode Style Prerequisites Card Grid */}
@@ -86,10 +181,26 @@ export default function TopicPage({ params }: { params: Promise<{ id: string }> 
         <h2 style={{ fontSize: '1.25rem', marginBottom: '12px', fontFamily: 'var(--font-display)' }}>
           Java Syntax & Methods Reference
         </h2>
-        <SearchBar onSearch={handleSearch} />
+
+        <SearchBar
+          onSearch={handleSearch}
+          initialValue={query}
+          placeholder={`Search syntax or methods in ${data.topic.name}...`}
+        />
+
+        {availableTopics.length > 1 && (
+          <TopicFilter
+            topics={availableTopics}
+            selectedTopic={selectedTopic}
+            onSelectTopic={handleSelectTopic}
+            counts={topicCounts}
+            totalCount={totalMatchingQueryCount}
+            label="Filter by topic / data structure"
+          />
+        )}
 
         <FunctionTable
-          entries={filtered}
+          entries={filteredEntries}
           topicId={id}
           onRefresh={fetchTopic}
         />

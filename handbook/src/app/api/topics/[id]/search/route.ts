@@ -9,8 +9,9 @@ export async function GET(
   const topicId = params.id;
   const { searchParams } = new URL(req.url);
   const q = searchParams.get('q') ?? '';
+  const topic = searchParams.get('topic') ?? '';
 
-  const entries = searchInTopic(topicId, q);
+  const entries = searchInTopic(topicId, q, topic);
   if (!entries) {
     return NextResponse.json({ message: `Topic '${topicId}' not found` }, { status: 404 });
   }
