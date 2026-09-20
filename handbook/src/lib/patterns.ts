@@ -8,6 +8,7 @@ export interface AlgorithmPattern {
   };
   tags: string[];
   description: string;
+  pseudoCode?: string;
   code: string;
   notes?: string;
   isCustom?: boolean;
@@ -22,7 +23,11 @@ export const DEFAULT_PATTERNS: Record<string, AlgorithmPattern[]> = {
       title: 'Element Frequency Map (Đếm tần suất xuất hiện)',
       complexity: { time: 'O(N)', space: 'O(N)' },
       tags: ['HashMap', 'Frequency', 'Counting'],
-      description: 'Mẫu đếm số lần xuất hiện của các phần tử trong mảng hoặc chuỗi bằng `HashMap` kết hợp `getOrDefault`.',
+      description: 'Dùng bảng băm `HashMap` kết hợp `getOrDefault()` để đếm số lần xuất hiện của từng phần tử trong một lần duyệt `O(N)`. Thích hợp cho các bài kiểm tra mảng đảo ký tự (Anagram), tìm phần tử chiếm đa số, hoặc gom nhóm (Group Anagrams).',
+      pseudoCode: `1. Initialize freqMap = empty HashMap
+2. For each element 'num' in array:
+     freqMap[num] = freqMap.getOrDefault(num, 0) + 1
+3. Traverse freqMap entries (key, count) to process or query frequency`,
       code: `// Xây dựng bảng tần suất xuất hiện của các phần tử
 Map<Integer, Integer> freqMap = new HashMap<>();
 for (int num : nums) {
@@ -42,7 +47,15 @@ for (Map.Entry<Integer, Integer> entry : freqMap.entrySet()) {
       title: 'Two Sum Pattern (One-Pass Hash Table)',
       complexity: { time: 'O(N)', space: 'O(N)' },
       tags: ['HashMap', 'Two Sum', 'Lookup'],
-      description: 'Tìm 2 phần tử có tổng bằng `target` trong 1 lần duyệt bằng cách lưu `target - num` vào HashMap.',
+      description: 'Tìm 2 phần tử có tổng bằng `target` trong 1 lần duyệt. Khi xét phần tử `x`, ta tra cứu xem phần bù `complement = target - x` đã từng xuất hiện trước đó trong HashMap hay chưa. Nếu có trả về chỉ số ngay lập tức.',
+      pseudoCode: `1. Initialize map = empty HashMap (stores number -> index)
+2. For i from 0 to nums.length - 1:
+     complement = target - nums[i]
+     If complement exists in map:
+         Return [map.get(complement), i]
+     Else:
+         map.put(nums[i], i)
+3. Return empty array if no pair found`,
       code: `public int[] twoSum(int[] nums, int target) {
     Map<Integer, Integer> map = new HashMap<>();
     for (int i = 0; i < nums.length; i++) {
@@ -61,7 +74,13 @@ for (Map.Entry<Integer, Integer> entry : freqMap.entrySet()) {
       title: 'Bucket Sort Pattern (Top K Frequent Elements)',
       complexity: { time: 'O(N)', space: 'O(N)' },
       tags: ['Bucket Sort', 'HashMap', 'Top K'],
-      description: 'Lấy Top K phần tử có tần suất cao nhất với độ phức tạp tuyến tính `O(N)` thay vì dùng Heap `O(N log K)`.',
+      description: 'Đạt độ phức tạp thời gian tuyến tính `O(N)` bằng cách dùng mảng các danh sách (buckets), trong đó chỉ số index đại diện cho tần suất xuất hiện (tối đa bằng `N`).',
+      pseudoCode: `1. Count frequencies using a HashMap: map[num] -> count
+2. Create buckets array of size (N + 1) where buckets[freq] = list of numbers
+3. Populate buckets with elements grouped by their frequency
+4. Iterate from highest frequency (N down to 0):
+     Add elements from buckets[i] into result until result has K elements
+5. Return result`,
       code: `public int[] topKFrequent(int[] nums, int k) {
     Map<Integer, Integer> count = new HashMap<>();
     for (int num : nums) {
@@ -98,7 +117,12 @@ for (Map.Entry<Integer, Integer> entry : freqMap.entrySet()) {
       title: 'Prefix Sum Pattern (Mảng cộng dồn)',
       complexity: { time: 'O(N)', space: 'O(N)' },
       tags: ['Prefix Sum', 'Array', 'Range Query'],
-      description: 'Tính tổng đoạn `[L, R]` trong `O(1)` sau khi tiền xử lý mảng cộng dồn.',
+      description: 'Tiền tính toán mảng cộng dồn `prefix[i] = nums[0] + ... + nums[i-1]` để trả lời các truy vấn tính tổng đoạn con bất kỳ `sum(L, R)` trong `O(1)`.',
+      pseudoCode: `1. Create prefix array of size (N + 1) with prefix[0] = 0
+2. For i from 0 to N - 1:
+     prefix[i + 1] = prefix[i] + nums[i]
+3. Query sum from left to right (0-indexed):
+     queryRangeSum(left, right) = prefix[right + 1] - prefix[left]`,
       code: `// Khởi tạo mảng prefix sum với size N + 1 để xử lý biên 0
 int n = nums.length;
 int[] prefix = new int[n + 1];
@@ -120,7 +144,13 @@ public int queryRangeSum(int[] prefix, int left, int right) {
       title: 'Opposite Ends Two Pointers (Hai con trỏ đối đầu)',
       complexity: { time: 'O(N)', space: 'O(1)' },
       tags: ['Two Pointers', 'Sorted Array', 'Palindrome'],
-      description: 'Mẫu 2 con trỏ từ 2 đầu mảng hội tụ về giữa (áp dụng cho Two Sum sorted, Valid Palindrome, Container With Most Water).',
+      description: 'Đặt hai con trỏ tại 2 đầu (`left = 0`, `right = N - 1`) và di chuyển hội tụ về giữa dựa trên điều kiện bài toán.',
+      pseudoCode: `1. left = 0, right = length - 1
+2. While left < right:
+     Skip invalid characters if needed
+     If s[left] != s[right]: return false
+     left++, right--
+3. Return true`,
       code: `public boolean isPalindrome(String s) {
     int left = 0, right = s.length() - 1;
     while (left < right) {
@@ -143,7 +173,14 @@ public int queryRangeSum(int[] prefix, int left, int right) {
       title: 'Slow & Fast Pointers (Xóa phần tử trùng / Ghi đè tại chỗ)',
       complexity: { time: 'O(N)', space: 'O(1)' },
       tags: ['Two Pointers', 'In-place', 'Array'],
-      description: 'Con trỏ chậm giữ vị trí ghi đè hợp lệ, con trỏ nhanh quét qua mảng.',
+      description: 'Con trỏ chậm `slow` theo dõi vị trí phần tử duy nhất cuối cùng, con trỏ nhanh `fast` quét tìm các phần tử mới để ghi đè.',
+      pseudoCode: `1. If array is empty, return 0
+2. slow = 0
+3. For fast from 1 to N - 1:
+     If nums[fast] != nums[slow]:
+         slow++
+         nums[slow] = nums[fast]
+4. Return slow + 1`,
       code: `// Xóa phần tử trùng lặp trong mảng đã sắp xếp
 public int removeDuplicates(int[] nums) {
     if (nums.length == 0) return 0;
@@ -165,7 +202,15 @@ public int removeDuplicates(int[] nums) {
       title: 'Variable-Size Sliding Window (Cửa sổ trượt linh hoạt)',
       complexity: { time: 'O(N)', space: 'O(K)' },
       tags: ['Sliding Window', 'Dynamic Size', 'Subarray'],
-      description: 'Mẫu mở rộng con trỏ `right` liên tục và thu hẹp `left` khi vi phạm điều kiện.',
+      description: 'Mở rộng biên phải `right` để nạp phần tử vào cửa sổ. Khi điều kiện bị vi phạm (ví dụ trùng ký tự hoặc tổng quá lớn), co biên trái `left` cho đến khi cửa sổ hợp lệ trở lại.',
+      pseudoCode: `1. left = 0, maxLen = 0, state = empty Set/Map
+2. For right from 0 to s.length - 1:
+     While condition is violated by adding s[right]:
+         Remove s[left] from state
+         left++
+     Add s[right] to state
+     maxLen = max(maxLen, right - left + 1)
+3. Return maxLen`,
       code: `public int lengthOfLongestSubstring(String s) {
     Set<Character> seen = new HashSet<>();
     int left = 0, maxLen = 0;
@@ -191,7 +236,14 @@ public int removeDuplicates(int[] nums) {
       title: 'Standard Binary Search Template (Tìm kiếm nhị phân chuẩn)',
       complexity: { time: 'O(log N)', space: 'O(1)' },
       tags: ['Binary Search', 'Divide and Conquer'],
-      description: 'Mẫu tìm kiếm nhị phân chuẩn tránh tràn số nguyên với `left + (right - left) / 2`.',
+      description: 'Tìm kiếm trên không gian tìm kiếm đơn điệu đã sắp xếp. Dùng công thức `left + (right - left) / 2` để tránh hiện tượng tràn số nguyên (integer overflow).',
+      pseudoCode: `1. left = 0, right = length - 1
+2. While left <= right:
+     mid = left + (right - left) / 2
+     If nums[mid] == target: Return mid
+     Else if nums[mid] < target: left = mid + 1
+     Else: right = mid - 1
+3. Return -1 (not found)`,
       code: `public int search(int[] nums, int target) {
     int left = 0, right = nums.length - 1;
     while (left <= right) {
@@ -215,7 +267,15 @@ public int removeDuplicates(int[] nums) {
       title: 'Monotonic Stack (Next Greater Element / Daily Temperatures)',
       complexity: { time: 'O(N)', space: 'O(N)' },
       tags: ['Stack', 'Monotonic Stack'],
-      description: 'Stack duy trì tính đơn điệu để tìm phần tử lớn hơn tiếp theo trong mảng trong `O(N)`.',
+      description: 'Duy trì Stack chứa các chỉ số theo thứ tự giảm dần hoặc tăng dần giá trị để tìm phần tử lớn hơn / nhỏ hơn gần nhất trong `O(N)`.',
+      pseudoCode: `1. Initialize empty Stack to store indices
+2. Initialize answer array of size N filled with default (e.g. 0)
+3. For i from 0 to N - 1:
+     While stack is not empty AND current element > element at stack.peek():
+         prevIdx = stack.pop()
+         answer[prevIdx] = i - prevIdx
+     stack.push(i)
+4. Return answer`,
       code: `public int[] dailyTemperatures(int[] temperatures) {
     int n = temperatures.length;
     int[] answer = new int[n];
@@ -239,7 +299,19 @@ public int removeDuplicates(int[] nums) {
       title: 'Level-Order Traversal (Tree BFS)',
       complexity: { time: 'O(N)', space: 'O(N)' },
       tags: ['Trees', 'BFS', 'Queue'],
-      description: 'Duyệt cây theo từng tầng bằng `Queue`.',
+      description: 'Duyệt cây theo từng tầng từ trên xuống dưới bằng hàng đợi `Queue`. Đo `levelSize = queue.size()` để xử lý trọn vẹn một tầng trong vòng lặp.',
+      pseudoCode: `1. If root is null, return empty list
+2. Initialize queue with root
+3. While queue is not empty:
+     levelSize = queue.size()
+     levelList = empty list
+     Repeat levelSize times:
+         node = queue.poll()
+         levelList.add(node.val)
+         If node.left exists: queue.offer(node.left)
+         If node.right exists: queue.offer(node.right)
+     result.add(levelList)
+4. Return result`,
       code: `public List<List<Integer>> levelOrder(TreeNode root) {
     List<List<Integer>> result = new ArrayList<>();
     if (root == null) return result;
@@ -271,7 +343,13 @@ public int removeDuplicates(int[] nums) {
       title: 'Top K Elements with Min-Heap',
       complexity: { time: 'O(N log K)', space: 'O(K)' },
       tags: ['Heap', 'PriorityQueue', 'Top K'],
-      description: 'Tìm K phần tử lớn nhất bằng cách duy trì Min-Heap có kích thước cố định K.',
+      description: 'Tìm K phần tử lớn nhất bằng Min-Heap giới hạn kích thước tối đa là K. Khi heap vượt quá K, loại bỏ phần tử nhỏ nhất ở đỉnh heap.',
+      pseudoCode: `1. Initialize Min-Heap (PriorityQueue<Integer>)
+2. For each number in nums:
+     minHeap.offer(number)
+     If minHeap.size() > K:
+         minHeap.poll()
+3. The top of the heap is the K-th largest element (minHeap.peek())`,
       code: `public int findKthLargest(int[] nums, int k) {
     // Min-Heap duy trì K phần tử lớn nhất
     PriorityQueue<Integer> minHeap = new PriorityQueue<>();
@@ -293,7 +371,13 @@ public int removeDuplicates(int[] nums) {
       title: 'Subsets / Combinations Template',
       complexity: { time: 'O(2^N)', space: 'O(N)' },
       tags: ['Backtracking', 'Recursion'],
-      description: 'Mẫu quay lui chuẩn: Choose -> Recurse -> Un-choose (Backtrack).',
+      description: 'Khuôn mẫu quay lui 3 bước: Chọn phần tử (Choose) -> Gọi đệ quy nhánh tiếp theo (Explore) -> Hoàn tác phần tử (Un-choose / Backtrack).',
+      pseudoCode: `function backtrack(start, currentList, result):
+    1. result.add(copy of currentList)
+    2. For i from start to nums.length - 1:
+         currentList.add(nums[i])          // 1. Choose
+         backtrack(i + 1, currentList)     // 2. Explore
+         currentList.removeLast()          // 3. Undo`,
       code: `public List<List<Integer>> subsets(int[] nums) {
     List<List<Integer>> result = new ArrayList<>();
     backtrack(nums, 0, new ArrayList<>(), result);
@@ -318,7 +402,15 @@ private void backtrack(int[] nums, int start, List<Integer> current, List<List<I
       title: '2D Grid / Matrix DFS (Number of Islands / Flood Fill)',
       complexity: { time: 'O(M * N)', space: 'O(M * N)' },
       tags: ['Graphs', 'Matrix', 'DFS'],
-      description: 'Mẫu duyệt ma trận 4 hướng (lên, xuống, trái, phải) và kiểm tra biên.',
+      description: 'Duyệt loang trên ma trận 2 chiều theo 4 hướng (trên, dưới, trái, phải). Đánh dấu các ô đã thăm ngay khi duyệt để tránh lặp vô tận.',
+      pseudoCode: `function dfs(r, c):
+    If (r, c) out of bounds OR grid[r][c] != '1':
+        Return
+    grid[r][c] = '0'  // Mark visited
+    dfs(r + 1, c)     // Down
+    dfs(r - 1, c)     // Up
+    dfs(r, c + 1)     // Right
+    dfs(r, c - 1)     // Left`,
       code: `public int numIslands(char[][] grid) {
     if (grid == null || grid.length == 0) return 0;
     int count = 0;
@@ -357,7 +449,14 @@ private void dfs(char[][] grid, int r, int c, int m, int n) {
       title: '1D DP Tabulation Template with Space Optimization',
       complexity: { time: 'O(N)', space: 'O(1)' },
       tags: ['DP', 'Tabulation', 'Space Optimization'],
-      description: 'Mẫu quy hoạch động 1 chiều tối ưu không gian bộ nhớ từ `O(N)` xuống `O(1)`.',
+      description: 'Quy hoạch động 1 chiều tối ưu không gian bộ nhớ từ mảng `dp[N]` xuống 2 biến tạm `prev1` và `prev2` khi trạng thái chỉ phụ thuộc vào 2 bước liền trước.',
+      pseudoCode: `1. Handle base cases (N == 0, N == 1)
+2. prev2 = 0, prev1 = 0
+3. For each num in nums:
+     current = max(prev1, prev2 + num)
+     prev2 = prev1
+     prev1 = current
+4. Return prev1`,
       code: `// Ví dụ: House Robber / Climbing Stairs
 public int rob(int[] nums) {
     if (nums.length == 0) return 0;

@@ -1117,13 +1117,89 @@ code, pre {
   font-weight: 500;
 }
 
-/* VS Code Dark+ Java Code Theme */
+/* Modal Subtabs Navigation */
+.modal-subtabs-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-bottom: 1.5px solid var(--color-border);
+  margin: 16px 0 14px 0;
+  padding-bottom: 0;
+}
+
+.modal-subtab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1.5px;
+  font-family: var(--font-label);
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--color-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.modal-subtab-btn:hover {
+  color: var(--color-primary);
+  background-color: #fff9f4;
+}
+
+.modal-subtab-btn.active {
+  color: var(--color-tertiary);
+  border-bottom-color: var(--color-tertiary);
+  font-weight: 700;
+}
+
+/* Card Subtabs Navigation */
+.card-subtabs-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px 0 16px;
+  background-color: #fbf9f6;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.card-subtab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  font-family: var(--font-label);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-secondary);
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.card-subtab-btn:hover {
+  color: var(--color-primary);
+}
+
+.card-subtab-btn.active {
+  color: var(--color-tertiary);
+  border-bottom-color: var(--color-tertiary);
+  font-weight: 700;
+}
+
+/* VS Code Light / White Java Code Theme */
 .vscode-code-block {
-  background-color: #1e1e1e;
-  border: 1px solid #333333;
+  background-color: #ffffff;
+  border: 1px solid #e2ded9;
   border-radius: 6px;
   overflow: hidden;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 1px 4px rgba(51, 48, 46, 0.05);
   font-family: var(--font-mono);
 }
 
@@ -1131,8 +1207,8 @@ code, pre {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #252526;
-  border-bottom: 1px solid #333333;
+  background-color: #f6f3ee;
+  border-bottom: 1px solid #e2ded9;
   padding: 0 12px;
   height: 34px;
   user-select: none;
@@ -1142,21 +1218,22 @@ code, pre {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background-color: #1e1e1e;
-  border-right: 1px solid #333333;
+  background-color: #ffffff;
+  border-right: 1px solid #e2ded9;
+  border-top: 2px solid var(--color-tertiary);
   padding: 6px 14px;
   height: 34px;
-  color: #cccccc;
+  color: var(--color-primary);
   font-size: 0.8rem;
   font-family: var(--font-label);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .vscode-lang-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: #e5a84b; /* Java orange/gold */
+  background-color: #b05a10; /* Java warm bronze/orange */
 }
 
 .vscode-filename {
@@ -1164,27 +1241,27 @@ code, pre {
 }
 
 .vscode-copy-btn {
-  background: #333333;
-  color: #cccccc;
-  border: 1px solid #444444;
-  border-radius: 3px;
+  background: #ffffff;
+  color: var(--color-secondary);
+  border: 1px solid #d9cfc7;
+  border-radius: 4px;
   font-family: var(--font-label);
   font-size: 0.72rem;
   font-weight: 600;
-  padding: 3px 8px;
+  padding: 3px 9px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .vscode-copy-btn:hover {
-  background: #444444;
-  color: #ffffff;
-  border-color: #666666;
+  background: #fff4e8;
+  color: var(--color-tertiary);
+  border-color: var(--color-tertiary);
 }
 
 .vscode-content {
   display: flex;
-  background-color: #1e1e1e;
+  background-color: #ffffff;
   padding: 12px 0;
   overflow-x: auto;
 }
@@ -1192,43 +1269,44 @@ code, pre {
 .vscode-line-numbers {
   display: flex;
   flex-direction: column;
-  padding: 0 14px 0 12px;
+  padding: 0 12px 0 12px;
   user-select: none;
-  border-right: 1px solid #2d2d2d;
+  border-right: 1px solid #eee8e0;
   text-align: right;
-  min-width: 40px;
+  min-width: 38px;
+  background-color: #faf8f5;
 }
 
 .vscode-line-num {
   font-family: var(--font-mono);
-  font-size: 0.83rem;
+  font-size: 0.84rem;
   line-height: 1.6;
-  color: #858585;
+  color: #9e9790;
 }
 
 .vscode-pre {
   margin: 0;
   padding: 0 16px;
   flex: 1;
-  background: transparent !important;
+  background: #ffffff !important;
   border: none !important;
   overflow: visible;
 }
 
 .vscode-pre code {
   background: transparent !important;
-  color: #d4d4d4 !important;
+  color: #1f2328 !important;
   font-family: var(--font-mono) !important;
-  font-size: 0.83rem !important;
+  font-size: 0.84rem !important;
   line-height: 1.6 !important;
   padding: 0 !important;
   white-space: pre !important;
   word-break: normal !important;
 }
 
-/* VS Code Java Tokens Styling (Prism.js override) */
+/* VS Code Light Java Tokens Styling (Prism.js override) */
 .vscode-pre code .token.keyword {
-  color: #569cd6 !important; /* Blue for keywords (public, class, int, new, void) */
+  color: #0000ff !important; /* Blue for keywords (public, class, int, new, void) */
   font-weight: 600;
 }
 
@@ -1238,45 +1316,47 @@ code, pre {
 .vscode-pre code .token.keyword.else,
 .vscode-pre code .token.keyword.for,
 .vscode-pre code .token.keyword.while {
-  color: #c586c0 !important; /* Purple for control flow */
+  color: #af00db !important; /* Purple for control flow in VS Code Light */
+  font-weight: 600;
 }
 
 .vscode-pre code .token.class-name {
-  color: #4ec9b0 !important; /* Teal for classes/types (Map, HashMap, List, String, Integer) */
+  color: #267f99 !important; /* Teal for classes/types (Map, HashMap, List, String, Integer) */
 }
 
 .vscode-pre code .token.function {
-  color: #dcdcaa !important; /* Yellow for method calls */
+  color: #795e26 !important; /* Brown/Dark Gold for method calls in VS Code Light */
 }
 
 .vscode-pre code .token.string,
 .vscode-pre code .token.char {
-  color: #ce9178 !important; /* Orange-red for strings */
+  color: #a31515 !important; /* Crimson red for strings in VS Code Light */
 }
 
 .vscode-pre code .token.number {
-  color: #b5cea8 !important; /* Light green for numbers */
+  color: #098658 !important; /* Dark emerald green for numbers */
 }
 
 .vscode-pre code .token.comment {
-  color: #6a9955 !important; /* Green italic for comments */
+  color: #008000 !important; /* Pure Green italic for comments in VS Code Light */
   font-style: italic;
 }
 
 .vscode-pre code .token.operator {
-  color: #d4d4d4 !important;
+  color: #333333 !important;
 }
 
 .vscode-pre code .token.punctuation {
-  color: #d4d4d4 !important;
+  color: #333333 !important;
 }
 
 .vscode-pre code .token.boolean {
-  color: #569cd6 !important;
+  color: #0000ff !important;
+  font-weight: 600;
 }
 
 .vscode-pre code .token.annotation {
-  color: #9cdcfe !important;
+  color: #795e26 !important;
 }
 
 

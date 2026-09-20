@@ -16,6 +16,9 @@ interface ModalState {
   pattern: Partial<AlgorithmPattern>;
 }
 
+type SubTabType = 'idea' | 'pseudo' | 'code';
+type CardTabType = 'code' | 'pseudo' | 'idea';
+
 export default function PatternManager({ topicId, topicName }: Props) {
   const [patterns, setPatterns] = useState<AlgorithmPattern[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -25,6 +28,9 @@ export default function PatternManager({ topicId, topicName }: Props) {
     mode: 'add',
     pattern: {},
   });
+  const [modalSubTab, setModalSubTab] = useState<SubTabType>('idea');
+  const [previewCodeInModal, setPreviewCodeInModal] = useState(false);
+  const [cardTabs, setCardTabs] = useState<Record<string, CardTabType>>({});
   const [toast, setToast] = useState('');
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
@@ -92,9 +98,10 @@ export default function PatternManager({ topicId, topicName }: Props) {
       if (q) {
         const inTitle = p.title.toLowerCase().includes(q);
         const inDesc = p.description.toLowerCase().includes(q);
+        const inPseudo = p.pseudoCode ? p.pseudoCode.toLowerCase().includes(q) : false;
         const inCode = p.code.toLowerCase().includes(q);
         const inTags = p.tags?.some((t) => t.toLowerCase().includes(q));
-        if (!inTitle && !inDesc && !inCode && !inTags) return false;
+        if (!inTitle && !inDesc && !inPseudo && !inCode && !inTags) return false;
       }
 
       return true;
@@ -103,6 +110,8 @@ export default function PatternManager({ topicId, topicName }: Props) {
 
   // Modal open handlers
   const openAdd = () => {
+    setModalSubTab('idea');
+    setPreviewCodeInModal(false);
     setModal({
       open: true,
       mode: 'add',
@@ -112,6 +121,10 @@ export default function PatternManager({ topicId, topicName }: Props) {
         complexity: { time: 'O(N)', space: 'O(1)' },
         tags: [],
         description: '',
+        pseudoCode: `1. Initialize data structures
+2. Traverse input elements:
+     Process state and check invariants
+3. Return computed result`,
         code: `// Algorithm / Pattern template in Java
 public void solve() {
     // Write your reusable logic here
@@ -121,6 +134,8 @@ public void solve() {
   };
 
   const openEdit = (pattern: AlgorithmPattern) => {
+    setModalSubTab('idea');
+    setPreviewCodeInModal(false);
     setModal({
       open: true,
       mode: 'edit',
@@ -150,6 +165,7 @@ public void solve() {
         },
         tags: pattern.tags || [],
         description: pattern.description || '',
+        pseudoCode: pattern.pseudoCode || '',
         code: pattern.code || '',
         isCustom: true,
         updatedAt: Date.now(),
@@ -169,6 +185,7 @@ public void solve() {
             },
             tags: pattern.tags || p.tags,
             description: pattern.description ?? p.description,
+            pseudoCode: pattern.pseudoCode ?? p.pseudoCode,
             code: pattern.code ?? p.code,
             updatedAt: Date.now(),
           };
@@ -195,6 +212,10 @@ public void solve() {
       savePatternsToStorage(defaults);
       showToast('Reset to default patterns');
     }
+  };
+
+  const setCardActiveTab = (id: string, tab: CardTabType) => {
+    setCardTabs((prev) => ({ ...prev, [id]: tab }));
   };
 
   return (
@@ -298,123 +319,181 @@ public void solve() {
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', marginTop: '16px' }}>
-          {filteredPatterns.map((pat) => (
-            <div
-              key={pat.id}
-              className="pattern-card"
-              style={{
-                backgroundColor: 'var(--color-surface)',
-                border: '1px solid var(--color-border)',
-                borderRadius: '8px',
-                overflow: 'hidden',
-                boxShadow: '0 2px 6px rgba(51, 48, 46, 0.04)',
-              }}
-            >
-              {/* Pattern Header */}
+          {filteredPatterns.map((pat) => {
+            const activeCardTab = cardTabs[pat.id] || 'code';
+
+            return (
               <div
+                key={pat.id}
+                className="pattern-card"
                 style={{
-                  padding: '14px 18px',
-                  backgroundColor: '#fff4e8',
-                  borderBottom: '1px solid var(--color-border)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  flexWrap: 'wrap',
-                  gap: '10px',
+                  backgroundColor: 'var(--color-surface)',
+                  border: '1px solid var(--color-border)',
+                  borderRadius: '8px',
+                  overflow: 'hidden',
+                  boxShadow: '0 2px 6px rgba(51, 48, 46, 0.04)',
                 }}
               >
-                <div>
-                  <h3
-                    style={{
-                      fontSize: '1.15rem',
-                      fontFamily: 'var(--font-display)',
-                      margin: 0,
-                      color: 'var(--color-primary)',
-                    }}
-                  >
-                    {pat.title}
-                  </h3>
+                {/* Pattern Header */}
+                <div
+                  style={{
+                    padding: '14px 18px',
+                    backgroundColor: '#fff4e8',
+                    borderBottom: '1px solid var(--color-border)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    flexWrap: 'wrap',
+                    gap: '10px',
+                  }}
+                >
+                  <div>
+                    <h3
+                      style={{
+                        fontSize: '1.15rem',
+                        fontFamily: 'var(--font-display)',
+                        margin: 0,
+                        color: 'var(--color-primary)',
+                      }}
+                    >
+                      {pat.title}
+                    </h3>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px', flexWrap: 'wrap' }}>
-                    {/* Complexity badges */}
-                    <span className="complexity-badge time" title="Time Complexity">
-                      Time: <code>{pat.complexity.time}</code>
-                    </span>
-                    <span className="complexity-badge space" title="Space Complexity">
-                      Space: <code>{pat.complexity.space}</code>
-                    </span>
-
-                    {/* Tags */}
-                    {pat.tags?.map((t) => (
-                      <span key={t} className="pattern-tag-pill">
-                        {t}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px', flexWrap: 'wrap' }}>
+                      {/* Complexity badges */}
+                      <span className="complexity-badge time" title="Time Complexity">
+                        Time: <code>{pat.complexity.time}</code>
                       </span>
-                    ))}
+                      <span className="complexity-badge space" title="Space Complexity">
+                        Space: <code>{pat.complexity.space}</code>
+                      </span>
+
+                      {/* Tags */}
+                      {pat.tags?.map((t) => (
+                        <span key={t} className="pattern-tag-pill">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
 
-                {/* Actions */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <button
-                    type="button"
-                    className="btn btn-ghost btn-sm"
-                    onClick={() => openEdit(pat)}
-                  >
-                    Edit
-                  </button>
+                  {/* Actions */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <button
+                      type="button"
+                      className="btn btn-ghost btn-sm"
+                      onClick={() => openEdit(pat)}
+                    >
+                      Edit
+                    </button>
 
-                  {confirmDeleteId === pat.id ? (
-                    <>
+                    {confirmDeleteId === pat.id ? (
+                      <>
+                        <button
+                          type="button"
+                          className="btn btn-danger btn-sm"
+                          onClick={() => handleDelete(pat.id)}
+                        >
+                          Confirm
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-ghost btn-sm"
+                          onClick={() => setConfirmDeleteId(null)}
+                        >
+                          Cancel
+                        </button>
+                      </>
+                    ) : (
                       <button
                         type="button"
                         className="btn btn-danger btn-sm"
-                        onClick={() => handleDelete(pat.id)}
+                        onClick={() => setConfirmDeleteId(pat.id)}
                       >
-                        Confirm
+                        Delete
                       </button>
-                      <button
-                        type="button"
-                        className="btn btn-ghost btn-sm"
-                        onClick={() => setConfirmDeleteId(null)}
-                      >
-                        Cancel
-                      </button>
-                    </>
-                  ) : (
+                    )}
+                  </div>
+                </div>
+
+                {/* Subtabs Navigation on Card */}
+                <div className="card-subtabs-nav">
+                  <button
+                    type="button"
+                    className={`card-subtab-btn ${activeCardTab === 'code' ? 'active' : ''}`}
+                    onClick={() => setCardActiveTab(pat.id, 'code')}
+                  >
+                    Java Implementation
+                  </button>
+                  {pat.pseudoCode && (
                     <button
                       type="button"
-                      className="btn btn-danger btn-sm"
-                      onClick={() => setConfirmDeleteId(pat.id)}
+                      className={`card-subtab-btn ${activeCardTab === 'pseudo' ? 'active' : ''}`}
+                      onClick={() => setCardActiveTab(pat.id, 'pseudo')}
                     >
-                      Delete
+                      Pseudo Code
+                    </button>
+                  )}
+                  {pat.description && (
+                    <button
+                      type="button"
+                      className={`card-subtab-btn ${activeCardTab === 'idea' ? 'active' : ''}`}
+                      onClick={() => setCardActiveTab(pat.id, 'idea')}
+                    >
+                      Idea & Strategy
                     </button>
                   )}
                 </div>
-              </div>
 
-              {/* Pattern Description */}
-              {pat.description && (
-                <div style={{ padding: '12px 18px', borderBottom: '1px solid var(--color-border-light)', fontSize: '0.92rem' }}>
-                  <FormattedText text={pat.description} />
-                </div>
-              )}
+                {/* Card Tab Content */}
+                {activeCardTab === 'code' && (
+                  <div style={{ padding: '14px 18px', backgroundColor: '#ffffff' }}>
+                    <CodeBlock code={pat.code} language="java" filename={`${pat.title.replace(/[^a-zA-Z0-9]/g, '')}.java`} />
+                  </div>
+                )}
 
-              {/* VS Code Dark+ Java Code Block */}
-              <div style={{ padding: '14px 18px', backgroundColor: '#181615' }}>
-                <CodeBlock code={pat.code} language="java" filename={`${pat.title.replace(/[^a-zA-Z0-9]/g, '')}.java`} />
+                {activeCardTab === 'pseudo' && pat.pseudoCode && (
+                  <div style={{ padding: '16px 20px', backgroundColor: '#ffffff' }}>
+                    <pre
+                      style={{
+                        margin: 0,
+                        padding: '14px 16px',
+                        backgroundColor: '#faf8f5',
+                        border: '1px solid #e2ded9',
+                        borderRadius: '6px',
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: '0.88rem',
+                        lineHeight: 1.6,
+                        color: 'var(--color-primary)',
+                        whiteSpace: 'pre-wrap',
+                      }}
+                    >
+                      {pat.pseudoCode}
+                    </pre>
+                  </div>
+                )}
+
+                {activeCardTab === 'idea' && pat.description && (
+                  <div style={{ padding: '16px 20px', backgroundColor: '#ffffff', fontSize: '0.94rem', lineHeight: 1.65 }}>
+                    <FormattedText text={pat.description} />
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
-      {/* Add / Edit Pattern Modal */}
+      {/* Add / Edit Pattern Modal with Subtabs */}
       {modal.open && (
         <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-box" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '780px' }}>
-            <h2>{modal.mode === 'add' ? 'Add Algorithm Pattern' : 'Edit Algorithm Pattern'}</h2>
+          <div className="modal-box" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '820px', width: '92vw' }}>
+            <h2 style={{ marginBottom: '14px' }}>
+              {modal.mode === 'add' ? 'Add Algorithm Pattern' : 'Edit Algorithm Pattern'}
+            </h2>
 
-            <div className="form-field">
+            {/* General Metadata Fields */}
+            <div className="form-field" style={{ marginBottom: '12px' }}>
               <label htmlFor="field-pat-title">Pattern Title *</label>
               <input
                 id="field-pat-title"
@@ -425,7 +504,7 @@ public void solve() {
               />
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.5fr', gap: '12px', marginBottom: '8px' }}>
               <div className="form-field">
                 <label htmlFor="field-pat-time">Time Complexity</label>
                 <input
@@ -444,7 +523,7 @@ public void solve() {
                       },
                     }))
                   }
-                  placeholder="e.g. O(N), O(N log K)"
+                  placeholder="e.g. O(N), O(log N)"
                 />
               </div>
 
@@ -469,50 +548,136 @@ public void solve() {
                   placeholder="e.g. O(1), O(N)"
                 />
               </div>
+
+              <div className="form-field">
+                <label htmlFor="field-pat-tags">Tags (comma-separated)</label>
+                <input
+                  id="field-pat-tags"
+                  type="text"
+                  value={modal.pattern.tags?.join(', ') ?? ''}
+                  onChange={(e) => {
+                    const tagArr = e.target.value
+                      .split(',')
+                      .map((t) => t.trim())
+                      .filter(Boolean);
+                    setModal((prev) => ({ ...prev, pattern: { ...prev.pattern, tags: tagArr } }));
+                  }}
+                  placeholder="e.g. HashMap, Two Sum"
+                />
+              </div>
             </div>
 
-            <div className="form-field">
-              <label htmlFor="field-pat-tags">Tags (comma-separated)</label>
-              <input
-                id="field-pat-tags"
-                type="text"
-                value={modal.pattern.tags?.join(', ') ?? ''}
-                onChange={(e) => {
-                  const tagArr = e.target.value
-                    .split(',')
-                    .map((t) => t.trim())
-                    .filter(Boolean);
-                  setModal((prev) => ({ ...prev, pattern: { ...prev.pattern, tags: tagArr } }));
-                }}
-                placeholder="e.g. HashMap, Two Pointers, Top K"
-              />
+            {/* Modal Subtabs Navigation */}
+            <div className="modal-subtabs-nav">
+              <button
+                type="button"
+                className={`modal-subtab-btn ${modalSubTab === 'idea' ? 'active' : ''}`}
+                onClick={() => setModalSubTab('idea')}
+              >
+                Idea & Strategy
+              </button>
+
+              <button
+                type="button"
+                className={`modal-subtab-btn ${modalSubTab === 'pseudo' ? 'active' : ''}`}
+                onClick={() => setModalSubTab('pseudo')}
+              >
+                Pseudo Code
+              </button>
+
+              <button
+                type="button"
+                className={`modal-subtab-btn ${modalSubTab === 'code' ? 'active' : ''}`}
+                onClick={() => setModalSubTab('code')}
+              >
+                Java Implementation
+              </button>
             </div>
 
-            <div className="form-field">
-              <label htmlFor="field-pat-desc">Description & When to Use</label>
-              <textarea
-                id="field-pat-desc"
-                rows={2}
-                value={modal.pattern.description ?? ''}
-                onChange={(e) => setModal((prev) => ({ ...prev, pattern: { ...prev.pattern, description: e.target.value } }))}
-                placeholder="Key idea, edge cases, invariants..."
-              />
-            </div>
+            {/* Modal Subtab 1: Idea & Strategy */}
+            {modalSubTab === 'idea' && (
+              <div className="modal-tab-pane">
+                <div className="form-field">
+                  <label htmlFor="field-pat-desc">Idea, Intuition & When to Use</label>
+                  <textarea
+                    id="field-pat-desc"
+                    rows={8}
+                    value={modal.pattern.description ?? ''}
+                    onChange={(e) => setModal((prev) => ({ ...prev, pattern: { ...prev.pattern, description: e.target.value } }))}
+                    placeholder="Mô tả ý tưởng cốt lõi, điều kiện biên (edge cases), bất biến (invariants), khi nào nên áp dụng pattern này..."
+                    style={{ lineHeight: 1.6 }}
+                  />
+                </div>
+              </div>
+            )}
 
-            <div className="form-field">
-              <label htmlFor="field-pat-code">Java Code Template *</label>
-              <textarea
-                id="field-pat-code"
-                rows={9}
-                value={modal.pattern.code ?? ''}
-                onChange={(e) => setModal((prev) => ({ ...prev, pattern: { ...prev.pattern, code: e.target.value } }))}
-                style={{ fontFamily: 'var(--font-mono)', fontSize: '0.88rem', lineHeight: 1.5, tabSize: 4 }}
-                placeholder="// Java code snippet..."
-                spellCheck={false}
-              />
-            </div>
+            {/* Modal Subtab 2: Pseudo Code */}
+            {modalSubTab === 'pseudo' && (
+              <div className="modal-tab-pane">
+                <div className="form-field">
+                  <label htmlFor="field-pat-pseudo">Pseudo Code / Step-by-Step Logic</label>
+                  <textarea
+                    id="field-pat-pseudo"
+                    rows={8}
+                    value={modal.pattern.pseudoCode ?? ''}
+                    onChange={(e) => setModal((prev) => ({ ...prev, pattern: { ...prev.pattern, pseudoCode: e.target.value } }))}
+                    placeholder={`1. Step one: Initialize data structures\n2. Step two: Loop through elements\n3. Step three: Return result`}
+                    style={{ fontFamily: 'var(--font-mono)', fontSize: '0.88rem', lineHeight: 1.55 }}
+                    spellCheck={false}
+                  />
+                </div>
+              </div>
+            )}
 
-            <div className="modal-actions">
+            {/* Modal Subtab 3: Java Implementation */}
+            {modalSubTab === 'code' && (
+              <div className="modal-tab-pane">
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+                  <label htmlFor="field-pat-code" style={{ fontWeight: 600, fontSize: '0.85rem' }}>
+                    Java Code Template *
+                  </label>
+                  <button
+                    type="button"
+                    className="btn btn-ghost btn-sm"
+                    onClick={() => setPreviewCodeInModal(!previewCodeInModal)}
+                    style={{ fontSize: '0.78rem', padding: '2px 8px' }}
+                  >
+                    {previewCodeInModal ? 'Edit Code' : 'Preview VS Code Theme'}
+                  </button>
+                </div>
+
+                {previewCodeInModal ? (
+                  <div style={{ marginBottom: '14px' }}>
+                    <CodeBlock
+                      code={modal.pattern.code || '// Empty code'}
+                      language="java"
+                      filename={`${(modal.pattern.title || 'Solution').replace(/[^a-zA-Z0-9]/g, '')}.java`}
+                    />
+                  </div>
+                ) : (
+                  <div className="form-field">
+                    <textarea
+                      id="field-pat-code"
+                      rows={10}
+                      value={modal.pattern.code ?? ''}
+                      onChange={(e) => setModal((prev) => ({ ...prev, pattern: { ...prev.pattern, code: e.target.value } }))}
+                      style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: '0.88rem',
+                        lineHeight: 1.5,
+                        tabSize: 4,
+                        backgroundColor: '#ffffff',
+                      }}
+                      placeholder="// Java code snippet..."
+                      spellCheck={false}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Modal Actions Footer */}
+            <div className="modal-actions" style={{ marginTop: '18px' }}>
               <button className="btn btn-ghost" onClick={closeModal}>
                 Cancel
               </button>
