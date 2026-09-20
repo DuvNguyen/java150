@@ -23,6 +23,7 @@ export default function PatternManager({ topicId, topicName }: Props) {
   const [patterns, setPatterns] = useState<AlgorithmPattern[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState('');
+  const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({});
   const [modal, setModal] = useState<ModalState>({
     open: false,
     mode: 'add',
@@ -108,6 +109,26 @@ export default function PatternManager({ topicId, topicName }: Props) {
     });
   }, [patterns, searchQuery, selectedTag]);
 
+  const allExpanded = useMemo(() => {
+    return filteredPatterns.length > 0 && filteredPatterns.every((p) => expandedIds[p.id]);
+  }, [filteredPatterns, expandedIds]);
+
+  const toggleExpand = (id: string) => {
+    setExpandedIds((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const handleToggleAll = () => {
+    if (allExpanded) {
+      setExpandedIds({});
+    } else {
+      const next: Record<string, boolean> = {};
+      filteredPatterns.forEach((p) => {
+        next[p.id] = true;
+      });
+      setExpandedIds(next);
+    }
+  };
+
   // Modal open handlers
   const openAdd = () => {
     setModalSubTab('idea');
@@ -172,6 +193,7 @@ public void solve() {
       };
       const updated = [newPattern, ...patterns];
       savePatternsToStorage(updated);
+      setExpandedIds((prev) => ({ ...prev, [newPattern.id]: true }));
       showToast('Algorithm pattern added');
     } else {
       const updated = patterns.map((p) => {
@@ -210,6 +232,7 @@ public void solve() {
     if (confirm('Reset to default algorithm patterns for this topic? Any custom patterns added will be replaced.')) {
       const defaults = DEFAULT_PATTERNS[topicId] || [];
       savePatternsToStorage(defaults);
+      setExpandedIds({});
       showToast('Reset to default patterns');
     }
   };
@@ -233,10 +256,22 @@ public void solve() {
           />
         </div>
 
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button className="btn btn-primary" onClick={openAdd}>
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
+          {filteredPatterns.length > 0 && (
+            <button
+              type="button"
+              className="btn btn-ghost btn-sm"
+              onClick={handleToggleAll}
+              title={allExpanded ? 'Collapse all patterns' : 'Expand all patterns'}
+            >
+              {allExpanded ? 'Collapse all' : 'Expand all'}
+            </button>
+          )}
+
+          <button className="btn btn-primary btn-sm" onClick={openAdd}>
             Add pattern
           </button>
+
           <button
             className="btn btn-ghost btn-sm"
             onClick={handleResetDefaults}
@@ -298,7 +333,7 @@ public void solve() {
         </div>
       )}
 
-      {/* Pattern Cards List */}
+      {/* Pattern Cards List (Minimized / Collapsed by default) */}
       {filteredPatterns.length === 0 ? (
         <div
           style={{
@@ -318,67 +353,62 @@ public void solve() {
           </button>
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', marginTop: '16px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '16px' }}>
           {filteredPatterns.map((pat) => {
+            const isExpanded = Boolean(expandedIds[pat.id]);
             const activeCardTab = cardTabs[pat.id] || 'code';
 
             return (
               <div
                 key={pat.id}
-                className="pattern-card"
-                style={{
-                  backgroundColor: 'var(--color-surface)',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: '8px',
-                  overflow: 'hidden',
-                  boxShadow: '0 2px 6px rgba(51, 48, 46, 0.04)',
-                }}
+                className={`pattern-card ${isExpanded ? 'expanded' : 'collapsed'}`}
               >
-                {/* Pattern Header */}
+                {/* Collapsible Pattern Header */}
                 <div
-                  style={{
-                    padding: '14px 18px',
-                    backgroundColor: '#fff4e8',
-                    borderBottom: '1px solid var(--color-border)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    flexWrap: 'wrap',
-                    gap: '10px',
-                  }}
+                  className="pattern-card-header"
+                  onClick={() => toggleExpand(pat.id)}
+                  title={isExpanded ? 'Click to minimize' : 'Click to expand'}
                 >
-                  <div>
-                    <h3
-                      style={{
-                        fontSize: '1.15rem',
-                        fontFamily: 'var(--font-display)',
-                        margin: 0,
-                        color: 'var(--color-primary)',
+                  <div className="pattern-card-title-group">
+                    <button
+                      type="button"
+                      className="pattern-expand-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleExpand(pat.id);
                       }}
+                      title={isExpanded ? 'Minimize' : 'Expand'}
                     >
-                      {pat.title}
-                    </h3>
+                      {isExpanded ? '−' : '+'}
+                    </button>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px', flexWrap: 'wrap' }}>
-                      {/* Complexity badges */}
-                      <span className="complexity-badge time" title="Time Complexity">
-                        Time: <code>{pat.complexity.time}</code>
-                      </span>
-                      <span className="complexity-badge space" title="Space Complexity">
-                        Space: <code>{pat.complexity.space}</code>
-                      </span>
+                    <div>
+                      <h3 className="pattern-card-title">{pat.title}</h3>
 
-                      {/* Tags */}
-                      {pat.tags?.map((t) => (
-                        <span key={t} className="pattern-tag-pill">
-                          {t}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px', flexWrap: 'wrap' }}>
+                        {/* Complexity badges */}
+                        <span className="complexity-badge time" title="Time Complexity">
+                          Time: <code>{pat.complexity.time}</code>
                         </span>
-                      ))}
+                        <span className="complexity-badge space" title="Space Complexity">
+                          Space: <code>{pat.complexity.space}</code>
+                        </span>
+
+                        {/* Tags */}
+                        {pat.tags?.map((t) => (
+                          <span key={t} className="pattern-tag-pill">
+                            {t}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
 
                   {/* Actions */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <div
+                    style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <button
                       type="button"
                       className="btn btn-ghost btn-sm"
@@ -416,66 +446,72 @@ public void solve() {
                   </div>
                 </div>
 
-                {/* Subtabs Navigation on Card */}
-                <div className="card-subtabs-nav">
-                  <button
-                    type="button"
-                    className={`card-subtab-btn ${activeCardTab === 'code' ? 'active' : ''}`}
-                    onClick={() => setCardActiveTab(pat.id, 'code')}
-                  >
-                    Java Implementation
-                  </button>
-                  {pat.pseudoCode && (
-                    <button
-                      type="button"
-                      className={`card-subtab-btn ${activeCardTab === 'pseudo' ? 'active' : ''}`}
-                      onClick={() => setCardActiveTab(pat.id, 'pseudo')}
-                    >
-                      Pseudo Code
-                    </button>
-                  )}
-                  {pat.description && (
-                    <button
-                      type="button"
-                      className={`card-subtab-btn ${activeCardTab === 'idea' ? 'active' : ''}`}
-                      onClick={() => setCardActiveTab(pat.id, 'idea')}
-                    >
-                      Idea & Strategy
-                    </button>
-                  )}
-                </div>
+                {/* Expanded Body with Subtabs */}
+                {isExpanded && (
+                  <div className="pattern-card-body" style={{ animation: 'fadeIn 0.15s ease' }}>
+                    {/* Subtabs Navigation on Card */}
+                    <div className="card-subtabs-nav">
+                      <button
+                        type="button"
+                        className={`card-subtab-btn ${activeCardTab === 'code' ? 'active' : ''}`}
+                        onClick={() => setCardActiveTab(pat.id, 'code')}
+                      >
+                        Java Implementation
+                      </button>
+                      {pat.pseudoCode && (
+                        <button
+                          type="button"
+                          className={`card-subtab-btn ${activeCardTab === 'pseudo' ? 'active' : ''}`}
+                          onClick={() => setCardActiveTab(pat.id, 'pseudo')}
+                        >
+                          Pseudo Code
+                        </button>
+                      )}
+                      {pat.description && (
+                        <button
+                          type="button"
+                          className={`card-subtab-btn ${activeCardTab === 'idea' ? 'active' : ''}`}
+                          onClick={() => setCardActiveTab(pat.id, 'idea')}
+                        >
+                          Idea & Strategy
+                        </button>
+                      )}
+                    </div>
 
-                {/* Card Tab Content */}
-                {activeCardTab === 'code' && (
-                  <div style={{ padding: '14px 18px', backgroundColor: '#ffffff' }}>
-                    <CodeBlock code={pat.code} language="java" filename={`${pat.title.replace(/[^a-zA-Z0-9]/g, '')}.java`} />
-                  </div>
-                )}
+                    {/* Card Tab Content */}
+                    {activeCardTab === 'code' && (
+                      <div style={{ padding: '14px 18px', backgroundColor: '#ffffff' }}>
+                        <CodeBlock code={pat.code} language="java" filename={`${pat.title.replace(/[^a-zA-Z0-9]/g, '')}.java`} />
+                      </div>
+                    )}
 
-                {activeCardTab === 'pseudo' && pat.pseudoCode && (
-                  <div style={{ padding: '16px 20px', backgroundColor: '#ffffff' }}>
-                    <pre
-                      style={{
-                        margin: 0,
-                        padding: '14px 16px',
-                        backgroundColor: '#faf8f5',
-                        border: '1px solid #e2ded9',
-                        borderRadius: '6px',
-                        fontFamily: 'var(--font-mono)',
-                        fontSize: '0.88rem',
-                        lineHeight: 1.6,
-                        color: 'var(--color-primary)',
-                        whiteSpace: 'pre-wrap',
-                      }}
-                    >
-                      {pat.pseudoCode}
-                    </pre>
-                  </div>
-                )}
+                    {activeCardTab === 'pseudo' && pat.pseudoCode && (
+                      <div style={{ padding: '16px 20px', backgroundColor: '#ffffff' }}>
+                        <pre
+                          style={{
+                            margin: 0,
+                            padding: '14px 18px',
+                            backgroundColor: '#faf8f5',
+                            border: '1px solid #e2ded9',
+                            borderRadius: '6px',
+                            fontFamily: 'var(--font-mono)',
+                            fontSize: '0.92rem',
+                            fontWeight: 500,
+                            lineHeight: 1.65,
+                            color: '#000000',
+                            whiteSpace: 'pre-wrap',
+                          }}
+                        >
+                          {pat.pseudoCode}
+                        </pre>
+                      </div>
+                    )}
 
-                {activeCardTab === 'idea' && pat.description && (
-                  <div style={{ padding: '16px 20px', backgroundColor: '#ffffff', fontSize: '0.94rem', lineHeight: 1.65 }}>
-                    <FormattedText text={pat.description} />
+                    {activeCardTab === 'idea' && pat.description && (
+                      <div style={{ padding: '16px 20px', backgroundColor: '#ffffff', fontSize: '0.95rem', lineHeight: 1.65 }}>
+                        <FormattedText text={pat.description} />
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -622,7 +658,7 @@ public void solve() {
                     value={modal.pattern.pseudoCode ?? ''}
                     onChange={(e) => setModal((prev) => ({ ...prev, pattern: { ...prev.pattern, pseudoCode: e.target.value } }))}
                     placeholder={`1. Step one: Initialize data structures\n2. Step two: Loop through elements\n3. Step three: Return result`}
-                    style={{ fontFamily: 'var(--font-mono)', fontSize: '0.88rem', lineHeight: 1.55 }}
+                    style={{ fontFamily: 'var(--font-mono)', fontSize: '0.92rem', fontWeight: 500, lineHeight: 1.6 }}
                     spellCheck={false}
                   />
                 </div>
@@ -663,8 +699,9 @@ public void solve() {
                       onChange={(e) => setModal((prev) => ({ ...prev, pattern: { ...prev.pattern, code: e.target.value } }))}
                       style={{
                         fontFamily: 'var(--font-mono)',
-                        fontSize: '0.88rem',
-                        lineHeight: 1.5,
+                        fontSize: '0.92rem',
+                        fontWeight: 500,
+                        lineHeight: 1.6,
                         tabSize: 4,
                         backgroundColor: '#ffffff',
                       }}
