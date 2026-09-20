@@ -6,6 +6,8 @@ import SearchBar from '@/components/SearchBar';
 import FunctionTable, { Entry } from '@/components/FunctionTable';
 import PrerequisitesGrid from '@/components/PrerequisitesGrid';
 import TopicFilter from '@/components/TopicFilter';
+import PatternManager from '@/components/PatternManager';
+import { DEFAULT_PATTERNS } from '@/lib/patterns';
 
 const API = '/api';
 
@@ -20,6 +22,7 @@ export default function TopicPage({ params }: { params: Promise<{ id: string }> 
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
   const [selectedTopic, setSelectedTopic] = useState('');
+  const [activeTab, setActiveTab] = useState<'syntax' | 'patterns'>('syntax');
 
   const fetchTopic = useCallback(async () => {
     setLoading(true);
@@ -121,6 +124,21 @@ export default function TopicPage({ params }: { params: Promise<{ id: string }> 
     ).length;
   }, [data?.entries, query]);
 
+  // Pattern count estimation for the tab badge
+  const patternCount = useMemo(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem(`patterns_data_${id}`);
+        if (saved) {
+          return JSON.parse(saved).length;
+        }
+      } catch {
+        // ignore
+      }
+    }
+    return DEFAULT_PATTERNS[id]?.length || 0;
+  }, [id]);
+
   const handleSearch = useCallback((q: string) => {
     setQuery(q);
   }, []);
@@ -156,19 +174,27 @@ export default function TopicPage({ params }: { params: Promise<{ id: string }> 
       <div className="topic-header" style={{ marginBottom: '16px', paddingBottom: '12px' }}>
         <h1>{data.topic.name}</h1>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-          <p className="entry-count" style={{ margin: 0 }}>
-            {filteredEntries.length} of {data.entries.length} {data.entries.length === 1 ? 'entry' : 'entries'}
-            {query ? ` matching "${query}"` : ''}
-            {selectedTopic ? ` in ${selectedTopic}` : ''}
-          </p>
-          {hasActiveFilters && (
-            <button
-              onClick={handleResetFilters}
-              className="btn btn-ghost btn-sm"
-              style={{ padding: '2px 8px', fontSize: '0.75rem' }}
-            >
-              Reset filters
-            </button>
+          {activeTab === 'syntax' ? (
+            <>
+              <p className="entry-count" style={{ margin: 0 }}>
+                {filteredEntries.length} of {data.entries.length} {data.entries.length === 1 ? 'entry' : 'entries'}
+                {query ? ` matching "${query}"` : ''}
+                {selectedTopic ? ` in ${selectedTopic}` : ''}
+              </p>
+              {hasActiveFilters && (
+                <button
+                  onClick={handleResetFilters}
+                  className="btn btn-ghost btn-sm"
+                  style={{ padding: '2px 8px', fontSize: '0.75rem' }}
+                >
+                  Reset filters
+                </button>
+              )}
+            </>
+          ) : (
+            <p className="entry-count" style={{ margin: 0 }}>
+              Reusable algorithms & pattern templates
+            </p>
           )}
         </div>
       </div>
@@ -176,35 +202,56 @@ export default function TopicPage({ params }: { params: Promise<{ id: string }> 
       {/* NeetCode Style Prerequisites Card Grid */}
       <PrerequisitesGrid topicId={id} />
 
-      {/* Syntax Cheatsheet Section */}
-      <div style={{ marginTop: '24px' }}>
-        <h2 style={{ fontSize: '1.25rem', marginBottom: '12px', fontFamily: 'var(--font-display)' }}>
-          Java Syntax & Methods Reference
-        </h2>
+      {/* Topic Tabs Navigation */}
+      <div className="topic-tabs-nav">
+        <button
+          type="button"
+          className={`topic-tab-item ${activeTab === 'syntax' ? 'active' : ''}`}
+          onClick={() => setActiveTab('syntax')}
+        >
+          <span>Syntax & Methods</span>
+          <span className="tab-count-badge">{data.entries.length}</span>
+        </button>
 
-        <SearchBar
-          onSearch={handleSearch}
-          initialValue={query}
-          placeholder={`Search syntax or methods in ${data.topic.name}...`}
-        />
-
-        {availableTopics.length > 1 && (
-          <TopicFilter
-            topics={availableTopics}
-            selectedTopic={selectedTopic}
-            onSelectTopic={handleSelectTopic}
-            counts={topicCounts}
-            totalCount={totalMatchingQueryCount}
-            label="Filter by topic / data structure"
-          />
-        )}
-
-        <FunctionTable
-          entries={filteredEntries}
-          topicId={id}
-          onRefresh={fetchTopic}
-        />
+        <button
+          type="button"
+          className={`topic-tab-item ${activeTab === 'patterns' ? 'active' : ''}`}
+          onClick={() => setActiveTab('patterns')}
+        >
+          <span>Algorithms & Patterns</span>
+          <span className="tab-count-badge">{patternCount}</span>
+        </button>
       </div>
+
+      {/* Tab Content */}
+      {activeTab === 'syntax' ? (
+        <div style={{ marginTop: '12px' }}>
+          <SearchBar
+            onSearch={handleSearch}
+            initialValue={query}
+            placeholder={`Search syntax or methods in ${data.topic.name}...`}
+          />
+
+          {availableTopics.length > 1 && (
+            <TopicFilter
+              topics={availableTopics}
+              selectedTopic={selectedTopic}
+              onSelectTopic={handleSelectTopic}
+              counts={topicCounts}
+              totalCount={totalMatchingQueryCount}
+              label="Filter by topic / data structure"
+            />
+          )}
+
+          <FunctionTable
+            entries={filteredEntries}
+            topicId={id}
+            onRefresh={fetchTopic}
+          />
+        </div>
+      ) : (
+        <PatternManager topicId={id} topicName={data.topic.name} />
+      )}
     </main>
   );
 }

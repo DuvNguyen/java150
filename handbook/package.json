@@ -9,8 +9,10 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@types/prismjs": "^1.26.6",
     "katex": "^0.18.7",
     "next": "16.3.5",
+    "prismjs": "^1.30.0",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
