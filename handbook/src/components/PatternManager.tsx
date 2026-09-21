@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import CodeBlock from './CodeBlock';
 import FormattedText from './FormattedText';
-import { AlgorithmPattern, DEFAULT_PATTERNS } from '@/lib/patterns';
+import { AlgorithmPattern, DEFAULT_PATTERNS, UseCaseItem } from '@/lib/patterns';
 
 interface Props {
   topicId: string;
@@ -16,8 +16,8 @@ interface ModalState {
   pattern: Partial<AlgorithmPattern>;
 }
 
-type SubTabType = 'idea' | 'pseudo' | 'code';
-type CardTabType = 'code' | 'pseudo' | 'idea';
+type SubTabType = 'idea' | 'pseudo' | 'usecases' | 'code';
+type CardTabType = 'code' | 'pseudo' | 'idea' | 'usecases';
 
 export default function PatternManager({ topicId, topicName }: Props) {
   const [patterns, setPatterns] = useState<AlgorithmPattern[]>([]);
@@ -35,8 +35,15 @@ export default function PatternManager({ topicId, topicName }: Props) {
   const [toast, setToast] = useState('');
   const [openActionMenuId, setOpenActionMenuId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [newTagInput, setNewTagInput] = useState('');
+  const [tagManagerOpen, setTagManagerOpen] = useState(false);
+  const [editingTagOriginal, setEditingTagOriginal] = useState<string | null>(null);
+  const [editingTagName, setEditingTagName] = useState('');
+  const [newTopicTagInput, setNewTopicTagInput] = useState('');
+  const [customTags, setCustomTags] = useState<string[]>([]);
 
   const storageKey = `patterns_data_${topicId}`;
+  const customTagsStorageKey = `topic_tags_custom_${topicId}`;
 
   // Close action dropdown when clicking outside
   useEffect(() => {
@@ -51,12 +58,36 @@ export default function PatternManager({ topicId, topicName }: Props) {
     return () => window.removeEventListener('click', handleClickOutside);
   }, []);
 
+  // Load custom tags from localStorage
+  useEffect(() => {
+    try {
+      const savedTags = localStorage.getItem(customTagsStorageKey);
+      if (savedTags) {
+        setCustomTags(JSON.parse(savedTags));
+      }
+    } catch {
+      // ignore
+    }
+  }, [customTagsStorageKey]);
+
   // Load patterns from localStorage + default patterns
   const loadPatterns = useCallback(() => {
     try {
       const saved = localStorage.getItem(storageKey);
       if (saved) {
-        setPatterns(JSON.parse(saved));
+        const parsed: AlgorithmPattern[] = JSON.parse(saved);
+        // Merge useCases from defaults if pattern came from defaults but didn't have useCases saved earlier
+        const defaults = DEFAULT_PATTERNS[topicId] || [];
+        const merged = parsed.map((p) => {
+          if (!p.useCases || p.useCases.length === 0) {
+            const defMatch = defaults.find((d) => d.id === p.id);
+            if (defMatch?.useCases) {
+              return { ...p, useCases: defMatch.useCases };
+            }
+          }
+          return p;
+        });
+        setPatterns(merged);
       } else {
         const defaults = DEFAULT_PATTERNS[topicId] || [];
         setPatterns(defaults);
@@ -86,16 +117,255 @@ export default function PatternManager({ topicId, topicName }: Props) {
     }
   };
 
-  // Extract all unique tags
+  // Save custom tags to localStorage
+  const saveCustomTagsToStorage = (newList: string[]) => {
+    setCustomTags(newList);
+    try {
+      localStorage.setItem(customTagsStorageKey, JSON.stringify(newList));
+    } catch {
+      // ignore
+    }
+  };
+
+  // Extract all unique tags (from patterns + custom tags with case-insensitive deduplication)
   const availableTags = useMemo(() => {
-    const set = new Set<string>();
+    const map = new Map<string, string>();
     for (const p of patterns) {
       if (p.tags) {
-        p.tags.forEach((t) => set.add(t.trim()));
+        p.tags.forEach((t) => {
+          const trimmed = t.trim();
+          if (trimmed) {
+            const lower = trimmed.toLowerCase();
+            if (!map.has(lower)) {
+              map.set(lower, trimmed);
+            }
+          }
+        });
       }
     }
-    return Array.from(set).sort();
-  }, [patterns]);
+    for (const t of customTags) {
+      const trimmed = t.trim();
+      if (trimmed) {
+        const lower = trimmed.toLowerCase();
+        if (!map.has(lower)) {
+          map.set(lower, trimmed);
+        }
+      }
+    }
+    return Array.from(map.values()).sort((a, b) =>
+      a.localeCompare(b, undefined, { sensitivity: 'base' })
+    );
+  }, [patterns, customTags]);
+
+  // Tag helper functions for modal (Strict case-insensitivity: Sort = sort)
+  const handleAddTagToModal = (tagToAdd?: string) => {
+    const raw = (tagToAdd ?? newTagInput).trim();
+    if (!raw) return;
+
+    // Treat case-insensitively: check if already in modal tags
+    const currentTags = modal.pattern.tags || [];
+    const isAlreadyPresent = currentTags.some(
+      (t) => t.trim().toLowerCase() === raw.toLowerCase()
+    );
+    if (isAlreadyPresent) {
+      setNewTagInput('');
+      return;
+    }
+
+    // Match existing canonical casing if found in availableTags, else use raw input
+    const existingMatch = availableTags.find(
+      (t) => t.toLowerCase() === raw.toLowerCase()
+    );
+    const canonicalTag = existingMatch || raw;
+
+    setModal((prev) => ({
+      ...prev,
+      pattern: {
+        ...prev.pattern,
+        tags: [...(prev.pattern.tags || []), canonicalTag],
+      },
+    }));
+    setNewTagInput('');
+  };
+
+  const handleRemoveTagFromModal = (tagToRemove: string) => {
+    setModal((prev) => ({
+      ...prev,
+      pattern: {
+        ...prev.pattern,
+        tags: (prev.pattern.tags || []).filter(
+          (t) => t.trim().toLowerCase() !== tagToRemove.trim().toLowerCase()
+        ),
+      },
+    }));
+  };
+
+  const handleToggleTagInModal = (tag: string) => {
+    const currentTags = modal.pattern.tags || [];
+    const exists = currentTags.some(
+      (t) => t.trim().toLowerCase() === tag.trim().toLowerCase()
+    );
+    if (exists) {
+      handleRemoveTagFromModal(tag);
+    } else {
+      handleAddTagToModal(tag);
+    }
+  };
+
+  // Use Case handlers for modal
+  const handleAddUseCaseRow = () => {
+    setModal((prev) => ({
+      ...prev,
+      pattern: {
+        ...prev.pattern,
+        useCases: [
+          ...(prev.pattern.useCases || []),
+          { title: '', whenToUse: '', complexity: '', example: '' },
+        ],
+      },
+    }));
+  };
+
+  const handleUpdateUseCaseRow = (index: number, field: keyof UseCaseItem, value: string) => {
+    setModal((prev) => {
+      const list = [...(prev.pattern.useCases || [])];
+      list[index] = { ...list[index], [field]: value };
+      return {
+        ...prev,
+        pattern: {
+          ...prev.pattern,
+          useCases: list,
+        },
+      };
+    });
+  };
+
+  const handleRemoveUseCaseRow = (index: number) => {
+    setModal((prev) => {
+      const list = (prev.pattern.useCases || []).filter((_, i) => i !== index);
+      return {
+        ...prev,
+        pattern: {
+          ...prev.pattern,
+          useCases: list,
+        },
+      };
+    });
+  };
+
+  // Create new tag globally from Tag Manager
+  const handleCreateTopicTag = () => {
+    const raw = newTopicTagInput.trim();
+    if (!raw) return;
+
+    const exists = availableTags.some((t) => t.toLowerCase() === raw.toLowerCase());
+    if (exists) {
+      showToast(`Tag "${raw}" already exists`);
+      setNewTopicTagInput('');
+      return;
+    }
+
+    const updated = [...customTags, raw];
+    saveCustomTagsToStorage(updated);
+    setNewTopicTagInput('');
+    showToast(`Created tag "${raw}"`);
+  };
+
+  // Global tag management (rename & delete across all patterns and custom tags)
+  const handleRenameTag = (oldTag: string, newTagName: string) => {
+    const trimmed = newTagName.trim();
+    if (!trimmed || trimmed.toLowerCase() === oldTag.toLowerCase()) {
+      setEditingTagOriginal(null);
+      return;
+    }
+
+    // Update in patterns
+    const updatedPatterns = patterns.map((p) => {
+      if (!p.tags || p.tags.length === 0) return p;
+      const hasOld = p.tags.some((t) => t.toLowerCase() === oldTag.toLowerCase());
+      if (!hasOld) return p;
+
+      const newTags: string[] = [];
+      p.tags.forEach((t) => {
+        const isTarget = t.toLowerCase() === oldTag.toLowerCase();
+        const tagToPush = isTarget ? trimmed : t;
+        if (!newTags.some((x) => x.toLowerCase() === tagToPush.toLowerCase())) {
+          newTags.push(tagToPush);
+        }
+      });
+
+      return {
+        ...p,
+        tags: newTags,
+        updatedAt: Date.now(),
+      };
+    });
+    savePatternsToStorage(updatedPatterns);
+
+    // Update in customTags
+    const updatedCustomTags = customTags.map((t) =>
+      t.toLowerCase() === oldTag.toLowerCase() ? trimmed : t
+    );
+    saveCustomTagsToStorage(updatedCustomTags);
+
+    // Update in current open modal pattern if applicable
+    if (modal.open && modal.pattern.tags) {
+      setModal((prev) => ({
+        ...prev,
+        pattern: {
+          ...prev.pattern,
+          tags: prev.pattern.tags?.map((t) =>
+            t.toLowerCase() === oldTag.toLowerCase() ? trimmed : t
+          ),
+        },
+      }));
+    }
+
+    if (selectedTag.toLowerCase() === oldTag.toLowerCase()) {
+      setSelectedTag(trimmed);
+    }
+    setEditingTagOriginal(null);
+    showToast(`Renamed tag "${oldTag}" -> "${trimmed}"`);
+  };
+
+  const handleDeleteTagGlobally = (tagToDelete: string) => {
+    if (confirm(`Delete tag "${tagToDelete}" completely from all patterns in this topic?`)) {
+      // Remove from patterns
+      const updatedPatterns = patterns.map((p) => {
+        if (!p.tags) return p;
+        return {
+          ...p,
+          tags: p.tags.filter((t) => t.toLowerCase() !== tagToDelete.toLowerCase()),
+          updatedAt: Date.now(),
+        };
+      });
+      savePatternsToStorage(updatedPatterns);
+
+      // Remove from customTags
+      const updatedCustom = customTags.filter(
+        (t) => t.toLowerCase() !== tagToDelete.toLowerCase()
+      );
+      saveCustomTagsToStorage(updatedCustom);
+
+      // Remove from current open modal if present
+      if (modal.open && modal.pattern.tags) {
+        setModal((prev) => ({
+          ...prev,
+          pattern: {
+            ...prev.pattern,
+            tags: prev.pattern.tags?.filter(
+              (t) => t.toLowerCase() !== tagToDelete.toLowerCase()
+            ),
+          },
+        }));
+      }
+
+      if (selectedTag.toLowerCase() === tagToDelete.toLowerCase()) {
+        setSelectedTag('');
+      }
+      showToast(`Deleted tag "${tagToDelete}"`);
+    }
+  };
 
   // Filter patterns by search query and tag
   const filteredPatterns = useMemo(() => {
@@ -147,6 +417,7 @@ export default function PatternManager({ topicId, topicName }: Props) {
   const openAdd = () => {
     setModalSubTab('idea');
     setPreviewCodeInModal(false);
+    setNewTagInput('');
     setModal({
       open: true,
       mode: 'add',
@@ -156,6 +427,7 @@ export default function PatternManager({ topicId, topicName }: Props) {
         complexity: { time: 'O(N)', space: 'O(1)' },
         tags: [],
         description: '',
+        useCases: [],
         pseudoCode: `1. Initialize data structures
 2. Traverse input elements:
      Process state and check invariants
@@ -171,14 +443,19 @@ public void solve() {
   const openEdit = (pattern: AlgorithmPattern) => {
     setModalSubTab('idea');
     setPreviewCodeInModal(false);
+    setNewTagInput('');
     setModal({
       open: true,
       mode: 'edit',
-      pattern: { ...pattern },
+      pattern: {
+        ...pattern,
+        useCases: pattern.useCases ? [...pattern.useCases] : [],
+      },
     });
   };
 
   const closeModal = () => {
+    setNewTagInput('');
     setModal({ open: false, mode: 'add', pattern: {} });
   };
 
@@ -189,6 +466,24 @@ public void solve() {
       return;
     }
 
+    // Deduplicate tags case-insensitively
+    const sanitizedTags = (pattern.tags || [])
+      .map((t) => t.trim())
+      .filter(Boolean)
+      .filter(
+        (tag, index, self) =>
+          self.findIndex((t) => t.toLowerCase() === tag.toLowerCase()) === index
+      );
+
+    const sanitizedUseCases = (pattern.useCases || [])
+      .filter((uc) => uc.title?.trim() || uc.whenToUse?.trim())
+      .map((uc) => ({
+        title: uc.title?.trim() || 'Trường hợp sử dụng',
+        whenToUse: uc.whenToUse?.trim() || '',
+        complexity: uc.complexity?.trim() || '',
+        example: uc.example?.trim() || '',
+      }));
+
     if (mode === 'add') {
       const newPattern: AlgorithmPattern = {
         id: `custom-${Date.now()}`,
@@ -198,8 +493,9 @@ public void solve() {
           time: pattern.complexity?.time || 'O(N)',
           space: pattern.complexity?.space || 'O(1)',
         },
-        tags: pattern.tags || [],
+        tags: sanitizedTags,
         description: pattern.description || '',
+        useCases: sanitizedUseCases,
         pseudoCode: pattern.pseudoCode || '',
         code: pattern.code || '',
         isCustom: true,
@@ -219,8 +515,9 @@ public void solve() {
               time: pattern.complexity?.time || p.complexity.time,
               space: pattern.complexity?.space || p.complexity.space,
             },
-            tags: pattern.tags || p.tags,
+            tags: sanitizedTags,
             description: pattern.description ?? p.description,
+            useCases: sanitizedUseCases,
             pseudoCode: pattern.pseudoCode ?? p.pseudoCode,
             code: pattern.code ?? p.code,
             updatedAt: Date.now(),
@@ -344,6 +641,16 @@ public void solve() {
               </button>
             );
           })}
+
+          <button
+            type="button"
+            className="btn btn-ghost btn-sm"
+            onClick={() => setTagManagerOpen(true)}
+            title="Manage all topic tags"
+            style={{ fontSize: '0.74rem', padding: '3px 10px', marginLeft: 'auto' }}
+          >
+            Manage tags
+          </button>
         </div>
       )}
 
@@ -371,11 +678,13 @@ public void solve() {
           {filteredPatterns.map((pat) => {
             const isExpanded = Boolean(expandedIds[pat.id]);
             const activeCardTab = cardTabs[pat.id] || 'code';
+            const isMenuOpen = openActionMenuId === pat.id;
 
             return (
               <div
                 key={pat.id}
                 className={`pattern-card ${isExpanded ? 'expanded' : 'collapsed'}`}
+                style={{ zIndex: isMenuOpen ? 50 : undefined }}
               >
                 {/* Collapsible Pattern Header */}
                 <div
@@ -510,6 +819,13 @@ public void solve() {
                           Idea & Strategy
                         </button>
                       )}
+                      <button
+                        type="button"
+                        className={`card-subtab-btn ${activeCardTab === 'usecases' ? 'active' : ''}`}
+                        onClick={() => setCardActiveTab(pat.id, 'usecases')}
+                      >
+                        Use Cases {pat.useCases && pat.useCases.length > 0 ? `(${pat.useCases.length})` : ''}
+                      </button>
                     </div>
 
                     {/* Card Tab Content */}
@@ -544,6 +860,74 @@ public void solve() {
                     {activeCardTab === 'idea' && pat.description && (
                       <div style={{ padding: '16px 20px', backgroundColor: '#ffffff', fontSize: '0.95rem', lineHeight: 1.65 }}>
                         <FormattedText text={pat.description} />
+                      </div>
+                    )}
+
+                    {activeCardTab === 'usecases' && (
+                      <div style={{ padding: '16px 20px', backgroundColor: '#ffffff' }}>
+                        {pat.useCases && pat.useCases.length > 0 ? (
+                          <div className="fn-table-wrap">
+                            <table className="fn-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+                              <thead>
+                                <tr>
+                                  <th style={{ width: '25%', padding: '10px 14px' }}>Trường hợp / Tình huống</th>
+                                  <th style={{ width: '38%', padding: '10px 14px' }}>Đặc điểm & Khi nào áp dụng</th>
+                                  <th style={{ width: '15%', padding: '10px 14px' }}>Độ phức tạp</th>
+                                  <th style={{ width: '22%', padding: '10px 14px' }}>Ví dụ / Bài toán</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {pat.useCases.map((uc, i) => (
+                                  <tr key={i} style={{ borderBottom: '1px solid var(--color-border-light)' }}>
+                                    <td style={{ fontWeight: 600, color: 'var(--color-primary)', padding: '10px 14px' }}>
+                                      <FormattedText text={uc.title} />
+                                    </td>
+                                    <td style={{ fontSize: '0.9rem', lineHeight: 1.55, padding: '10px 14px' }}>
+                                      <FormattedText text={uc.whenToUse} />
+                                    </td>
+                                    <td style={{ padding: '10px 14px' }}>
+                                      {uc.complexity ? (
+                                        <span className="complexity-badge time">
+                                          <code>{uc.complexity}</code>
+                                        </span>
+                                      ) : (
+                                        <span style={{ color: 'var(--color-secondary)', fontSize: '0.8rem' }}>-</span>
+                                      )}
+                                    </td>
+                                    <td style={{ fontSize: '0.88rem', color: 'var(--color-secondary)', padding: '10px 14px' }}>
+                                      <FormattedText text={uc.example || '-'} />
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        ) : (
+                          <div
+                            style={{
+                              padding: '24px',
+                              textAlign: 'center',
+                              backgroundColor: 'var(--color-surface)',
+                              borderRadius: '6px',
+                              border: '1px dashed var(--color-border)',
+                            }}
+                          >
+                            <p style={{ color: 'var(--color-secondary)', fontSize: '0.9rem', margin: 0 }}>
+                              Chưa có trường hợp sử dụng cụ thể nào được lưu cho thuật toán này.
+                            </p>
+                            <button
+                              type="button"
+                              className="btn btn-secondary btn-sm"
+                              onClick={() => {
+                                openEdit(pat);
+                                setModalSubTab('usecases');
+                              }}
+                              style={{ marginTop: '10px' }}
+                            >
+                              + Thêm Use Cases
+                            </button>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
@@ -581,7 +965,7 @@ public void solve() {
               />
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.5fr', gap: '12px', marginBottom: '8px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
               <div className="form-field">
                 <label htmlFor="field-pat-time">Time Complexity</label>
                 <input
@@ -625,22 +1009,107 @@ public void solve() {
                   placeholder="e.g. O(1), O(N)"
                 />
               </div>
+            </div>
 
-              <div className="form-field">
-                <label htmlFor="field-pat-tags">Tags (comma-separated)</label>
-                <input
-                  id="field-pat-tags"
-                  type="text"
-                  value={modal.pattern.tags?.join(', ') ?? ''}
-                  onChange={(e) => {
-                    const tagArr = e.target.value
-                      .split(',')
-                      .map((t) => t.trim())
-                      .filter(Boolean);
-                    setModal((prev) => ({ ...prev, pattern: { ...prev.pattern, tags: tagArr } }));
-                  }}
-                  placeholder="e.g. HashMap, Two Sum"
-                />
+            {/* Tag Management inside Modal */}
+            <div className="form-field" style={{ marginBottom: '14px' }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: '4px' }}>
+                <label htmlFor="field-pat-tag-input" style={{ fontWeight: 600, fontSize: '0.85rem' }}>
+                  Tags
+                </label>
+                <span style={{ fontSize: '0.74rem', color: 'var(--color-secondary)' }}>
+                  Case-insensitive (e.g. <code>Sort = sort</code>)
+                </span>
+              </div>
+
+              <div className="modal-tags-box">
+                {/* Active selected tags on this pattern */}
+                <div className="modal-selected-tags">
+                  {modal.pattern.tags && modal.pattern.tags.length > 0 ? (
+                    modal.pattern.tags.map((t) => (
+                      <span key={t} className="modal-tag-pill">
+                        {t}
+                        <button
+                          type="button"
+                          className="modal-tag-pill-remove"
+                          onClick={() => handleRemoveTagFromModal(t)}
+                          title={`Remove tag ${t}`}
+                          aria-label={`Remove tag ${t}`}
+                        >
+                          ✕
+                        </button>
+                      </span>
+                    ))
+                  ) : (
+                    <span style={{ fontSize: '0.8rem', color: 'var(--color-secondary)', fontStyle: 'italic' }}>
+                      No tags added yet. Type below to create a new tag or click an existing tag to assign.
+                    </span>
+                  )}
+                </div>
+
+                {/* Tag Input with Enter / Comma / Button handling */}
+                <div className="modal-tag-input-row">
+                  <input
+                    id="field-pat-tag-input"
+                    type="text"
+                    value={newTagInput}
+                    onChange={(e) => setNewTagInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ',') {
+                        e.preventDefault();
+                        handleAddTagToModal();
+                      }
+                    }}
+                    placeholder="Type tag name and press Enter to add..."
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-secondary btn-sm"
+                    onClick={() => handleAddTagToModal()}
+                    disabled={!newTagInput.trim()}
+                    style={{ whiteSpace: 'nowrap' }}
+                  >
+                    + Add Tag
+                  </button>
+                </div>
+
+                {/* Available Topic Tags Suggestions / Quick Selector */}
+                {availableTags.length > 0 && (
+                  <div className="modal-tag-suggestions">
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginBottom: '2px' }}>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--color-secondary)', fontWeight: 600, textTransform: 'uppercase' }}>
+                        Topic Tags:
+                      </span>
+                      <button
+                        type="button"
+                        className="btn btn-ghost btn-sm"
+                        onClick={() => setTagManagerOpen(true)}
+                        style={{ fontSize: '0.72rem', padding: '1px 7px', color: 'var(--color-tertiary)' }}
+                        title="Manage, rename or delete tags in this topic"
+                      >
+                        Manage / Delete Tags
+                      </button>
+                    </div>
+                    {availableTags
+                      .filter((t) => !newTagInput.trim() || t.toLowerCase().includes(newTagInput.trim().toLowerCase()))
+                      .map((t) => {
+                        const isSelected = modal.pattern.tags?.some(
+                          (tag) => tag.toLowerCase() === t.toLowerCase()
+                        );
+                        return (
+                          <button
+                            key={t}
+                            type="button"
+                            className={`modal-tag-chip-btn ${isSelected ? 'selected' : ''}`}
+                            onClick={() => handleToggleTagInModal(t)}
+                            title={isSelected ? `Click to unassign ${t}` : `Click to assign ${t}`}
+                          >
+                            {isSelected ? `✓ ${t}` : `+ ${t}`}
+                          </button>
+                        );
+                      })}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -660,6 +1129,14 @@ public void solve() {
                 onClick={() => setModalSubTab('pseudo')}
               >
                 Pseudo Code
+              </button>
+
+              <button
+                type="button"
+                className={`modal-subtab-btn ${modalSubTab === 'usecases' ? 'active' : ''}`}
+                onClick={() => setModalSubTab('usecases')}
+              >
+                Use Cases {modal.pattern.useCases?.length ? `(${modal.pattern.useCases.length})` : ''}
               </button>
 
               <button
@@ -706,7 +1183,133 @@ public void solve() {
               </div>
             )}
 
-            {/* Modal Subtab 3: Java Implementation */}
+            {/* Modal Subtab 3: Use Cases */}
+            {modalSubTab === 'usecases' && (
+              <div className="modal-tab-pane">
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                  <div>
+                    <label style={{ fontWeight: 600, fontSize: '0.85rem', textTransform: 'uppercase', color: 'var(--color-secondary)' }}>
+                      Trường hợp sử dụng & Bài toán mẫu (Use Cases)
+                    </label>
+                    <p style={{ fontSize: '0.8rem', color: 'var(--color-secondary)', margin: 0 }}>
+                      Ghi chú các tình huống áp dụng thuật toán. Sẽ hiển thị dưới dạng bảng trực quan.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    className="btn btn-secondary btn-sm"
+                    onClick={handleAddUseCaseRow}
+                    style={{ whiteSpace: 'nowrap' }}
+                  >
+                    + Thêm trường hợp
+                  </button>
+                </div>
+
+                {(!modal.pattern.useCases || modal.pattern.useCases.length === 0) ? (
+                  <div
+                    style={{
+                      padding: '24px',
+                      textAlign: 'center',
+                      backgroundColor: '#ffffff',
+                      borderRadius: '6px',
+                      border: '1px dashed var(--color-border)',
+                    }}
+                  >
+                    <p style={{ color: 'var(--color-secondary)', fontSize: '0.88rem', margin: 0 }}>
+                      Chưa có trường hợp sử dụng nào. Hãy bấm nút bên dưới để thêm ghi chú trường hợp đầu tiên.
+                    </p>
+                    <button
+                      type="button"
+                      className="btn btn-secondary btn-sm"
+                      onClick={handleAddUseCaseRow}
+                      style={{ marginTop: '10px' }}
+                    >
+                      + Thêm trường hợp (Use Case)
+                    </button>
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    {modal.pattern.useCases.map((uc, index) => (
+                      <div
+                        key={index}
+                        style={{
+                          padding: '12px 14px',
+                          backgroundColor: '#ffffff',
+                          border: '1px solid var(--color-border)',
+                          borderRadius: '6px',
+                          position: 'relative',
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                          <span style={{ fontWeight: 700, fontSize: '0.82rem', color: 'var(--color-tertiary)' }}>
+                            Trường hợp #{index + 1}
+                          </span>
+                          <button
+                            type="button"
+                            className="btn btn-ghost btn-sm"
+                            onClick={() => handleRemoveUseCaseRow(index)}
+                            title="Xóa trường hợp này"
+                            style={{ padding: '1px 6px', color: '#b91c1c', fontSize: '0.78rem' }}
+                          >
+                            ✕ Xóa
+                          </button>
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '10px', marginBottom: '8px' }}>
+                          <div className="form-field" style={{ margin: 0 }}>
+                            <label style={{ fontSize: '0.72rem', marginBottom: '3px' }}>Tên trường hợp / Tình huống *</label>
+                            <input
+                              type="text"
+                              value={uc.title}
+                              onChange={(e) => handleUpdateUseCaseRow(index, 'title', e.target.value)}
+                              placeholder="Ví dụ: Mảng số nguyên dải hẹp (0-100)"
+                              style={{ fontSize: '0.85rem', padding: '6px 10px' }}
+                            />
+                          </div>
+
+                          <div className="form-field" style={{ margin: 0 }}>
+                            <label style={{ fontSize: '0.72rem', marginBottom: '3px' }}>Độ phức tạp (Complexity)</label>
+                            <input
+                              type="text"
+                              value={uc.complexity ?? ''}
+                              onChange={(e) => handleUpdateUseCaseRow(index, 'complexity', e.target.value)}
+                              placeholder="e.g. Time: O(N + max) | Space: O(max)"
+                              style={{ fontSize: '0.85rem', padding: '6px 10px' }}
+                            />
+                          </div>
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '10px' }}>
+                          <div className="form-field" style={{ margin: 0 }}>
+                            <label style={{ fontSize: '0.72rem', marginBottom: '3px' }}>Khi nào áp dụng & Đặc điểm nhận diện</label>
+                            <textarea
+                              rows={2}
+                              value={uc.whenToUse}
+                              onChange={(e) => handleUpdateUseCaseRow(index, 'whenToUse', e.target.value)}
+                              placeholder="Mô tả khi nào nên dùng, điều kiện dữ liệu..."
+                              style={{ fontSize: '0.85rem', padding: '6px 10px', lineHeight: 1.4 }}
+                            />
+                          </div>
+
+                          <div className="form-field" style={{ margin: 0 }}>
+                            <label style={{ fontSize: '0.72rem', marginBottom: '3px' }}>Ví dụ bài toán / LeetCode mẫu</label>
+                            <textarea
+                              rows={2}
+                              value={uc.example ?? ''}
+                              onChange={(e) => handleUpdateUseCaseRow(index, 'example', e.target.value)}
+                              placeholder="e.g. Top K Frequent Elements (LeetCode 347)"
+                              style={{ fontSize: '0.85rem', padding: '6px 10px', lineHeight: 1.4 }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Modal Subtab 4: Java Implementation */}
             {modalSubTab === 'code' && (
               <div className="modal-tab-pane">
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
@@ -767,8 +1370,186 @@ public void solve() {
         </div>
       )}
 
+      {/* Global Tag Manager Modal */}
+      {tagManagerOpen && (
+        <div className="modal-overlay" onClick={() => setTagManagerOpen(false)} style={{ zIndex: 350 }}>
+          <div className="modal-box" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '540px', width: '92vw' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+              <h2 style={{ fontSize: '1.25rem', margin: 0 }}>Manage Topic Tags</h2>
+              <button
+                type="button"
+                className="note-close-btn"
+                onClick={() => setTagManagerOpen(false)}
+                title="Close"
+              >
+                ✕
+              </button>
+            </div>
+
+            <p style={{ fontSize: '0.84rem', color: 'var(--color-secondary)', marginBottom: '14px' }}>
+              Tags are case-insensitive (<code>Sort = sort</code>). Create, rename, or delete tags across all algorithm patterns in this topic.
+            </p>
+
+            {/* Create new tag in Tag Manager */}
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+              <input
+                type="text"
+                value={newTopicTagInput}
+                onChange={(e) => setNewTopicTagInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleCreateTopicTag();
+                  }
+                }}
+                placeholder="Create new topic tag..."
+                style={{
+                  flex: 1,
+                  padding: '7px 12px',
+                  fontSize: '0.88rem',
+                  border: '1px solid var(--color-border)',
+                  borderRadius: 'var(--rounded-sm)',
+                  backgroundColor: '#ffffff',
+                }}
+              />
+              <button
+                type="button"
+                className="btn btn-primary btn-sm"
+                onClick={handleCreateTopicTag}
+                disabled={!newTopicTagInput.trim()}
+                style={{ whiteSpace: 'nowrap' }}
+              >
+                + Create Tag
+              </button>
+            </div>
+
+            <div style={{ maxHeight: '340px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px', paddingRight: '4px' }}>
+              {availableTags.length === 0 ? (
+                <p style={{ color: 'var(--color-secondary)', fontStyle: 'italic', fontSize: '0.88rem', textAlign: 'center', padding: '20px 0' }}>
+                  No tags found in this topic yet.
+                </p>
+              ) : (
+                availableTags.map((tag) => {
+                  const count = patterns.filter((p) => p.tags?.some((t) => t.toLowerCase() === tag.toLowerCase())).length;
+                  const isEditing = editingTagOriginal === tag;
+
+                  return (
+                    <div
+                      key={tag}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '8px 12px',
+                        backgroundColor: 'var(--color-surface)',
+                        border: '1px solid var(--color-border)',
+                        borderRadius: '4px',
+                        gap: '8px',
+                      }}
+                    >
+                      {isEditing ? (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: 1 }}>
+                          <input
+                            type="text"
+                            value={editingTagName}
+                            onChange={(e) => setEditingTagName(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') handleRenameTag(tag, editingTagName);
+                              if (e.key === 'Escape') setEditingTagOriginal(null);
+                            }}
+                            style={{
+                              padding: '4px 8px',
+                              fontSize: '0.85rem',
+                              border: '1px solid var(--color-tertiary)',
+                              borderRadius: '3px',
+                              flex: 1,
+                              backgroundColor: '#ffffff',
+                            }}
+                            autoFocus
+                          />
+                          <button
+                            type="button"
+                            className="btn btn-primary btn-sm"
+                            onClick={() => handleRenameTag(tag, editingTagName)}
+                            style={{ padding: '3px 8px' }}
+                          >
+                            Save
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-ghost btn-sm"
+                            onClick={() => setEditingTagOriginal(null)}
+                            style={{ padding: '3px 8px' }}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      ) : (
+                        <>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ fontWeight: 600, fontSize: '0.88rem', color: 'var(--color-primary)' }}>
+                              {tag}
+                            </span>
+                            <span
+                              style={{
+                                fontSize: '0.72rem',
+                                padding: '1px 6px',
+                                borderRadius: '10px',
+                                backgroundColor: '#ede8e3',
+                                color: 'var(--color-secondary)',
+                                fontWeight: 600,
+                              }}
+                            >
+                              {count} pattern{count !== 1 ? 's' : ''}
+                            </span>
+                          </div>
+
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <button
+                              type="button"
+                              className="btn btn-ghost btn-sm"
+                              onClick={() => {
+                                setEditingTagOriginal(tag);
+                                setEditingTagName(tag);
+                              }}
+                              style={{ padding: '2px 8px', fontSize: '0.75rem' }}
+                            >
+                              Rename
+                            </button>
+                            <button
+                              type="button"
+                              className="btn btn-danger btn-sm"
+                              onClick={() => handleDeleteTagGlobally(tag)}
+                              style={{ padding: '2px 8px', fontSize: '0.75rem' }}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
+            <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'flex-end' }}>
+              <button
+                type="button"
+                className="btn btn-primary btn-sm"
+                onClick={() => setTagManagerOpen(false)}
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Toast */}
       {toast && <div className="toast">{toast}</div>}
     </div>
   );
 }
+
+

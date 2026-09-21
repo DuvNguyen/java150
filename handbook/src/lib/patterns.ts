@@ -1,3 +1,11 @@
+export interface UseCaseItem {
+  id?: string;
+  title: string;
+  whenToUse: string;
+  complexity?: string;
+  example?: string;
+}
+
 export interface AlgorithmPattern {
   id: string;
   topicId: string;
@@ -10,6 +18,7 @@ export interface AlgorithmPattern {
   description: string;
   pseudoCode?: string;
   code: string;
+  useCases?: UseCaseItem[];
   notes?: string;
   isCustom?: boolean;
   updatedAt?: number;
@@ -40,6 +49,26 @@ for (Map.Entry<Integer, Integer> entry : freqMap.entrySet()) {
     int count = entry.getValue();
     System.out.println(key + " xuất hiện " + count + " lần");
 }`,
+      useCases: [
+        {
+          title: 'Kiểm tra chuỗi đảo ký tự (Anagrams)',
+          whenToUse: 'Hai chuỗi có cùng số lượng các ký tự hay không. Tăng đếm cho chuỗi 1 và giảm đếm cho chuỗi 2.',
+          complexity: 'Time: O(N) | Space: O(K)',
+          example: 'Valid Anagram (LeetCode 242)',
+        },
+        {
+          title: 'Gom nhóm chuỗi đảo (Group Anagrams)',
+          whenToUse: 'Gom nhóm các từ có cùng tập ký tự bằng cách dùng chữ ký tần suất hoặc chuỗi đã sort làm khóa HashMap.',
+          complexity: 'Time: O(N * K) | Space: O(N * K)',
+          example: 'Group Anagrams (LeetCode 49)',
+        },
+        {
+          title: 'Tìm phần tử chiếm đa số / xuất hiện duy nhất',
+          whenToUse: 'Duyệt bảng tần suất để tìm phần tử có count > N/2 hoặc count == 1.',
+          complexity: 'Time: O(N) | Space: O(N)',
+          example: 'Majority Element (LeetCode 169), Single Number',
+        },
+      ],
     },
     {
       id: 'ah-two-sum',
@@ -67,6 +96,20 @@ for (Map.Entry<Integer, Integer> entry : freqMap.entrySet()) {
     }
     return new int[] {};
 }`,
+      useCases: [
+        {
+          title: 'Tìm 2 số có tổng bằng Target',
+          whenToUse: 'Mảng chưa sắp xếp, cần tìm vị trí/giá trị 2 số có tổng xác định trong một lần duyệt O(N).',
+          complexity: 'Time: O(N) | Space: O(N)',
+          example: 'Two Sum (LeetCode 1)',
+        },
+        {
+          title: 'Tra cứu phần bù & Hiệu (Difference Lookup)',
+          whenToUse: 'Kiểm tra xem tồn tại x sao cho x + k = y hoặc x - y = k trong mảng hay không.',
+          complexity: 'Time: O(N) | Space: O(N)',
+          example: 'K-diff Pairs in an Array (LeetCode 532)',
+        },
+      ],
     },
     {
       id: 'ah-bucket-sort',
@@ -110,6 +153,32 @@ for (Map.Entry<Integer, Integer> entry : freqMap.entrySet()) {
     }
     return result;
 }`,
+      useCases: [
+        {
+          title: 'Top K phần tử có tần suất cao nhất',
+          whenToUse: 'Thay vì dùng Heap O(N log K), gom nhóm theo tần suất (index 0 đến N) để đạt thời gian tuyến tính O(N).',
+          complexity: 'Time: O(N) | Space: O(N)',
+          example: 'Top K Frequent Elements (LeetCode 347)',
+        },
+        {
+          title: 'Mảng số nguyên dải hẹp (Counting / Direct Bucket)',
+          whenToUse: 'Dữ liệu số nguyên không âm có giá trị max nhỏ (0-100, tuổi 0-120, mã ASCII 0-255). Tránh dùng khi max quá lớn gây tràn bộ nhớ.',
+          complexity: 'Time: O(N + max) | Space: O(max)',
+          example: 'Sort Colors (LeetCode 75), Sort Array by Parity',
+        },
+        {
+          title: 'Sắp xếp chuỗi theo tần suất ký tự',
+          whenToUse: 'Gom các ký tự có cùng số lần xuất hiện vào bucket tương ứng rồi nối chuỗi từ bucket lớn nhất.',
+          complexity: 'Time: O(N) | Space: O(N)',
+          example: 'Sort Characters By Frequency (LeetCode 451)',
+        },
+        {
+          title: 'Số thực phân bố đều trong khoảng [0, 1)',
+          whenToUse: 'Chia dải [0, 1) thành N thùng con, đưa số vào từng thùng rồi ghép lại theo thứ tự.',
+          complexity: 'Time: O(N) trung bình | Space: O(N)',
+          example: 'Bucket Sort trên số thực phân bố đều',
+        },
+      ],
     },
     {
       id: 'ah-prefix-sum',
@@ -135,6 +204,20 @@ for (int i = 0; i < n; i++) {
 public int queryRangeSum(int[] prefix, int left, int right) {
     return prefix[right + 1] - prefix[left];
 }`,
+      useCases: [
+        {
+          title: 'Truy vấn tổng đoạn con liên tiếp nhiều lần',
+          whenToUse: 'Mảng tĩnh (không cập nhật), cần trả lời nhiều câu hỏi tính tổng subarray từ L đến R trong O(1).',
+          complexity: 'Time: O(1) mỗi truy vấn | Space: O(N)',
+          example: 'Range Sum Query - Immutable (LeetCode 303)',
+        },
+        {
+          title: 'Đếm số lượng mảng con có tổng bằng K',
+          whenToUse: 'Kết hợp Prefix Sum với HashMap lưu tần suất prefixSum. Kiểm tra prefixSum - K đã từng xuất hiện chưa.',
+          complexity: 'Time: O(N) | Space: O(N)',
+          example: 'Subarray Sum Equals K (LeetCode 560)',
+        },
+      ],
     },
   ],
   'two-pointers': [
