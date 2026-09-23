@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getTopicEntries } from '@/lib/cheatsheet';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(
   _req: NextRequest,
-  props: { params: Promise<{ id: string }> | { id: string } }
+  props: { params: Promise<{ id: string }> }
 ) {
   const params = await props.params;
   const topicId = params.id;

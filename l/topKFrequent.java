@@ -8,15 +8,17 @@ import java.util.Map;
 
 public class topKFrequent {
     public int[] solution(int[] nums, int k) {
+        // Step 1: get the frequency hashmap which is seen
+
         Map<Integer, Integer> seen = new HashMap<>();
 
         for (int num : nums) {
             seen.put(num, seen.getOrDefault(num, 0) + 1);
         }
 
+        // Step 2: get the buckets array of list which is: buckets[freq] = array of key
         List<Integer>[] buckets = new List[nums.length + 1];
 
-        // [1, 2, 2, 3, 3, 3]
         for (int key : seen.keySet()) {
             int freq = seen.get(key);
             if (buckets[freq] == null) {
@@ -25,6 +27,7 @@ public class topKFrequent {
             buckets[freq].add(key);
         }
 
+        // Step 3: inverse iterate to get the res array.
         int[] res = new int[k];
         int idx = 0;
 

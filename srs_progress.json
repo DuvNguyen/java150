@@ -1,0 +1,62 @@
+{
+  "nc_2": {
+    "id": "nc_2",
+    "status": "mastered",
+    "lastSolved": "2026-09-22",
+    "lastRating": "easy",
+    "nextReview": "2026-09-29",
+    "interval": 7,
+    "easeFactor": 2.65,
+    "repetitions": 2,
+    "note": "",
+    "updatedAt": 1790072803591
+  },
+  "nc_3": {
+    "id": "nc_3",
+    "status": "mastered",
+    "lastSolved": "2026-09-22",
+    "lastRating": "easy",
+    "nextReview": "2026-09-29",
+    "interval": 7,
+    "easeFactor": 2.65,
+    "repetitions": 2,
+    "note": "",
+    "updatedAt": 1790072807729
+  },
+  "nc_4": {
+    "id": "nc_4",
+    "status": "mastered",
+    "lastSolved": "2026-09-22",
+    "lastRating": "medium",
+    "nextReview": "2026-09-25",
+    "interval": 3,
+    "easeFactor": 2.5,
+    "repetitions": 1,
+    "note": "",
+    "updatedAt": 1790072791157
+  },
+  "nc_5": {
+    "id": "nc_5",
+    "status": "mastered",
+    "lastSolved": "2026-09-22",
+    "lastRating": "hard",
+    "nextReview": "2026-09-23",
+    "interval": 1,
+    "easeFactor": 2.35,
+    "repetitions": 2,
+    "note": "",
+    "updatedAt": 1790072821494
+  },
+  "nc_1": {
+    "id": "nc_1",
+    "status": "mastered",
+    "lastSolved": "2026-09-23",
+    "lastRating": "easy",
+    "nextReview": "2026-09-30",
+    "interval": 7,
+    "easeFactor": 2.5,
+    "repetitions": 2,
+    "note": "",
+    "updatedAt": 1790135719463
+  }
+}

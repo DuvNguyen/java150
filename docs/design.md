@@ -73,7 +73,10 @@ The palette is built around high-contrast neutrals and a single accent that driv
 
 - **Do** use Tertiary for exactly one action per screen.
 - **Do** let Neutral carry the composition — negative space is a feature.
+- **Do** keep button dimensions and text fixed during interaction — avoid changing button labels to transient states (e.g. "Đang kích hoạt...") if it causes layout shift or button resizing.
+- **Do** ensure form controls (text inputs, time/date pickers, dropdowns) and their adjacent action buttons share the exact same height (e.g. 32px), box-sizing, and vertical alignment.
 - **Don't** introduce gradients. This system is flat on purpose.
 - **Don't** mix Tertiary with alternate accents; the single-accent rule is load-bearing.
 - **Don't** use icons — anywhere. No emoji, no icon fonts, no SVG icon libraries. Labels and text carry the full communicative load. Buttons, actions, and states are expressed through typography and color only.
+- **Don't** add arbitrary status alert boxes/banners (e.g. success banners) for actions that already trigger natural system feedback or where state is obvious.
 

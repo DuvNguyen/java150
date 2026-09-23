@@ -1,9 +1,13 @@
 'use client';
 
+import { useMemo } from 'react';
+
 interface Props {
   topics: string[];
-  selectedTopic: string;
-  onSelectTopic: (topic: string) => void;
+  selectedTopic?: string;
+  selectedTopics?: string[];
+  onSelectTopic?: (topic: string) => void;
+  onSelectTopics?: (topics: string[]) => void;
   counts?: Record<string, number>;
   totalCount?: number;
   label?: string;
@@ -11,33 +15,99 @@ interface Props {
 
 export default function TopicFilter({
   topics,
-  selectedTopic,
+  selectedTopic = '',
+  selectedTopics,
   onSelectTopic,
+  onSelectTopics,
   counts = {},
   totalCount,
-  label = 'Filter by Topic / Data Structure:',
+  label = 'Lọc theo chủ đề / thẻ (Có thể chọn nhiều thẻ):',
 }: Props) {
   if (topics.length === 0) return null;
 
-  const isAllSelected = !selectedTopic || selectedTopic.toLowerCase() === 'all';
+  // Normalize selected list
+  const activeList = useMemo(() => {
+    if (selectedTopics !== undefined) {
+      return selectedTopics.map((s) => s.toLowerCase().trim()).filter(Boolean);
+    }
+    if (selectedTopic && selectedTopic.toLowerCase() !== 'all') {
+      return selectedTopic.split(',').map((s) => s.toLowerCase().trim()).filter(Boolean);
+    }
+    return [];
+  }, [selectedTopics, selectedTopic]);
+
+  const isAllSelected = activeList.length === 0;
+
+  const handleToggleTopic = (topic: string) => {
+    const topicLower = topic.toLowerCase().trim();
+    let nextList: string[];
+
+    if (activeList.includes(topicLower)) {
+      // Uncheck
+      nextList = activeList.filter((t) => t !== topicLower);
+    } else {
+      // Check
+      nextList = [...activeList, topicLower];
+    }
+
+    if (onSelectTopics) {
+      onSelectTopics(nextList);
+    }
+    if (onSelectTopic) {
+      onSelectTopic(nextList.join(','));
+    }
+  };
+
+  const handleClearAll = () => {
+    if (onSelectTopics) {
+      onSelectTopics([]);
+    }
+    if (onSelectTopic) {
+      onSelectTopic('');
+    }
+  };
 
   return (
     <div className="topic-filter-container" style={{ marginBottom: '16px' }}>
-      {label && (
-        <div
-          style={{
-            fontSize: '0.8rem',
-            fontFamily: 'var(--font-label)',
-            fontWeight: 600,
-            color: 'var(--color-secondary)',
-            marginBottom: '8px',
-            textTransform: 'uppercase',
-            letterSpacing: '0.05em',
-          }}
-        >
-          {label}
-        </div>
-      )}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginBottom: '8px',
+        }}
+      >
+        {label && (
+          <div
+            style={{
+              fontSize: '0.78rem',
+              fontFamily: 'var(--font-label)',
+              fontWeight: 600,
+              color: 'var(--color-secondary)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+            }}
+          >
+            {label}
+            {activeList.length > 0 && (
+              <span style={{ color: 'var(--color-tertiary)', marginLeft: '6px', fontWeight: 700 }}>
+                (Đang chọn {activeList.length} thẻ)
+              </span>
+            )}
+          </div>
+        )}
+        {activeList.length > 0 && (
+          <button
+            type="button"
+            onClick={handleClearAll}
+            className="btn btn-ghost btn-sm"
+            style={{ padding: '2px 8px', fontSize: '0.75rem', color: 'var(--color-secondary)' }}
+          >
+            Xóa chọn lọc
+          </button>
+        )}
+      </div>
+
       <div
         className="topic-filter-chips"
         style={{
@@ -47,9 +117,10 @@ export default function TopicFilter({
           alignItems: 'center',
         }}
       >
+        {/* All Button */}
         <button
           type="button"
-          onClick={() => onSelectTopic('')}
+          onClick={handleClearAll}
           className={`topic-chip ${isAllSelected ? 'active' : ''}`}
           style={{
             display: 'inline-flex',
@@ -70,7 +141,7 @@ export default function TopicFilter({
             boxShadow: isAllSelected ? '0 2px 4px rgba(153, 15, 61, 0.2)' : 'none',
           }}
         >
-          <span>All</span>
+          <span>Tất cả (All)</span>
           {totalCount !== undefined && (
             <span
               style={{
@@ -86,15 +157,16 @@ export default function TopicFilter({
           )}
         </button>
 
+        {/* Individual Topic Chips */}
         {topics.map((topic) => {
-          const isSelected = selectedTopic.toLowerCase() === topic.toLowerCase();
+          const isSelected = activeList.includes(topic.toLowerCase().trim());
           const count = counts[topic];
 
           return (
             <button
               key={topic}
               type="button"
-              onClick={() => onSelectTopic(isSelected ? '' : topic)}
+              onClick={() => handleToggleTopic(topic)}
               className={`topic-chip ${isSelected ? 'active' : ''}`}
               style={{
                 display: 'inline-flex',

@@ -174,9 +174,9 @@ export function getTopicEntries(topicId: string): { topic: Topic; entries: Entry
   const allEntries: Entry[] = [];
 
   for (const file of topicDef.files) {
-    const filePath = path.join(dir, file);
+    const filePath = path.join(/*turbopackIgnore: true*/ dir, file);
     if (!fs.existsSync(filePath)) continue;
-    const content = fs.readFileSync(filePath, 'utf-8');
+    const content = fs.readFileSync(/*turbopackIgnore: true*/ filePath, 'utf-8');
     const subtopic = getSubtopicName(file, content);
     allEntries.push(...parseTable(content, subtopic));
   }
@@ -192,26 +192,30 @@ export function searchAll(
   topicFilter?: string,
 ): { topicId: string; topicName: string; entries: Entry[] }[] {
   const q = query.toLowerCase().trim();
-  const tf = topicFilter?.toLowerCase().trim();
+  const rawTf = topicFilter?.toLowerCase().trim() ?? '';
+  const filters = rawTf ? rawTf.split(',').map((s) => s.trim()).filter((s) => s && s !== 'all') : [];
   const results: { topicId: string; topicName: string; entries: Entry[] }[] = [];
   const dir = getCheatsheetDir();
 
   for (const [topicId, { name, files }] of Object.entries(TOPIC_FILE_MAP)) {
-    const isMainTopicMatch = !tf || tf === 'all' || topicId.toLowerCase() === tf || name.toLowerCase().includes(tf);
+    const isMainTopicMatch =
+      filters.length === 0 ||
+      filters.some((f) => topicId.toLowerCase() === f || name.toLowerCase().includes(f));
 
     const allEntries: Entry[] = [];
     for (const file of files) {
-      const filePath = path.join(dir, file);
+      const filePath = path.join(/*turbopackIgnore: true*/ dir, file);
       if (!fs.existsSync(filePath)) continue;
-      const content = fs.readFileSync(filePath, 'utf-8');
+      const content = fs.readFileSync(/*turbopackIgnore: true*/ filePath, 'utf-8');
       const subtopic = getSubtopicName(file, content);
       allEntries.push(...parseTable(content, subtopic));
     }
 
     const matched = allEntries.filter((e) => {
+      const entryTopicLower = e.topic?.toLowerCase() ?? '';
       const matchesTopic =
         isMainTopicMatch ||
-        (e.topic && (e.topic.toLowerCase() === tf || e.topic.toLowerCase().includes(tf)));
+        (entryTopicLower && filters.some((f) => entryTopicLower === f || entryTopicLower.includes(f)));
       if (!matchesTopic) return false;
 
       if (!q) return true;
@@ -236,11 +240,14 @@ export function searchInTopic(topicId: string, query: string, topicFilter?: stri
   if (!topicData) return null;
 
   const q = query.toLowerCase().trim();
-  const tf = topicFilter?.toLowerCase().trim();
+  const rawTf = topicFilter?.toLowerCase().trim() ?? '';
+  const filters = rawTf ? rawTf.split(',').map((s) => s.trim()).filter((s) => s && s !== 'all') : [];
 
   return topicData.entries.filter((e) => {
+    const entryTopicLower = e.topic?.toLowerCase() ?? '';
     const matchesTopic =
-      !tf || tf === 'all' || (e.topic && (e.topic.toLowerCase() === tf || e.topic.toLowerCase().includes(tf)));
+      filters.length === 0 ||
+      (entryTopicLower && filters.some((f) => entryTopicLower === f || entryTopicLower.includes(f)));
     if (!matchesTopic) return false;
 
     if (!q) return true;
@@ -259,9 +266,9 @@ export function addEntry(topicId: string, entry: Partial<Entry>): Entry[] | null
   if (!topicDef) return null;
 
   const dir = getCheatsheetDir();
-  const primaryFile = path.join(dir, topicDef.files[0]);
+  const primaryFile = path.join(/*turbopackIgnore: true*/ dir, topicDef.files[0]);
   let content = fs.existsSync(primaryFile)
-    ? fs.readFileSync(primaryFile, 'utf-8')
+    ? fs.readFileSync(/*turbopackIgnore: true*/ primaryFile, 'utf-8')
     : `# ${topicDef.name} Cheatsheet\n\n| Phương thức | Cú pháp | Giá trị trả về | Mô tả |\n| :--- | :--- | :--- | :--- |\n`;
 
   const subtopic = getSubtopicName(topicDef.files[0], content);
@@ -284,10 +291,10 @@ export function updateEntry(topicId: string, rowIndex: number, entry: Partial<En
   if (!topicDef) return null;
 
   const dir = getCheatsheetDir();
-  const primaryFile = path.join(dir, topicDef.files[0]);
+  const primaryFile = path.join(/*turbopackIgnore: true*/ dir, topicDef.files[0]);
   if (!fs.existsSync(primaryFile)) return null;
 
-  const content = fs.readFileSync(primaryFile, 'utf-8');
+  const content = fs.readFileSync(/*turbopackIgnore: true*/ primaryFile, 'utf-8');
   const subtopic = getSubtopicName(topicDef.files[0], content);
   const entries = parseTable(content, subtopic);
   if (rowIndex < 0 || rowIndex >= entries.length) return null;
@@ -310,10 +317,10 @@ export function deleteEntry(topicId: string, rowIndex: number): Entry[] | null {
   if (!topicDef) return null;
 
   const dir = getCheatsheetDir();
-  const primaryFile = path.join(dir, topicDef.files[0]);
+  const primaryFile = path.join(/*turbopackIgnore: true*/ dir, topicDef.files[0]);
   if (!fs.existsSync(primaryFile)) return null;
 
-  const content = fs.readFileSync(primaryFile, 'utf-8');
+  const content = fs.readFileSync(/*turbopackIgnore: true*/ primaryFile, 'utf-8');
   const subtopic = getSubtopicName(topicDef.files[0], content);
   const entries = parseTable(content, subtopic);
   if (rowIndex < 0 || rowIndex >= entries.length) return null;

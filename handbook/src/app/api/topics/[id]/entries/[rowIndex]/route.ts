@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { updateEntry, deleteEntry } from '@/lib/cheatsheet';
 
+export const dynamic = 'force-dynamic';
+
 export async function PUT(
   req: NextRequest,
-  props: { params: Promise<{ id: string; rowIndex: string }> | { id: string; rowIndex: string } }
+  props: { params: Promise<{ id: string; rowIndex: string }> }
 ) {
   const params = await props.params;
   const topicId = params.id;
@@ -20,7 +22,7 @@ export async function PUT(
 
 export async function DELETE(
   _req: NextRequest,
-  props: { params: Promise<{ id: string; rowIndex: string }> | { id: string; rowIndex: string } }
+  props: { params: Promise<{ id: string; rowIndex: string }> }
 ) {
   const params = await props.params;
   const topicId = params.id;

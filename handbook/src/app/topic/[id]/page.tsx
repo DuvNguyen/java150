@@ -7,7 +7,9 @@ import FunctionTable, { Entry } from '@/components/FunctionTable';
 import PrerequisitesGrid from '@/components/PrerequisitesGrid';
 import TopicFilter from '@/components/TopicFilter';
 import PatternManager from '@/components/PatternManager';
+import NeetCodeProblemList from '@/components/NeetCodeProblemList';
 import { DEFAULT_PATTERNS } from '@/lib/patterns';
+import { PROBLEMS_BY_TOPIC } from '@/lib/neetcodeData';
 
 const API = '/api';
 
@@ -21,8 +23,8 @@ export default function TopicPage({ params }: { params: Promise<{ id: string }> 
   const [data, setData] = useState<TopicData | null>(null);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
-  const [selectedTopic, setSelectedTopic] = useState('');
-  const [activeTab, setActiveTab] = useState<'syntax' | 'patterns'>('syntax');
+  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState<'syntax' | 'patterns' | 'neetcode'>('syntax');
 
   const fetchTopic = useCallback(async () => {
     setLoading(true);
@@ -31,7 +33,7 @@ export default function TopicPage({ params }: { params: Promise<{ id: string }> 
       const json: TopicData = await res.json();
       setData(json);
       setQuery('');
-      setSelectedTopic('');
+      setSelectedTopics([]);
     } catch {
       setData(null);
     } finally {
@@ -42,6 +44,11 @@ export default function TopicPage({ params }: { params: Promise<{ id: string }> 
   useEffect(() => {
     fetchTopic();
   }, [fetchTopic]);
+
+  // Topic NeetCode problems
+  const topicProblems = useMemo(() => {
+    return PROBLEMS_BY_TOPIC[id] || [];
+  }, [id]);
 
   // Extract unique subtopics/topics present in the entries
   const availableTopics = useMemo(() => {
@@ -55,17 +62,17 @@ export default function TopicPage({ params }: { params: Promise<{ id: string }> 
     return Array.from(set);
   }, [data?.entries]);
 
-  // Filter entries based on both query and selectedTopic
+  // Filter entries based on both query and selectedTopics
   const filteredEntries = useMemo(() => {
     if (!data?.entries) return [];
     const q = query.toLowerCase().trim();
-    const sel = selectedTopic.toLowerCase().trim();
 
     return data.entries.filter((entry) => {
-      // Topic filter check
-      if (sel && sel !== 'all') {
+      // Multi-topic filter check
+      if (selectedTopics.length > 0) {
         const topicVal = entry.topic?.toLowerCase() ?? '';
-        if (topicVal !== sel && !topicVal.includes(sel)) {
+        const matchesAny = selectedTopics.some((sel) => topicVal === sel || topicVal.includes(sel));
+        if (!matchesAny) {
           return false;
         }
       }
@@ -82,7 +89,7 @@ export default function TopicPage({ params }: { params: Promise<{ id: string }> 
 
       return true;
     });
-  }, [data?.entries, query, selectedTopic]);
+  }, [data?.entries, query, selectedTopics]);
 
   // Dynamic counts for each topic badge under current search query
   const topicCounts = useMemo(() => {
@@ -143,13 +150,13 @@ export default function TopicPage({ params }: { params: Promise<{ id: string }> 
     setQuery(q);
   }, []);
 
-  const handleSelectTopic = useCallback((topic: string) => {
-    setSelectedTopic(topic);
+  const handleSelectTopics = useCallback((topics: string[]) => {
+    setSelectedTopics(topics);
   }, []);
 
   const handleResetFilters = useCallback(() => {
     setQuery('');
-    setSelectedTopic('');
+    setSelectedTopics([]);
   }, []);
 
   if (loading) return <main className="page-container"><p className="loading-text">Loading...</p></main>;
@@ -161,7 +168,7 @@ export default function TopicPage({ params }: { params: Promise<{ id: string }> 
     </main>
   );
 
-  const hasActiveFilters = Boolean(query.trim() || selectedTopic);
+  const hasActiveFilters = Boolean(query.trim() || selectedTopics.length > 0);
 
   return (
     <main className="page-container">
@@ -179,7 +186,7 @@ export default function TopicPage({ params }: { params: Promise<{ id: string }> 
               <p className="entry-count" style={{ margin: 0 }}>
                 {filteredEntries.length} of {data.entries.length} {data.entries.length === 1 ? 'entry' : 'entries'}
                 {query ? ` matching "${query}"` : ''}
-                {selectedTopic ? ` in ${selectedTopic}` : ''}
+                {selectedTopics.length > 0 ? ` in [${selectedTopics.join(', ')}]` : ''}
               </p>
               {hasActiveFilters && (
                 <button
@@ -191,9 +198,13 @@ export default function TopicPage({ params }: { params: Promise<{ id: string }> 
                 </button>
               )}
             </>
-          ) : (
+          ) : activeTab === 'patterns' ? (
             <p className="entry-count" style={{ margin: 0 }}>
               Reusable algorithms & pattern templates
+            </p>
+          ) : (
+            <p className="entry-count" style={{ margin: 0 }}>
+              NeetCode 150 Spaced Repetition Practice List
             </p>
           )}
         </div>
@@ -221,6 +232,17 @@ export default function TopicPage({ params }: { params: Promise<{ id: string }> 
           <span>Algorithms & Patterns</span>
           <span className="tab-count-badge">{patternCount}</span>
         </button>
+
+        {topicProblems.length > 0 && (
+          <button
+            type="button"
+            className={`topic-tab-item ${activeTab === 'neetcode' ? 'active' : ''}`}
+            onClick={() => setActiveTab('neetcode')}
+          >
+            <span>NeetCode 150 Practice</span>
+            <span className="tab-count-badge">{topicProblems.length}</span>
+          </button>
+        )}
       </div>
 
       {/* Tab Content */}
@@ -235,11 +257,11 @@ export default function TopicPage({ params }: { params: Promise<{ id: string }> 
           {availableTopics.length > 1 && (
             <TopicFilter
               topics={availableTopics}
-              selectedTopic={selectedTopic}
-              onSelectTopic={handleSelectTopic}
+              selectedTopics={selectedTopics}
+              onSelectTopics={handleSelectTopics}
               counts={topicCounts}
               totalCount={totalMatchingQueryCount}
-              label="Filter by topic / data structure"
+              label="Filter by topic / data structure (Multi-select)"
             />
           )}
 
@@ -249,8 +271,15 @@ export default function TopicPage({ params }: { params: Promise<{ id: string }> 
             onRefresh={fetchTopic}
           />
         </div>
-      ) : (
+      ) : activeTab === 'patterns' ? (
         <PatternManager topicId={id} topicName={data.topic.name} />
+      ) : (
+        <div style={{ marginTop: '12px' }}>
+          <NeetCodeProblemList
+            problems={topicProblems}
+            topicId={id}
+          />
+        </div>
       )}
     </main>
   );
