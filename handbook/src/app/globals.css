@@ -2004,7 +2004,8 @@ code, pre {
 .srs-rating-options-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 12px;
+  align-items: start;
   margin-top: 8px;
 }
 

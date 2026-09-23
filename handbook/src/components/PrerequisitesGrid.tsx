@@ -194,6 +194,7 @@ export default function PrerequisitesGrid({ topicId }: Props) {
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
           gap: '12px',
+          alignItems: 'start',
         }}
       >
         {items.map((item) => {
