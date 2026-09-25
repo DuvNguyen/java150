@@ -3,9 +3,9 @@
  *
  * Chu kỳ ôn tập lặp lại ngắt quãng (Spaced Repetition):
  * - Hard: Lặp lại sau 1 ngày. Giảm Ease factor -0.15 (tối thiểu 1.3).
- * - Medium: Lặp lại sau 3 ngày.
- * - Easy: Lần đầu lặp lại sau 7 ngày. Lần sau nhân với Ease factor. Tăng +0.15 (tối đa 3.5).
- * - Again: Đặt lại chu kỳ (interval = 0, nextReview = hôm nay).
+ * - Medium: Lần đầu lặp lại sau 3 ngày. Các lần sau nhân với Ease factor (interval = interval * easeFactor).
+ * - Easy: Lần đầu lặp lại sau 7 ngày. Các lần sau nhân với Ease factor. Tăng +0.15 (tối đa 3.5).
+ * - Again: Đặt lại chu kỳ (interval = 0, nextReview = hôm nay). Giảm Ease factor -0.2 (tối thiểu 1.3).
  */
 
 export interface SrsProgressItem {
@@ -99,7 +99,11 @@ export const SRS = {
       nextInterval = 1; // 1 ngày
       easeFactor = Math.max(this.MIN_EASE_FACTOR, easeFactor - 0.15);
     } else if (rating === 'medium') {
-      nextInterval = 3; // 3 ngày
+      if (prevInterval < 3) {
+        nextInterval = 3; // Lần đầu chọn Medium: 3 ngày
+      } else {
+        nextInterval = Math.max(4, Math.round(prevInterval * easeFactor));
+      }
     } else if (rating === 'easy') {
       if (prevInterval < 7) {
         nextInterval = 7; // Lần đầu chọn Easy: 7 ngày

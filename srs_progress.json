@@ -38,14 +38,14 @@
   "nc_5": {
     "id": "nc_5",
     "status": "mastered",
-    "lastSolved": "2026-09-22",
-    "lastRating": "hard",
-    "nextReview": "2026-09-23",
-    "interval": 1,
+    "lastSolved": "2026-09-24",
+    "lastRating": "medium",
+    "nextReview": "2026-09-27",
+    "interval": 3,
     "easeFactor": 2.35,
-    "repetitions": 2,
-    "note": "",
-    "updatedAt": 1790072821494
+    "repetitions": 3,
+    "note": "- Mảng các list thì dùng lấy giá trị theo kiểu của mảng\n- Trước khi có thể gán cho List thì cần gán giá trị new ArrayList vì mặc định nó null\n- Duyệt ngược dừng khi nào?",
+    "updatedAt": 1790249265730
   },
   "nc_1": {
     "id": "nc_1",

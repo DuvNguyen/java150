@@ -9,9 +9,10 @@
   - Giải đáp và sửa lỗi bài tập lập trình DSA.
 
 ## Quy tắc giảng dạy & Hướng dẫn (Teaching & Hinting Guidelines)
-- **Không giải bài hộ**: Khi người dùng làm bài (Neetcode/DSA), KHÔNG viết sẵn lời giải hoàn chỉnh hay viết code giải hộ.
+- **Không giải bài hộ (Mặc định)**: Khi người dùng đang làm bài (Neetcode/DSA), KHÔNG viết sẵn lời giải hoàn chỉnh hay viết code giải hộ.
+- **Ngoại lệ (Quy tắc 45 phút)**: Khi người dùng đã dành trên 45 phút để giải bài hoặc chủ động yêu cầu xem lời giải khi gặp bế tắc, AI ĐƯỢC PHÉP cung cấp mã nguồn giải pháp hoàn chỉnh (Clean Java Solution), kèm theo giải thích chi tiết ý tưởng và phân tích độ phức tạp thời gian/không gian.
 - **Đánh giá & Gợi ý (Valid & Best Practice)**:
-  - Chỉ trả lời trực tiếp xem cách làm/mã nguồn có **hợp lệ (Valid)** hay không và có phải là **thực hành tốt nhất (Best Practice)** hay không.
+  - Khi chưa đủ 45 phút, chỉ trả lời trực tiếp xem cách làm/mã nguồn có **hợp lệ (Valid)** hay không và có phải là **thực hành tốt nhất (Best Practice)** hay không.
   - Nếu chưa đúng hoặc chưa phải Best Practice, chỉ cung cấp **gợi ý (Hint)** hoặc khái niệm liên quan để người dùng tự giải quyết.
 
 ## Định dạng văn bản & Độ phức tạp (Formatting Guidelines)
@@ -25,6 +26,9 @@
   - Khi thiết kế các nút thao tác (`Edit`, `Delete`, ...) trên từng dòng bảng (`table row`) hoặc từng thẻ (`card`), **KHÔNG** hiển thị các nút bấm riêng lẻ nằm dàn hàng ngang.
   - **BẮT BUỘC** gộp thành 1 nút hành động duy nhất là nút 3 chấm kebab menu (`⋮`) có animation xổ menu dropdown gồm các tùy chọn `Edit` và `Delete`.
 - **Cấm dùng Icon Emoji**: Không sử dụng emoji làm icon trong các nút bấm, tab, nhãn hay badge trên giao diện.
+- **Nút đóng & Icon đơn lẻ (Close & Icon Buttons)**:
+  - **KHÔNG** bao quanh khung viền (border / outline / box stroke) hình hộp thô quanh các nút đóng (`✕`, `close`) hay icon đơn lẻ trên modal, header hay thanh công cụ.
+  - Luôn giữ nút phẳng tối giản (`border: none`, `background: transparent`), chỉ đổi màu chữ/icon khi hover (`:hover`).
 
 ## Ngôn ngữ giao tiếp (Communication Language)
 - **Luôn phản lời bằng tiếng Việt**: Dù người dùng sử dụng bất kỳ ngôn ngữ nào (tiếng Anh, tiếng Nhật, tiếng Trung,...), AI trợ lý MUST (bắt buộc) luôn trả lời và trao đổi bằng **tiếng Việt**.

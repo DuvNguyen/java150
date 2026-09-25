@@ -5,13 +5,25 @@ import { useState, useEffect } from 'react';
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  shortcutsEnabled?: boolean;
+  onToggleShortcuts?: (enabled: boolean) => void;
 }
 
-export default function ReminderSettingsModal({ isOpen, onClose }: Props) {
+export default function ReminderSettingsModal({
+  isOpen,
+  onClose,
+  shortcutsEnabled = true,
+  onToggleShortcuts,
+}: Props) {
   const [enabled, setEnabled] = useState(false);
   const [time, setTime] = useState('10:00');
   const [savedTime, setSavedTime] = useState('10:00');
   const [loading, setLoading] = useState(false);
+  const [localShortcutsEnabled, setLocalShortcutsEnabled] = useState(shortcutsEnabled);
+
+  useEffect(() => {
+    setLocalShortcutsEnabled(shortcutsEnabled);
+  }, [shortcutsEnabled]);
 
   // Fetch status on modal open
   useEffect(() => {
@@ -95,12 +107,25 @@ export default function ReminderSettingsModal({ isOpen, onClose }: Props) {
     }
   };
 
+  const handleShortcutsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const nextVal = e.target.checked;
+    setLocalShortcutsEnabled(nextVal);
+    try {
+      localStorage.setItem('handbook_shortcuts_enabled', JSON.stringify(nextVal));
+    } catch {
+      // ignore
+    }
+    if (onToggleShortcuts) {
+      onToggleShortcuts(nextVal);
+    }
+  };
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div
         className="modal-box"
         onClick={(e) => e.stopPropagation()}
-        style={{ maxWidth: '540px', width: '92%', borderRadius: 'var(--rounded-md, 2px)' }}
+        style={{ maxWidth: '580px', width: '94%', borderRadius: 'var(--rounded-md, 2px)', maxHeight: '90vh', overflowY: 'auto' }}
       >
         {/* Header */}
         <div
@@ -108,7 +133,7 @@ export default function ReminderSettingsModal({ isOpen, onClose }: Props) {
             display: 'flex',
             alignItems: 'flex-start',
             justifyContent: 'space-between',
-            marginBottom: '16px',
+            marginBottom: '18px',
             borderBottom: '1px solid var(--color-border)',
             paddingBottom: '12px',
           }}
@@ -124,7 +149,7 @@ export default function ReminderSettingsModal({ isOpen, onClose }: Props) {
                 fontWeight: 600,
               }}
             >
-              Hệ Thống Nhắc Nhở
+              Hệ Thống & Tùy Chọn
             </div>
             <h2
               style={{
@@ -136,210 +161,351 @@ export default function ReminderSettingsModal({ isOpen, onClose }: Props) {
                 padding: 0,
               }}
             >
-              Cài Đặt Thông Báo Desktop
+              Cài Đặt Ứng Dụng
             </h2>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="btn btn-ghost btn-sm"
-            style={{ fontSize: '1.1rem', padding: '2px 8px', lineHeight: 1 }}
+            className="modal-close-btn"
+            title="Đóng (Esc)"
+            aria-label="Đóng"
           >
             ✕
           </button>
         </div>
 
         {/* Content Body */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          {/* Main Card with editorial accent border */}
-          <div
-            style={{
-              backgroundColor: '#fff4e8',
-              border: '1px solid var(--color-border)',
-              borderLeft: '4px solid var(--color-tertiary)',
-              padding: '14px 16px',
-              borderRadius: 'var(--rounded-md, 2px)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: '16px',
-            }}
-          >
-            <div>
-              <div
-                style={{
-                  fontWeight: 600,
-                  color: 'var(--color-primary)',
-                  fontSize: '0.98rem',
-                  fontFamily: 'var(--font-display)',
-                }}
-              >
-                Tự động nhắc nhở ôn tập (Systemd Timer)
-              </div>
-              <div
-                style={{
-                  fontSize: '0.84rem',
-                  color: 'var(--color-secondary)',
-                  marginTop: '4px',
-                  lineHeight: 1.45,
-                }}
-              >
-                Chỉ gửi thông báo khi có bài đến hạn SRS hôm nay. Tự động chạy bù đúng 1 lần nếu mở máy sau giờ hẹn.
-              </div>
-            </div>
-
-            {/* Custom Switch styled to match palette */}
-            <label
-              style={{
-                position: 'relative',
-                display: 'inline-block',
-                width: '44px',
-                height: '22px',
-                flexShrink: 0,
-                cursor: loading ? 'not-allowed' : 'pointer',
-              }}
-            >
-              <input
-                type="checkbox"
-                checked={enabled}
-                onChange={handleToggle}
-                disabled={loading}
-                style={{ opacity: 0, width: 0, height: 0 }}
-              />
-              <span
-                style={{
-                  position: 'absolute',
-                  cursor: loading ? 'not-allowed' : 'pointer',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  backgroundColor: enabled ? 'var(--color-tertiary)' : 'var(--color-border)',
-                  transition: '0.2s',
-                  borderRadius: '2px',
-                }}
-              >
-                <span
-                  style={{
-                    position: 'absolute',
-                    height: '16px',
-                    width: '16px',
-                    left: enabled ? '25px' : '3px',
-                    bottom: '3px',
-                    backgroundColor: '#ffffff',
-                    transition: '0.2s',
-                    borderRadius: '2px',
-                  }}
-                />
-              </span>
-            </label>
-          </div>
-
-          {/* Time Configuration if Enabled */}
-          {enabled && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          
+          {/* SECTION 1: PHÍM TẮT ĐIỀU HƯỚNG */}
+          <div>
             <div
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                padding: '12px 16px',
-                border: '1px solid var(--color-border-light)',
-                backgroundColor: 'var(--color-surface)',
-                borderRadius: 'var(--rounded-md, 2px)',
+                marginBottom: '10px',
               }}
             >
               <div>
-                <label
-                  htmlFor="reminder-time-input"
+                <h3
                   style={{
-                    fontSize: '0.88rem',
-                    fontWeight: 600,
+                    fontSize: '1.02rem',
+                    fontFamily: 'var(--font-display)',
                     color: 'var(--color-primary)',
-                    fontFamily: 'var(--font-label)',
-                    display: 'block',
+                    margin: 0,
+                    fontWeight: 600,
                   }}
                 >
-                  Thời gian kích hoạt hàng ngày
-                </label>
-                <div style={{ fontSize: '0.8rem', color: 'var(--color-secondary)', display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
-                  <span>Mặc định 10:00</span>
-                  <span>•</span>
-                  {time === savedTime ? (
-                    <span style={{ color: '#2d6a4f', fontWeight: 600 }}>Đã lưu</span>
-                  ) : (
-                    <span style={{ color: 'var(--color-tertiary)', fontWeight: 600 }}>Chưa lưu thay đổi</span>
-                  )}
+                  Phím tắt điều hướng nhanh
+                </h3>
+                <p
+                  style={{
+                    fontSize: '0.82rem',
+                    color: 'var(--color-secondary)',
+                    margin: '2px 0 0 0',
+                  }}
+                >
+                  Chuyển nhanh giữa các tab chính bằng tổ hợp phím số
+                </p>
+              </div>
+
+              {/* Toggle Switch */}
+              <label
+                style={{
+                  position: 'relative',
+                  display: 'inline-block',
+                  width: '44px',
+                  height: '22px',
+                  flexShrink: 0,
+                  cursor: 'pointer',
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={localShortcutsEnabled}
+                  onChange={handleShortcutsChange}
+                  style={{ opacity: 0, width: 0, height: 0 }}
+                />
+                <span
+                  style={{
+                    position: 'absolute',
+                    cursor: 'pointer',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: localShortcutsEnabled ? 'var(--color-tertiary)' : 'var(--color-border)',
+                    transition: '0.2s',
+                    borderRadius: '2px',
+                  }}
+                >
+                  <span
+                    style={{
+                      position: 'absolute',
+                      height: '16px',
+                      width: '16px',
+                      left: localShortcutsEnabled ? '25px' : '3px',
+                      bottom: '3px',
+                      backgroundColor: '#ffffff',
+                      transition: '0.2s',
+                      borderRadius: '2px',
+                    }}
+                  />
+                </span>
+              </label>
+            </div>
+
+            {/* Shortcuts Cheat Sheet Card */}
+            <div
+              style={{
+                backgroundColor: 'var(--color-surface, #ffffff)',
+                border: '1px solid var(--color-border)',
+                borderRadius: '2px',
+                padding: '12px 14px',
+                opacity: localShortcutsEnabled ? 1 : 0.6,
+                transition: 'opacity 0.2s ease',
+              }}
+            >
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(2, 1fr)',
+                  gap: '8px 16px',
+                  fontSize: '0.84rem',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 0', borderBottom: '1px dashed var(--color-border-light)' }}>
+                  <span style={{ color: 'var(--color-primary)' }}>Roadmap & Cú pháp</span>
+                  <kbd style={{ background: '#ede8e3', border: '1px solid var(--color-border)', borderRadius: '3px', padding: '2px 8px', fontFamily: 'var(--font-code, monospace)', fontSize: '0.78rem', fontWeight: 700 }}>1</kbd>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 0', borderBottom: '1px dashed var(--color-border-light)' }}>
+                  <span style={{ color: 'var(--color-primary)' }}>NeetCode 150 (Tất cả)</span>
+                  <kbd style={{ background: '#ede8e3', border: '1px solid var(--color-border)', borderRadius: '3px', padding: '2px 8px', fontFamily: 'var(--font-code, monospace)', fontSize: '0.78rem', fontWeight: 700 }}>2</kbd>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 0', borderBottom: '1px dashed var(--color-border-light)' }}>
+                  <span style={{ color: 'var(--color-primary)' }}>Ôn tập hôm nay (Due)</span>
+                  <kbd style={{ background: '#ede8e3', border: '1px solid var(--color-border)', borderRadius: '3px', padding: '2px 8px', fontFamily: 'var(--font-code, monospace)', fontSize: '0.78rem', fontWeight: 700 }}>3</kbd>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 0', borderBottom: '1px dashed var(--color-border-light)' }}>
+                  <span style={{ color: 'var(--color-primary)' }}>Lịch ôn tập (SRS)</span>
+                  <kbd style={{ background: '#ede8e3', border: '1px solid var(--color-border)', borderRadius: '3px', padding: '2px 8px', fontFamily: 'var(--font-code, monospace)', fontSize: '0.78rem', fontWeight: 700 }}>4</kbd>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0 2px 0', marginTop: '6px', borderTop: '1px solid var(--color-border-light)' }}>
+                <span style={{ color: 'var(--color-tertiary)', fontWeight: 600, fontSize: '0.84rem' }}>Chuyển qua lại 2 tab gần nhất</span>
+                <kbd style={{ background: '#fff4e8', border: '1px solid var(--color-border)', borderRadius: '3px', padding: '2px 8px', fontFamily: 'var(--font-code, monospace)', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-tertiary)' }}>Q hoặc Ctrl + Q</kbd>
+              </div>
+            </div>
+          </div>
+
+          {/* SECTION 2: THÔNG BÁO DESKTOP SRS */}
+          <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: '16px' }}>
+            <h3
+              style={{
+                fontSize: '1.02rem',
+                fontFamily: 'var(--font-display)',
+                color: 'var(--color-primary)',
+                margin: '0 0 10px 0',
+                fontWeight: 600,
+              }}
+            >
+              Thông báo nhắc nhở Desktop
+            </h3>
+
+            {/* Main Notification Card */}
+            <div
+              style={{
+                backgroundColor: '#fff4e8',
+                border: '1px solid var(--color-border)',
+                borderLeft: '4px solid var(--color-tertiary)',
+                padding: '14px 16px',
+                borderRadius: 'var(--rounded-md, 2px)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '16px',
+                marginBottom: '12px',
+              }}
+            >
+              <div>
+                <div
+                  style={{
+                    fontWeight: 600,
+                    color: 'var(--color-primary)',
+                    fontSize: '0.94rem',
+                    fontFamily: 'var(--font-display)',
+                  }}
+                >
+                  Tự động nhắc nhở ôn tập (Systemd Timer)
+                </div>
+                <div
+                  style={{
+                    fontSize: '0.82rem',
+                    color: 'var(--color-secondary)',
+                    marginTop: '4px',
+                    lineHeight: 1.45,
+                  }}
+                >
+                  Gửi thông báo desktop Ubuntu khi có bài đến hạn SRS hôm nay. Tự động chạy bù đúng 1 lần nếu mở máy sau giờ hẹn.
                 </div>
               </div>
 
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              {/* Custom Switch */}
+              <label
+                style={{
+                  position: 'relative',
+                  display: 'inline-block',
+                  width: '44px',
+                  height: '22px',
+                  flexShrink: 0,
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                }}
+              >
                 <input
-                  id="reminder-time-input"
-                  type="time"
-                  value={time}
-                  onChange={(e) => setTime(e.target.value)}
-                  style={{
-                    height: '32px',
-                    padding: '0 10px',
-                    border: '1px solid var(--color-border)',
-                    borderRadius: 'var(--rounded-md, 2px)',
-                    fontSize: '0.88rem',
-                    fontFamily: 'var(--font-mono)',
-                    backgroundColor: '#ffffff',
-                    color: 'var(--color-primary)',
-                    boxSizing: 'border-box',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                  }}
+                  type="checkbox"
+                  checked={enabled}
+                  onChange={handleToggle}
+                  disabled={loading}
+                  style={{ opacity: 0, width: 0, height: 0 }}
                 />
-                <button
-                  type="button"
-                  className={time === savedTime ? 'btn btn-ghost' : 'btn btn-primary'}
-                  onClick={handleSaveTime}
-                  disabled={loading || time === savedTime}
+                <span
                   style={{
-                    height: '32px',
-                    padding: '0 14px',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    boxSizing: 'border-box',
-                    fontSize: '0.82rem',
-                    margin: 0,
-                    opacity: time === savedTime ? 0.6 : 1,
-                    cursor: time === savedTime ? 'default' : 'pointer',
+                    position: 'absolute',
+                    cursor: loading ? 'not-allowed' : 'pointer',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: enabled ? 'var(--color-tertiary)' : 'var(--color-border)',
+                    transition: '0.2s',
+                    borderRadius: '2px',
                   }}
                 >
-                  Lưu giờ
-                </button>
-              </div>
+                  <span
+                    style={{
+                      position: 'absolute',
+                      height: '16px',
+                      width: '16px',
+                      left: enabled ? '25px' : '3px',
+                      bottom: '3px',
+                      backgroundColor: '#ffffff',
+                      transition: '0.2s',
+                      borderRadius: '2px',
+                    }}
+                  />
+                </span>
+              </label>
             </div>
-          )}
 
-          {/* Test Notification Row */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              padding: '10px 0 0 0',
-            }}
-          >
-            <div style={{ fontSize: '0.86rem', color: 'var(--color-secondary)' }}>
-              Kiểm tra popup trên màn hình máy tính:
-            </div>
-            <button
-              type="button"
-              className="btn btn-secondary btn-sm"
-              onClick={handleTestNotification}
-              disabled={loading}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+            {/* Time Configuration if Enabled */}
+            {enabled && (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '12px 16px',
+                  border: '1px solid var(--color-border-light)',
+                  backgroundColor: 'var(--color-surface, #ffffff)',
+                  borderRadius: 'var(--rounded-md, 2px)',
+                  marginBottom: '12px',
+                }}
+              >
+                <div>
+                  <label
+                    htmlFor="reminder-time-input"
+                    style={{
+                      fontSize: '0.88rem',
+                      fontWeight: 600,
+                      color: 'var(--color-primary)',
+                      fontFamily: 'var(--font-label)',
+                      display: 'block',
+                    }}
+                  >
+                    Thời gian kích hoạt hàng ngày
+                  </label>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--color-secondary)', display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
+                    <span>Mặc định 10:00</span>
+                    <span>•</span>
+                    {time === savedTime ? (
+                      <span style={{ color: '#2d6a4f', fontWeight: 600 }}>Đã lưu</span>
+                    ) : (
+                      <span style={{ color: 'var(--color-tertiary)', fontWeight: 600 }}>Chưa lưu thay đổi</span>
+                    )}
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <input
+                    id="reminder-time-input"
+                    type="time"
+                    value={time}
+                    onChange={(e) => setTime(e.target.value)}
+                    style={{
+                      height: '32px',
+                      padding: '0 10px',
+                      border: '1px solid var(--color-border)',
+                      borderRadius: 'var(--rounded-md, 2px)',
+                      fontSize: '0.88rem',
+                      fontFamily: 'var(--font-mono, monospace)',
+                      backgroundColor: '#ffffff',
+                      color: 'var(--color-primary)',
+                      boxSizing: 'border-box',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className={time === savedTime ? 'btn btn-ghost' : 'btn btn-primary'}
+                    onClick={handleSaveTime}
+                    disabled={loading || time === savedTime}
+                    style={{
+                      height: '32px',
+                      padding: '0 14px',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxSizing: 'border-box',
+                      fontSize: '0.82rem',
+                      margin: 0,
+                      opacity: time === savedTime ? 0.6 : 1,
+                      cursor: time === savedTime ? 'default' : 'pointer',
+                    }}
+                  >
+                    Lưu giờ
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Test Notification Row */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '4px 0 0 0',
+              }}
             >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polygon points="5 3 19 12 5 21 5 3"></polygon>
-              </svg>
-              <span>Gửi thông báo test</span>
-            </button>
+              <div style={{ fontSize: '0.84rem', color: 'var(--color-secondary)' }}>
+                Kiểm tra popup trên desktop Ubuntu:
+              </div>
+              <button
+                type="button"
+                className="btn btn-secondary btn-sm"
+                onClick={handleTestNotification}
+                disabled={loading}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                <span>Gửi thông báo test</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -348,7 +514,7 @@ export default function ReminderSettingsModal({ isOpen, onClose }: Props) {
           style={{
             display: 'flex',
             justifyContent: 'flex-end',
-            marginTop: '20px',
+            marginTop: '22px',
             paddingTop: '12px',
             borderTop: '1px solid var(--color-border-light)',
           }}

@@ -681,14 +681,6 @@ export default function NeetCodeProblemList({
               >
                 NeetCode
               </a>
-              <button
-                type="button"
-                className="ext-link-tag java-tag-btn"
-                onClick={() => setSelectedProblemForCode(problem)}
-                title="Xem code Java chuẩn trong dự án"
-              >
-                Java Source
-              </button>
             </div>
             {item?.note && (
               <div className="problem-inline-note">

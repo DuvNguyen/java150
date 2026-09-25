@@ -60,8 +60,9 @@ export default function JavaCodeViewerModal({ problem, isOpen, onClose }: Props)
           <button
             type="button"
             onClick={onClose}
-            className="btn btn-ghost btn-sm"
-            style={{ fontSize: '1.2rem', padding: '2px 8px', lineHeight: 1 }}
+            className="modal-close-btn"
+            title="Đóng (Esc)"
+            aria-label="Đóng"
           >
             ✕
           </button>

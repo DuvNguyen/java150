@@ -38,8 +38,7 @@ bash remind-srs.sh
 - Để tự động nhận thông báo mỗi 08:00 sáng, xem hướng dẫn thiết lập Cronjob hoặc Systemd Timer trong tài liệu [docs/SRS_APP.md](docs/SRS_APP.md).
 
 ### 4. Quy tắc Spaced Repetition (Anki SM-2)
-- **Hard**: Lặp lại sau `1 ngày`, giảm ease factor.
-- **Medium**: Lặp lại sau `3 ngày`.
-- **Easy**: Lần đầu lặp lại sau `7 ngày`, các lần sau kéo dài thời gian theo hệ số Ease Factor (`interval = interval * easeFactor`).
-
-Chi tiết kỹ thuật và cấu trúc hệ thống: xem tại [docs/SRS_APP.md](docs/SRS_APP.md).
+- **Hard**: Lặp lại sau `1 ngày`, giảm Ease Factor (`-0.15`).
+- **Medium**: Lần đầu lặp lại sau `3 ngày`, các lần sau kéo dài thời gian theo hệ số Ease Factor (`interval = round(interval * easeFactor)`).
+- **Easy**: Lần đầu lặp lại sau `7 ngày`, các lần sau kéo dài thời gian theo hệ số Ease Factor (`interval = round(interval * easeFactor)`), tăng Ease Factor (`+0.15`).
+- **Again**: Đặt lại chu kỳ về `0 ngày` (hôm nay), giảm Ease Factor (`-0.20`).

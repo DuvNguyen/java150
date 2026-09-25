@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import TreeGraph from '@/components/TreeGraph';
 import SearchBar from '@/components/SearchBar';
@@ -8,10 +8,14 @@ import TopicFilter from '@/components/TopicFilter';
 import FormattedText from '@/components/FormattedText';
 import NoteModal, { getNoteStorageKey } from '@/components/NoteModal';
 import NeetCodeProblemList from '@/components/NeetCodeProblemList';
+import OopView from '@/components/OopView';
+import SystemDesignView from '@/components/SystemDesignView';
 import ReminderSettingsModal from '@/components/ReminderSettingsModal';
+import SrsCalendarView from '@/components/SrsCalendarView';
 import { Entry } from '@/components/FunctionTable';
 import { ALL_NEETCODE_PROBLEMS } from '@/lib/neetcodeData';
 import { SrsProgressMap, SRS } from '@/lib/srs';
+import TabsNav, { TabItem } from '@/components/TabsNav';
 
 interface SearchResultGroup {
   topicId: string;
@@ -20,7 +24,8 @@ interface SearchResultGroup {
 }
 
 export default function HomePage() {
-  const [activeMainView, setActiveMainView] = useState<'roadmap' | 'neetcode-all' | 'neetcode-due'>('roadmap');
+  const [activeTrack, setActiveTrack] = useState<'dsa' | 'oop' | 'system-design'>('dsa');
+  const [activeMainView, setActiveMainView] = useState<'roadmap' | 'neetcode-all' | 'neetcode-due' | 'calendar'>('roadmap');
   const [query, setQuery] = useState('');
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [results, setResults] = useState<SearchResultGroup[]>([]);
@@ -28,6 +33,37 @@ export default function HomePage() {
   const [selectedNote, setSelectedNote] = useState<{ entry: Entry; topicId: string } | null>(null);
   const [notesMap, setNotesMap] = useState<Record<string, boolean>>({});
   const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
+  const [shortcutsEnabled, setShortcutsEnabled] = useState(true);
+
+  // Lưu trữ vị trí scroll của từng tab để tự động khôi phục khi chuyển qua lại (kể cả phím Q)
+  const scrollPositionsRef = useRef<Record<string, number>>({});
+  const activeMainViewRef = useRef(activeMainView);
+
+  const handleTabChange = useCallback((newTab: 'roadmap' | 'neetcode-all' | 'neetcode-due' | 'calendar') => {
+    // 1. Lưu lại tọa độ scroll hiện tại của tab đang đứng
+    scrollPositionsRef.current[activeMainViewRef.current] = window.scrollY;
+
+    // 2. Cập nhật tab mới
+    setActiveMainView(newTab);
+    activeMainViewRef.current = newTab;
+
+    // 3. Khôi phục lại đúng vị trí scroll của tab đích
+    const targetScroll = scrollPositionsRef.current[newTab] || 0;
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: targetScroll, behavior: 'instant' });
+    });
+  }, []);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('handbook_shortcuts_enabled');
+      if (saved !== null) {
+        setShortcutsEnabled(JSON.parse(saved));
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
 
   // SRS Global State
   const [srsProgress, setSrsProgress] = useState<SrsProgressMap>({});
@@ -209,93 +245,137 @@ export default function HomePage() {
   return (
     <main className="page-container">
       {/* Page Header */}
-      <div className="tree-page-intro" style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
-        <div>
-          <h1>Java DSA & NeetCode 150 Platform</h1>
-          <p>Lộ trình DSA, cẩm nang tra cứu cú pháp Java và hệ thống ôn tập lặp lại ngắt quãng (Spaced Repetition).</p>
-        </div>
-        <button
-          type="button"
-          onClick={() => setIsReminderModalOpen(true)}
-          className="btn btn-secondary btn-sm"
-          title="Cài đặt thông báo nhắc nhở desktop"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '6px',
-            fontSize: '0.85rem',
-            padding: '6px 12px',
-            borderRadius: '4px',
-            fontWeight: 500,
-          }}
-        >
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-          </svg>
-          <span>Nhắc nhở Desktop</span>
-        </button>
+      <div className="tree-page-intro" style={{ marginBottom: '16px' }}>
+        <h1>Java Learning Platform</h1>
+        <p>Nền tảng học lập trình Java toàn diện: DSA (NeetCode 150), OOP (4 tính chất), System Design.</p>
       </div>
 
-      {/* Due Banner if problems are due */}
-      {srsStats.due > 0 && activeMainView !== 'neetcode-due' && (
-        <div className="due-banner">
-          <div className="due-banner-text">
-            <h3>Lịch ôn tập hôm nay ({srsStats.due} bài đến hạn)</h3>
-            <p>
-              Bạn có <strong>{srsStats.due}</strong> bài toán DSA cần ôn tập lại hôm nay theo chu kỳ Spaced Repetition để củng cố trí nhớ dài hạn.
-            </p>
-          </div>
+      {/* === TRACK SELECTOR — dùng CSS classes từ design system === */}
+      <div className="track-selector">
+        {(
+          [
+            { id: 'dsa', label: 'Java DSA', sub: 'NeetCode 150 + Cú pháp' },
+            { id: 'oop', label: 'Java OOP', sub: '4 tính chất cốt lõi' },
+            { id: 'system-design', label: 'System Design', sub: 'Roadmap 4 Modules' },
+          ] as { id: 'dsa' | 'oop' | 'system-design'; label: string; sub: string; disabled?: boolean }[]
+        ).map((track) => (
           <button
+            key={track.id}
             type="button"
-            className="btn btn-primary"
-            onClick={() => setActiveMainView('neetcode-due')}
+            disabled={track.disabled}
+            onClick={() => !track.disabled && setActiveTrack(track.id)}
+            className={`track-selector-btn${activeTrack === track.id ? ' active' : ''}`}
           >
-            Bắt đầu ôn tập ngay
+            <div className="track-selector-label">{track.label}</div>
+            <div className="track-selector-sub">{track.sub}</div>
           </button>
+        ))}
+      </div>
+
+
+      {/* DSA Sub-tabs — chỉ hiện trong track DSA */}
+      {activeTrack === 'dsa' && (
+        <TabsNav<'roadmap' | 'neetcode-all' | 'neetcode-due' | 'calendar'>
+          activeTab={activeMainView}
+          onChange={handleTabChange}
+          enableShortcuts={shortcutsEnabled && !isReminderModalOpen && !selectedNote}
+          style={{ marginTop: '12px', marginBottom: '20px' }}
+          rightAction={
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
+              {/* Nút noti đến hạn ôn tập */}
+              {srsStats.due > 0 && activeMainView !== 'neetcode-due' && (
+                <button
+                  type="button"
+                  className="due-noti-btn"
+                  onClick={() => handleTabChange('neetcode-due')}
+                  title={`${srsStats.due} bài đến hạn ôn tập hôm nay`}
+                  aria-label="Xem bài đến hạn ôn tập"
+                >
+                  {/* Bell SVG */}
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                  </svg>
+                  <span className="due-noti-badge">{srsStats.due}</span>
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => setIsReminderModalOpen(true)}
+                className="settings-gear-btn"
+                title="Cài đặt hệ thống & Phím tắt"
+                aria-label="Cài đặt"
+              >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              </button>
+            </div>
+          }
+          tabs={[
+            {
+              id: 'roadmap',
+              label: 'Roadmap & Cú pháp',
+            },
+            {
+              id: 'neetcode-all',
+              label: 'NeetCode 150 (Tất cả)',
+              badge: `${srsStats.mastered} / ${srsStats.total}`,
+            },
+            {
+              id: 'neetcode-due',
+              label: 'Ôn tập hôm nay',
+              badge: srsStats.due > 0 ? srsStats.due : 0,
+              badgeStyle: srsStats.due > 0 ? { background: '#990f3d', color: '#ffffff', fontWeight: 700 } : undefined,
+            },
+            {
+              id: 'calendar',
+              label: 'Lịch ôn tập',
+            },
+          ]}
+        />
+      )}
+
+      {/* ======================================== */}
+      {/* OOP TRACK */}
+      {activeTrack === 'oop' && (
+        <div style={{ marginTop: '20px' }}>
+          <OopView />
         </div>
       )}
 
-      {/* Main View Navigation Tabs */}
-      <div className="topic-tabs-nav" style={{ marginTop: '12px', marginBottom: '20px' }}>
-        <button
-          type="button"
-          className={`topic-tab-item ${activeMainView === 'roadmap' ? 'active' : ''}`}
-          onClick={() => setActiveMainView('roadmap')}
-        >
-          <span>Roadmap & Cú pháp</span>
-        </button>
+      {/* ======================================== */}
+      {/* SYSTEM DESIGN TRACK */}
+      {activeTrack === 'system-design' && (
+        <div style={{ marginTop: '20px' }}>
+          <SystemDesignView />
+        </div>
+      )}
 
-        <button
-          type="button"
-          className={`topic-tab-item ${activeMainView === 'neetcode-all' ? 'active' : ''}`}
-          onClick={() => setActiveMainView('neetcode-all')}
-        >
-          <span>NeetCode 150 (Tất cả)</span>
-          <span className="tab-count-badge">{srsStats.mastered} / {srsStats.total}</span>
-        </button>
-
-        <button
-          type="button"
-          className={`topic-tab-item ${activeMainView === 'neetcode-due' ? 'active' : ''}`}
-          onClick={() => setActiveMainView('neetcode-due')}
-        >
-          <span>Ôn tập hôm nay</span>
-          {srsStats.due > 0 ? (
-            <span
-              className="tab-count-badge"
-              style={{ background: '#990f3d', color: '#ffffff', fontWeight: 700 }}
-            >
-              {srsStats.due}
-            </span>
-          ) : (
-            <span className="tab-count-badge">0</span>
-          )}
-        </button>
-      </div>
-
+      {/* ======================================== */}
+      {/* DSA TRACK VIEWS */}
       {/* VIEW 1: Roadmap & Syntax search */}
-      {activeMainView === 'roadmap' && (
+      {activeTrack === 'dsa' && activeMainView === 'roadmap' && (
         <>
           {/* Global Search Bar */}
           <div style={{ marginBottom: '24px' }}>
@@ -524,7 +604,7 @@ export default function HomePage() {
       )}
 
       {/* VIEW 2: All NeetCode 150 Problems */}
-      {activeMainView === 'neetcode-all' && (
+      {activeTrack === 'dsa' && activeMainView === 'neetcode-all' && (
         <div>
           <div style={{ marginBottom: '16px' }}>
             <h2 style={{ fontSize: '1.4rem', fontFamily: 'var(--font-display)', marginBottom: '4px' }}>
@@ -543,7 +623,7 @@ export default function HomePage() {
       )}
 
       {/* VIEW 3: Due Today Problems */}
-      {activeMainView === 'neetcode-due' && (
+      {activeTrack === 'dsa' && activeMainView === 'neetcode-due' && (
         <div>
           <div style={{ marginBottom: '16px' }}>
             <h2 style={{ fontSize: '1.4rem', fontFamily: 'var(--font-display)', marginBottom: '4px' }}>
@@ -573,7 +653,7 @@ export default function HomePage() {
                 type="button"
                 className="btn btn-secondary btn-sm"
                 style={{ marginTop: '16px' }}
-                onClick={() => setActiveMainView('neetcode-all')}
+                onClick={() => handleTabChange('neetcode-all')}
               >
                 Xem danh sách 150 bài
               </button>
@@ -585,6 +665,24 @@ export default function HomePage() {
               onProgressUpdated={fetchSrsData}
             />
           )}
+        </div>
+      )}
+
+      {/* VIEW 4: Calendar SRS Schedule */}
+      {activeTrack === 'dsa' && activeMainView === 'calendar' && (
+        <div>
+          <div style={{ marginBottom: '16px' }}>
+            <h2 style={{ fontSize: '1.4rem', fontFamily: 'var(--font-display)', marginBottom: '4px' }}>
+              Lịch Ôn Tập SRS (Spaced Repetition)
+            </h2>
+            <p style={{ color: 'var(--color-secondary)', fontSize: '0.92rem' }}>
+              Theo dõi và quản lý lịch trình ôn tập các bài toán NeetCode 150 theo từng ngày.
+            </p>
+          </div>
+          <SrsCalendarView
+            srsProgress={srsProgress}
+            onProgressUpdated={fetchSrsData}
+          />
         </div>
       )}
 
@@ -603,6 +701,8 @@ export default function HomePage() {
       <ReminderSettingsModal
         isOpen={isReminderModalOpen}
         onClose={() => setIsReminderModalOpen(false)}
+        shortcutsEnabled={shortcutsEnabled}
+        onToggleShortcuts={setShortcutsEnabled}
       />
     </main>
   );

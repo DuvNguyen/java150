@@ -702,20 +702,69 @@ code, pre {
   gap: 4px;
 }
 
-.note-close-btn {
-  background: transparent;
-  border: none;
+.note-close-btn,
+.modal-close-btn,
+.btn-close {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
   color: var(--color-secondary);
-  font-size: 1.2rem;
+  font-size: 1.25rem;
+  line-height: 1;
   cursor: pointer;
-  padding: 4px 8px;
+  padding: 4px 6px;
   border-radius: var(--rounded-sm);
-  transition: all 0.15s;
+  transition: color 0.15s ease, opacity 0.15s ease;
+  opacity: 0.65;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.note-close-btn:hover {
-  background: #ede8e3;
+.note-close-btn:hover,
+.modal-close-btn:hover,
+.btn-close:hover {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
   color: var(--color-primary);
+  opacity: 1;
+}
+
+/* Settings Gear Icon Button (Borderless with smooth rotate on hover) */
+.settings-gear-btn {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: var(--color-secondary);
+  cursor: pointer;
+  padding: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.65;
+  transition: color 0.2s ease, opacity 0.2s ease;
+  line-height: 1;
+  border-radius: var(--rounded-sm);
+}
+
+.settings-gear-btn svg {
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: center;
+}
+
+.settings-gear-btn:hover {
+  color: var(--color-tertiary);
+  opacity: 1;
+  background: transparent !important;
+}
+
+.settings-gear-btn:hover svg {
+  transform: rotate(45deg);
+}
+
+.settings-gear-btn:active svg {
+  transform: rotate(90deg) scale(0.92);
 }
 
 /* Rich Editor Toolbar */
@@ -1077,6 +1126,28 @@ code, pre {
   border: 1px solid var(--color-border);
 }
 
+.tab-shortcut-hint {
+  font-size: 0.65rem;
+  font-family: var(--font-code, monospace);
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--color-border);
+  color: var(--color-secondary);
+  opacity: 0.65;
+  font-weight: 500;
+  transition: all 0.15s ease;
+  line-height: 1.2;
+}
+
+.topic-tab-item:hover .tab-shortcut-hint,
+.topic-tab-item.active .tab-shortcut-hint {
+  opacity: 1;
+  border-color: rgba(153, 15, 61, 0.3);
+  color: var(--color-tertiary);
+  background: #fff4e8;
+}
+
 /* Pattern Manager Styles */
 .pattern-toolbar {
   display: flex;
@@ -1413,7 +1484,7 @@ code, pre {
   color: #000000 !important;
   font-family: var(--font-mono) !important;
   font-size: 0.92rem !important;
-  font-weight: 500 !important;
+  font-weight: 400 !important;
   line-height: 1.65 !important;
   padding: 0 !important;
   white-space: pre !important;
@@ -1424,7 +1495,7 @@ code, pre {
 /* VS Code Light Java Tokens Styling (Thick & Crisp High Readability) */
 .vscode-pre code .token.keyword {
   color: #0000ff !important; /* Vivid Blue for keywords */
-  font-weight: 600 !important;
+  font-weight: 400 !important;
 }
 
 .vscode-pre code .token.keyword.control-flow,
@@ -1434,39 +1505,39 @@ code, pre {
 .vscode-pre code .token.keyword.for,
 .vscode-pre code .token.keyword.while {
   color: #0000ff !important; /* Crisp Blue / Purple */
-  font-weight: 600 !important;
+  font-weight: 400 !important;
 }
 
 .vscode-pre code .token.class-name {
-  color: #000000 !important; /* Crisp Dark identifier for class names */
-  font-weight: 600 !important;
+  color: #267f99 !important; /* VS Code Light Class Name Color (Teal) */
+  font-weight: 400 !important;
 }
 
 .vscode-pre code .token.function {
   color: #795e26 !important; /* Gold/Bronze for functions */
-  font-weight: 500 !important;
+  font-weight: 400 !important;
 }
 
 .vscode-pre code .token.string,
 .vscode-pre code .token.char {
   color: #a31515 !important; /* Red/Crimson for strings */
-  font-weight: 500 !important;
+  font-weight: 400 !important;
 }
 
 .vscode-pre code .token.number {
   color: #098658 !important; /* Dark emerald green for numbers */
-  font-weight: 600 !important;
+  font-weight: 400 !important;
 }
 
 .vscode-pre code .token.comment {
   color: #008000 !important; /* Vivid Green italic for comments */
   font-style: italic !important;
-  font-weight: 500 !important;
+  font-weight: 400 !important;
 }
 
 .vscode-pre code .token.operator {
   color: #000000 !important;
-  font-weight: 500 !important;
+  font-weight: 400 !important;
 }
 
 .vscode-pre code .token.punctuation {
@@ -1475,12 +1546,12 @@ code, pre {
 
 .vscode-pre code .token.boolean {
   color: #0000ff !important;
-  font-weight: 600 !important;
+  font-weight: 400 !important;
 }
 
 .vscode-pre code .token.annotation {
   color: #795e26 !important;
-  font-weight: 600 !important;
+  font-weight: 400 !important;
 }
 
 /* Modal Tags Management */
@@ -2009,8 +2080,20 @@ code, pre {
   margin-top: 8px;
 }
 
+.srs-rating-options-grid.compact {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 4px;
+}
+
+@media (max-width: 600px) {
+  .srs-rating-options-grid.compact {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 .srs-rating-card {
-  padding: 10px 12px;
+  padding: 8px 10px;
   border: 1px solid var(--color-border);
   border-radius: var(--rounded-sm);
   background: var(--color-surface);
@@ -2019,7 +2102,7 @@ code, pre {
   transition: all 0.15s ease;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 2px;
 }
 
 .srs-rating-card:hover {
@@ -2029,21 +2112,25 @@ code, pre {
 
 .srs-rating-card .rating-title {
   font-family: var(--font-label);
-  font-size: 0.84rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: var(--color-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .srs-rating-card .rating-desc {
-  font-size: 0.76rem;
+  font-size: 0.72rem;
   color: var(--color-secondary);
+  line-height: 1.2;
 }
 
 .srs-rating-card .rating-interval {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   color: var(--color-secondary);
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
 .srs-rating-card.selected.easy {
@@ -2087,8 +2174,245 @@ code, pre {
   margin-bottom: 6px;
 }
 
+/* ============================================================ */
+/* Track Selector — 3 learning tracks: DSA / OOP / System Design */
+/* ============================================================ */
+.track-selector {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 4px;
+  padding: 4px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--rounded-lg);
+  width: fit-content;
+}
+
+.track-selector-btn {
+  padding: 8px 20px;
+  border-radius: var(--rounded-md);
+  border: 1.5px solid transparent;
+  background-color: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.track-selector-btn:hover:not(:disabled) {
+  background-color: var(--color-neutral);
+}
+
+.track-selector-btn.active {
+  background-color: #fff4e8;
+  border-color: var(--color-tertiary);
+}
+
+.track-selector-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.track-selector-label {
+  font-family: var(--font-label);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--color-secondary);
+  transition: color 0.15s ease;
+}
+
+.track-selector-btn.active .track-selector-label {
+  color: var(--color-tertiary);
+}
+
+.track-selector-btn:hover:not(:disabled) .track-selector-label {
+  color: var(--color-primary);
+}
+
+.track-selector-sub {
+  font-family: var(--font-label);
+  font-size: 0.72rem;
+  color: var(--color-secondary);
+  margin-top: 1px;
+  letter-spacing: 0.02em;
+}
 
 
+/* ============================================================ */
+/* Due Notification Button — cạnh bánh răng setting            */
+/* Giống .settings-gear-btn nhưng có badge đỏ                 */
+/* ============================================================ */
+.due-noti-btn {
+  position: relative;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: var(--color-secondary);
+  cursor: pointer;
+  padding: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.8;
+  transition: color 0.2s ease, opacity 0.2s ease;
+  line-height: 1;
+  border-radius: var(--rounded-sm);
+}
 
+.due-noti-btn:hover {
+  color: var(--color-tertiary);
+  opacity: 1;
+  background: transparent !important;
+}
 
+.due-noti-btn svg {
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: top center;
+}
 
+.due-noti-btn:hover svg {
+  transform: rotate(-12deg) scale(1.05);
+}
+
+/* Badge đỏ số lượng — absolute trên góc phải icon */
+.due-noti-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 15px;
+  height: 15px;
+  border-radius: 8px;
+  background-color: var(--color-tertiary);
+  color: #ffffff;
+  font-family: var(--font-label);
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 15px;
+  text-align: center;
+  padding: 0 3px;
+  pointer-events: none;
+}
+
+/* ============================================================ */
+/* Comprehensive Mobile & Tablet Responsive Media Queries       */
+/* ============================================================ */
+
+/* Track Layout Grid Base */
+.track-layout-grid {
+  display: grid;
+  gap: 16px;
+  align-items: start;
+}
+
+.system-design-layout-grid {
+  grid-template-columns: 260px 1fr;
+}
+
+.oop-layout-grid {
+  grid-template-columns: 240px 1fr;
+}
+
+.track-layout-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: sticky;
+  top: 20px;
+}
+
+.oop-sidebar {
+  gap: 6px;
+}
+
+/* Tablet & Mobile Screens (< 860px) */
+@media (max-width: 860px) {
+  .page-container {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .site-header {
+    padding: var(--spacing-sm) var(--spacing-md);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  /* Stack sidebar and content vertically on mobile */
+  .system-design-layout-grid,
+  .oop-layout-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .track-layout-sidebar {
+    position: static;
+    top: 0;
+  }
+
+  /* Track selector wraps comfortably on mobile */
+  .track-selector {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .track-selector-btn {
+    width: 100%;
+    padding: 10px 14px;
+    text-align: left;
+  }
+
+  /* Tabs Navigation scrollable horizontally */
+  .tabs-nav-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Modal boxes full width */
+  .modal-box {
+    width: 95% !important;
+    max-height: 90vh;
+    padding: 16px !important;
+  }
+
+  /* Code block responsive */
+  .vscode-code-block pre {
+    font-size: 0.8rem;
+    padding: 12px 14px;
+  }
+
+  /* Table overflow containers */
+  .function-table-container,
+  .table-scroll-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* SRS confirmation 4 columns to 2 columns on mobile */
+  .srs-rating-options-grid.compact {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+}
+
+/* Small Phones (< 480px) */
+@media (max-width: 480px) {
+  .page-container {
+    padding: 8px 10px;
+  }
+
+  .tree-page-intro h1 {
+    font-size: 1.6rem;
+  }
+
+  .tree-page-intro p {
+    font-size: 0.85rem;
+  }
+
+  .srs-rating-options-grid.compact {
+    grid-template-columns: 1fr;
+  }
+
+  .btn {
+    padding: 6px 12px;
+    font-size: 0.78rem;
+  }
+}

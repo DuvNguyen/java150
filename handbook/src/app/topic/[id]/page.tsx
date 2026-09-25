@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback, use, useMemo } from 'react';
+import { useEffect, useState, useCallback, use, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import SearchBar from '@/components/SearchBar';
 import FunctionTable, { Entry } from '@/components/FunctionTable';
@@ -10,6 +10,7 @@ import PatternManager from '@/components/PatternManager';
 import NeetCodeProblemList from '@/components/NeetCodeProblemList';
 import { DEFAULT_PATTERNS } from '@/lib/patterns';
 import { PROBLEMS_BY_TOPIC } from '@/lib/neetcodeData';
+import TabsNav, { TabItem } from '@/components/TabsNav';
 
 const API = '/api';
 
@@ -25,6 +26,32 @@ export default function TopicPage({ params }: { params: Promise<{ id: string }> 
   const [query, setQuery] = useState('');
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<'syntax' | 'patterns' | 'neetcode'>('syntax');
+  const [shortcutsEnabled, setShortcutsEnabled] = useState(true);
+
+  // Lưu trữ tọa độ cuộn cho từng tab trong trang Topic
+  const scrollPositionsRef = useRef<Record<string, number>>({});
+  const activeTabRef = useRef(activeTab);
+
+  const handleTabChange = useCallback((newTab: 'syntax' | 'patterns' | 'neetcode') => {
+    scrollPositionsRef.current[activeTabRef.current] = window.scrollY;
+    setActiveTab(newTab);
+    activeTabRef.current = newTab;
+    const targetScroll = scrollPositionsRef.current[newTab] || 0;
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: targetScroll, behavior: 'instant' });
+    });
+  }, []);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('handbook_shortcuts_enabled');
+      if (saved !== null) {
+        setShortcutsEnabled(JSON.parse(saved));
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
 
   const fetchTopic = useCallback(async () => {
     setLoading(true);
@@ -214,36 +241,32 @@ export default function TopicPage({ params }: { params: Promise<{ id: string }> 
       <PrerequisitesGrid topicId={id} />
 
       {/* Topic Tabs Navigation */}
-      <div className="topic-tabs-nav">
-        <button
-          type="button"
-          className={`topic-tab-item ${activeTab === 'syntax' ? 'active' : ''}`}
-          onClick={() => setActiveTab('syntax')}
-        >
-          <span>Syntax & Methods</span>
-          <span className="tab-count-badge">{data.entries.length}</span>
-        </button>
-
-        <button
-          type="button"
-          className={`topic-tab-item ${activeTab === 'patterns' ? 'active' : ''}`}
-          onClick={() => setActiveTab('patterns')}
-        >
-          <span>Algorithms & Patterns</span>
-          <span className="tab-count-badge">{patternCount}</span>
-        </button>
-
-        {topicProblems.length > 0 && (
-          <button
-            type="button"
-            className={`topic-tab-item ${activeTab === 'neetcode' ? 'active' : ''}`}
-            onClick={() => setActiveTab('neetcode')}
-          >
-            <span>NeetCode 150 Practice</span>
-            <span className="tab-count-badge">{topicProblems.length}</span>
-          </button>
-        )}
-      </div>
+      <TabsNav<'syntax' | 'patterns' | 'neetcode'>
+        activeTab={activeTab}
+        onChange={handleTabChange}
+        enableShortcuts={shortcutsEnabled}
+        tabs={[
+          {
+            id: 'syntax',
+            label: 'Syntax & Methods',
+            badge: data.entries.length,
+          },
+          {
+            id: 'patterns',
+            label: 'Algorithms & Patterns',
+            badge: patternCount,
+          },
+          ...(topicProblems.length > 0
+            ? [
+                {
+                  id: 'neetcode' as const,
+                  label: 'NeetCode 150 Practice',
+                  badge: topicProblems.length,
+                },
+              ]
+            : []),
+        ]}
+      />
 
       {/* Tab Content */}
       {activeTab === 'syntax' ? (

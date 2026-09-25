@@ -65,8 +65,9 @@ export default function SrsConfirmModal({
           <button
             type="button"
             onClick={onClose}
-            className="btn btn-ghost btn-sm"
-            style={{ fontSize: '1.2rem', padding: '2px 8px', lineHeight: 1 }}
+            className="modal-close-btn"
+            title="Đóng (Esc)"
+            aria-label="Đóng"
           >
             ✕
           </button>
@@ -79,40 +80,45 @@ export default function SrsConfirmModal({
                 backgroundColor: '#fff4e8',
                 border: '1px solid var(--color-border)',
                 borderLeft: '4px solid var(--color-tertiary)',
-                padding: '12px 16px',
+                padding: '8px 12px',
                 borderRadius: '2px',
-                marginBottom: '16px',
+                marginBottom: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '12px',
+                flexWrap: 'wrap'
               }}
             >
-              <p style={{ fontSize: '0.98rem', fontWeight: 600, color: 'var(--color-primary)', margin: 0 }}>
-                Bạn có chắc chắn đã hoàn toàn hiểu sâu thuật toán và cách tiếp cận bài toán này?
+              <p style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--color-primary)', margin: 0 }}>
+                Bạn có chắc chắn đã nắm vững thuật toán bài này?
               </p>
-              <div style={{ display: 'flex', gap: '8px', marginTop: '8px', alignItems: 'center' }}>
-                <span className={`diff-badge diff-${problem.difficulty.toLowerCase()}`}>
+              <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                <span className={`diff-badge diff-${problem.difficulty.toLowerCase()}`} style={{ padding: '2px 6px', fontSize: '0.72rem' }}>
                   {problem.difficulty}
                 </span>
-                <span className="topic-meta-badge">{problem.topicName}</span>
+                <span className="topic-meta-badge" style={{ padding: '2px 6px', fontSize: '0.72rem' }}>{problem.topicName}</span>
                 {currentProgress?.repetitions ? (
-                  <span className="srs-rep-badge">
-                    Đã hoàn thành {currentProgress.repetitions} lần
+                  <span className="srs-rep-badge" style={{ padding: '2px 6px', fontSize: '0.72rem' }}>
+                    Đã ôn {currentProgress.repetitions} lần
                   </span>
                 ) : null}
               </div>
             </div>
 
-            <div style={{ marginBottom: '16px' }}>
-              <label className="srs-form-label">
-                Đánh giá mức độ tự tin (Quyết định chu kỳ lặp lại ngắt quãng):
+            <div style={{ marginBottom: '14px' }}>
+              <label className="srs-form-label" style={{ fontSize: '0.75rem', marginBottom: '6px' }}>
+                Đánh giá mức độ tự tin (Chu kỳ lặp lại ngắt quãng):
               </label>
-              <div className="srs-rating-options-grid">
+              <div className="srs-rating-options-grid compact">
                 <button
                   type="button"
                   className={`srs-rating-card ${rating === 'easy' ? 'selected easy' : ''}`}
                   onClick={() => setRating('easy')}
                 >
                   <div className="rating-title">Easy (Rất tự tin)</div>
-                  <div className="rating-desc">Tự làm được, nắm chắc tư duy</div>
-                  <div className="rating-interval">Chu kỳ: {getIntervalPreview('easy')}</div>
+                  <div className="rating-desc">Tự làm mượt mà</div>
+                  <div className="rating-interval">{getIntervalPreview('easy')}</div>
                 </button>
 
                 <button
@@ -121,8 +127,8 @@ export default function SrsConfirmModal({
                   onClick={() => setRating('medium')}
                 >
                   <div className="rating-title">Medium (Khá ổn)</div>
-                  <div className="rating-desc">Hiểu được nhưng cần củng cố</div>
-                  <div className="rating-interval">Chu kỳ: {getIntervalPreview('medium')}</div>
+                  <div className="rating-desc">Cần củng cố thêm</div>
+                  <div className="rating-interval">{getIntervalPreview('medium')}</div>
                 </button>
 
                 <button
@@ -131,8 +137,8 @@ export default function SrsConfirmModal({
                   onClick={() => setRating('hard')}
                 >
                   <div className="rating-title">Hard (Còn vướng)</div>
-                  <div className="rating-desc">Phải xem hint / chưa mượt</div>
-                  <div className="rating-interval">Chu kỳ: {getIntervalPreview('hard')}</div>
+                  <div className="rating-desc">Cần xem gợi ý</div>
+                  <div className="rating-interval">{getIntervalPreview('hard')}</div>
                 </button>
 
                 <button
@@ -141,30 +147,41 @@ export default function SrsConfirmModal({
                   onClick={() => setRating('again')}
                 >
                   <div className="rating-title">Again (Luyện lại)</div>
-                  <div className="rating-desc">Chưa tự giải được hoàn chỉnh</div>
-                  <div className="rating-interval">Chu kỳ: Hôm nay</div>
+                  <div className="rating-desc">Chưa tự giải được</div>
+                  <div className="rating-interval">Ôn lại hôm nay</div>
                 </button>
               </div>
             </div>
 
-            <div style={{ marginTop: '16px' }}>
-              <label className="srs-form-label" htmlFor="srs-note-input">
-                Ghi chú cá nhân (Mẹo nhớ, lỗi sai hay gặp):
-              </label>
+            <div style={{ marginTop: '12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                <label className="srs-form-label" htmlFor="srs-note-input" style={{ margin: 0 }}>
+                  Ghi chú cá nhân (Mẹo nhớ, template code, lỗi sai hay gặp):
+                </label>
+                <span style={{ fontSize: '0.72rem', color: 'var(--color-secondary)' }}>Có thể kéo dãn ô ghi chú</span>
+              </div>
               <textarea
                 id="srs-note-input"
-                rows={3}
+                rows={8}
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
-                placeholder="Ví dụ: Sử dụng HashMap lưu độ chênh lệch, chú ý edge case mảng 0 phần tử..."
+                placeholder="Ví dụ:
+- Dùng HashMap lưu tần suất, sau đó dùng List[] (Bucket Sort) để gom các phần tử theo tần suất.
+- Chú ý khởi tạo ArrayList cho từng bucket vì mặc định mảng là null.
+- Duyệt từ cuối mảng bucket về đầu để lấy Top K phần tử lớn nhất..."
                 style={{
                   width: '100%',
-                  padding: '8px 12px',
-                  borderRadius: '2px',
+                  minHeight: '180px',
+                  maxHeight: '400px',
+                  padding: '10px 14px',
+                  borderRadius: '3px',
                   border: '1px solid var(--color-border)',
                   backgroundColor: 'var(--color-neutral)',
-                  fontFamily: 'var(--font-body)',
-                  fontSize: '0.92rem',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.88rem',
+                  lineHeight: '1.6',
+                  resize: 'vertical',
+                  boxSizing: 'border-box',
                 }}
               />
             </div>
