@@ -89,11 +89,6 @@ export default function TopicFilter({
             }}
           >
             {label}
-            {activeList.length > 0 && (
-              <span style={{ color: 'var(--color-tertiary)', marginLeft: '6px', fontWeight: 700 }}>
-                (Đang chọn {activeList.length} thẻ)
-              </span>
-            )}
           </div>
         )}
         {activeList.length > 0 && (
