@@ -87,9 +87,11 @@ function StatusBadge({
     },
   };
 
+  const Component = onClick ? 'button' : 'span';
+
   return (
-    <button
-      type="button"
+    <Component
+      type={onClick ? 'button' : undefined}
       onClick={onClick}
       style={{
         display: 'inline-flex',
@@ -104,12 +106,13 @@ function StatusBadge({
         textTransform: 'uppercase',
         transition: 'opacity 0.15s',
         whiteSpace: 'nowrap',
+        border: 'none',
         ...styleMap[status],
       }}
       title={onClick ? 'Bấm để chuyển trạng thái' : undefined}
     >
       {STATUS_LABELS[status]}
-    </button>
+    </Component>
   );
 }
 

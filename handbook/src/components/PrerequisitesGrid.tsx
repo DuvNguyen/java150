@@ -192,9 +192,9 @@ export default function PrerequisitesGrid({ topicId }: Props) {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
           gap: '12px',
-          alignItems: 'start',
+          alignItems: 'stretch',
         }}
       >
         {items.map((item) => {
@@ -207,6 +207,8 @@ export default function PrerequisitesGrid({ topicId }: Props) {
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
+                height: '100%',
+                minHeight: '78px',
                 padding: '12px 14px',
                 borderRadius: '6px',
                 backgroundColor: isDone ? '#fff2e6' : '#ffffff',
@@ -214,6 +216,7 @@ export default function PrerequisitesGrid({ topicId }: Props) {
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
                 userSelect: 'none',
+                boxSizing: 'border-box',
               }}
             >
               <div
@@ -222,16 +225,18 @@ export default function PrerequisitesGrid({ topicId }: Props) {
                   alignItems: 'flex-start',
                   justifyContent: 'space-between',
                   gap: '8px',
+                  marginBottom: '8px',
                 }}
               >
                 <span
                   style={{
-                    fontSize: '0.9rem',
+                    fontSize: '0.88rem',
                     fontWeight: 600,
                     fontFamily: 'var(--font-label)',
                     color: isDone ? 'var(--color-tertiary)' : 'var(--color-primary)',
                     textDecoration: isDone ? 'line-through' : 'none',
-                    lineHeight: 1.3,
+                    lineHeight: 1.35,
+                    flex: 1,
                   }}
                 >
                   {item.title}
@@ -244,6 +249,7 @@ export default function PrerequisitesGrid({ topicId }: Props) {
                     cursor: 'pointer',
                     accentColor: 'var(--color-tertiary)',
                     marginTop: '2px',
+                    flexShrink: 0,
                   }}
                 />
               </div>
@@ -252,8 +258,8 @@ export default function PrerequisitesGrid({ topicId }: Props) {
                   fontSize: '0.72rem',
                   fontWeight: 500,
                   color: '#4f46e5',
-                  marginTop: '6px',
                   fontFamily: 'var(--font-label)',
+                  marginTop: 'auto',
                 }}
               >
                 {item.course}
