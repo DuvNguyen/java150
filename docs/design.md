@@ -75,8 +75,10 @@ The palette is built around high-contrast neutrals and a single accent that driv
 - **Do** let Neutral carry the composition — negative space is a feature.
 - **Do** keep button dimensions and text fixed during interaction — avoid changing button labels to transient states (e.g. "Đang kích hoạt...") if it causes layout shift or button resizing.
 - **Do** ensure form controls (text inputs, time/date pickers, dropdowns) and their adjacent action buttons share the exact same height (e.g. 32px), box-sizing, and vertical alignment.
+- **Do** ensure grid cards and tag badges have uniform dimensions and balanced heights (`align-items: stretch`, `height: 100%`, `white-space: nowrap` on badges) to avoid staggered or broken layouts.
 - **Don't** introduce gradients. This system is flat on purpose.
 - **Don't** mix Tertiary with alternate accents; the single-accent rule is load-bearing.
+- **Don't** use multi-colored tags or rainbow badges (no blue, green, purple, orange tag clutter). All metadata tags and category badges must strictly use the unified high-contrast neutral palette (`Neutral` `#FFF1E5` / `Surface` `#FFF9F4` background with `Secondary` `#807973` / `Primary` `#33302E` text and border).
 - **Don't** use icons — anywhere. No emoji, no icon fonts, no SVG icon libraries. Labels and text carry the full communicative load. Buttons, actions, and states are expressed through typography and color only.
 - **Don't** add arbitrary status alert boxes/banners (e.g. success banners) for actions that already trigger natural system feedback or where state is obvious.
 

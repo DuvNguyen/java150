@@ -6,35 +6,25 @@ import java.util.List;
 
 public class encodeDecode {
 
-    // Hàm mã hóa: [độ_dài] + '#' + [nội_dung_từ]
     public String encode(List<String> strs) {
-        StringBuilder sb = new StringBuilder();
-        for (String s : strs) {
-            sb.append(s.length()).append('#').append(s);
+        StringBuilder res = new StringBuilder();
+        for (String str : strs) {
+            res.append(str.length()).append('#').append(str);
         }
-        return sb.toString();
+        return res.toString();
     }
 
-    // Hàm giải mã: đọc độ dài trước dấu '#' rồi cắt đúng số ký tự tương ứng
     public List<String> decode(String str) {
         List<String> res = new ArrayList<>();
         int i = 0;
-
         while (i < str.length()) {
-            // Bước 1: Tìm vị trí dấu '#' phân cách bắt đầu từ con trỏ i
             int j = str.indexOf('#', i);
-
-            // Bước 2: Đọc số lượng ký tự của từ (độ dài)
             int length = Integer.parseInt(str.substring(i, j));
-
-            // Bước 3: Cắt lấy đúng 'length' ký tự nội dung từ vị trí (j + 1)
-            String word = str.substring(j + 1, j + 1 + length);
-            res.add(word);
-
-            // Bước 4: Nhảy con trỏ i tới điểm bắt đầu của từ tiếp theo
-            i = j + 1 + length;
+            int start = j + 1;
+            int end = start + length;
+            res.add(str.substring(start, end));
+            i = end;
         }
-
         return res;
     }
 

@@ -3,9 +3,11 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   SYSTEM_DESIGN_MODULES,
+  SYSTEM_DESIGN_CITATIONS,
   SystemDesignModule,
   SystemDesignTopic,
   SystemDesignStatus,
+  SystemDesignCitation,
   getSystemDesignStatusKey,
   getSystemDesignNoteKey,
 } from '@/lib/systemDesignData';
@@ -32,6 +34,7 @@ export default function SystemDesignView() {
   const [openQaIndex, setOpenQaIndex] = useState<number | null>(null);
   const [saveNoteSuccess, setSaveNoteSuccess] = useState(false);
   const [showGraph, setShowGraph] = useState<boolean>(true);
+  const [citationFilter, setCitationFilter] = useState<string>('all');
 
   // Load statuses and notes from localStorage
   useEffect(() => {
@@ -133,7 +136,7 @@ export default function SystemDesignView() {
             fontFamily: 'var(--font-body)',
           }}
         >
-          Lộ trình 4 modules bám sát roadmap.sh/system-design. Học và nắm vững các khái niệm phân tán, dữ liệu và case studies.
+          Lộ trình 5 modules (Module 0 phương pháp & khung tư duy + 4 modules kỹ thuật chuyên sâu) bám sát kiến trúc thực chiến và roadmap.sh/system-design.
         </p>
         {/* Progress Bar & View Toggle */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
@@ -646,6 +649,269 @@ export default function SystemDesignView() {
         </div>
       </div>
     </div>
-  </div>
+
+      {/* Citations & Authoritative References Section */}
+      <div
+        style={{
+          marginTop: '32px',
+          padding: '24px',
+          borderRadius: '4px',
+          border: '1px solid var(--color-border)',
+          backgroundColor: '#fffdfa',
+        }}
+      >
+        {/* Header */}
+        <div style={{ marginBottom: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+            <span
+              style={{
+                fontSize: '0.72rem',
+                fontFamily: 'var(--font-label)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                padding: '2px 8px',
+                borderRadius: '2px',
+                backgroundColor: 'var(--color-neutral)',
+                border: '1px solid var(--color-border)',
+                color: 'var(--color-secondary)',
+                fontWeight: 700,
+              }}
+            >
+              Citations & Knowledge Sources
+            </span>
+          </div>
+          <h3
+            style={{
+              fontSize: '1.25rem',
+              fontFamily: 'var(--font-display)',
+              color: 'var(--color-primary)',
+              margin: '6px 0 4px 0',
+            }}
+          >
+            Tài Liệu Tham Khảo & Trích Dẫn Uy Tín
+          </h3>
+          <p
+            style={{
+              fontSize: '0.88rem',
+              color: 'var(--color-secondary)',
+              margin: 0,
+              lineHeight: 1.5,
+            }}
+          >
+            Tổng hợp các cuốn sách kinh điển, lộ trình chuẩn mực và bài viết kỹ thuật từ Big Tech được dùng làm cơ sở xây dựng 4 module System Design.
+          </p>
+        </div>
+
+        {/* Comparison Callout Box */}
+        <div
+          style={{
+            padding: '12px 16px',
+            backgroundColor: '#fef8f0',
+            border: '1px solid #fde68a',
+            borderLeft: '4px solid #f59e0b',
+            borderRadius: '2px',
+            marginBottom: '20px',
+            fontSize: '0.85rem',
+            lineHeight: 1.6,
+            color: '#78350f',
+          }}
+        >
+          <strong>So sánh với roadmap.sh/system-design:</strong> Trong khi <code>roadmap.sh</code> đóng vai trò như một <em>bách khoa toàn thư kỹ năng (Knowledge Graph)</em> để tra cứu toàn diện các công nghệ, thì mô hình <strong>4 Module Thực Chiến</strong> này được đúc kết theo <em>Data Flow & Khung 4 bước phỏng vấn của Alex Xu</em> (Client/Edge -&gt; Gateway/Routing -&gt; Compute/Services -&gt; Data/Storage Tier) nhằm tối ưu tư duy thiết kế bài toán thực tế.
+        </div>
+
+        {/* Filter Pills */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            flexWrap: 'wrap',
+            marginBottom: '18px',
+          }}
+        >
+          {[
+            { id: 'all', label: 'Tất cả' },
+            { id: 'Book', label: 'Sách (Books)' },
+            { id: 'Roadmap', label: 'Lộ trình (Roadmap)' },
+            { id: 'Open Source', label: 'Mã nguồn mở' },
+            { id: 'Course', label: 'Khóa học (Courses)' },
+            { id: 'Engineering Blog', label: 'Engineering Blogs' },
+          ].map((tab) => {
+            const isActive = citationFilter === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setCitationFilter(tab.id)}
+                style={{
+                  padding: '5px 12px',
+                  fontSize: '0.76rem',
+                  fontFamily: 'var(--font-label)',
+                  fontWeight: isActive ? 700 : 600,
+                  letterSpacing: '0.04em',
+                  borderRadius: '2px',
+                  border: isActive ? '1px solid var(--color-primary)' : '1px solid var(--color-border)',
+                  backgroundColor: isActive ? 'var(--color-primary)' : 'var(--color-surface)',
+                  color: isActive ? '#ffffff' : 'var(--color-primary)',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Citations Grid */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+            gap: '16px',
+            alignItems: 'stretch',
+          }}
+        >
+          {SYSTEM_DESIGN_CITATIONS.filter(
+            (c) => citationFilter === 'all' || c.type === citationFilter
+          ).map((item) => (
+            <div
+              key={item.id}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                padding: '16px 18px',
+                borderRadius: '2px',
+                border: '1px solid var(--color-border)',
+                backgroundColor: 'var(--color-surface)',
+                gap: '10px',
+                height: '100%',
+                boxSizing: 'border-box',
+              }}
+            >
+              {/* Type badge & Author */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: '8px',
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: '0.68rem',
+                    fontFamily: 'var(--font-label)',
+                    fontWeight: 700,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.08em',
+                    padding: '3px 8px',
+                    borderRadius: '2px',
+                    backgroundColor: 'var(--color-neutral)',
+                    color: 'var(--color-primary)',
+                    border: '1px solid var(--color-border)',
+                    whiteSpace: 'nowrap',
+                    lineHeight: '1.2',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  {item.type}
+                </span>
+                <span
+                  style={{
+                    fontSize: '0.75rem',
+                    fontFamily: 'var(--font-mono)',
+                    color: 'var(--color-secondary)',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    textAlign: 'right',
+                    flex: 1,
+                  }}
+                >
+                  {item.author}
+                </span>
+              </div>
+
+              {/* Title & Link */}
+              <div>
+                <a
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    fontSize: '0.94rem',
+                    fontWeight: 700,
+                    fontFamily: 'var(--font-display)',
+                    color: 'var(--color-primary)',
+                    textDecoration: 'none',
+                    lineHeight: 1.35,
+                    display: 'inline-block',
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.textDecoration = 'underline')}
+                  onMouseLeave={(e) => (e.currentTarget.style.textDecoration = 'none')}
+                >
+                  {item.title} &#8599;
+                </a>
+              </div>
+
+              {/* Description */}
+              <p
+                style={{
+                  fontSize: '0.84rem',
+                  fontFamily: 'var(--font-body)',
+                  color: 'var(--color-body)',
+                  lineHeight: 1.55,
+                  margin: 0,
+                  flexGrow: 1,
+                }}
+              >
+                {item.description}
+              </p>
+
+              {/* Highlights */}
+              <div
+                style={{
+                  marginTop: 'auto',
+                  paddingTop: '10px',
+                  borderTop: '1px solid var(--color-border-light)',
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: '0.7rem',
+                    fontFamily: 'var(--font-label)',
+                    fontWeight: 700,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.06em',
+                    color: 'var(--color-secondary)',
+                    marginBottom: '6px',
+                  }}
+                >
+                  Đóng góp & Điểm nhấn cốt lõi:
+                </div>
+                <ul
+                  style={{
+                    margin: 0,
+                    paddingLeft: '16px',
+                    fontSize: '0.78rem',
+                    lineHeight: 1.45,
+                    color: 'var(--color-secondary)',
+                  }}
+                >
+                  {item.highlights.map((h, hIdx) => (
+                    <li key={hIdx} style={{ marginBottom: '3px' }}>
+                      {h}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }

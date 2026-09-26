@@ -4,43 +4,23 @@ import java.util.*;
 
 public class GroupAnagrams {
     public List<List<String>> groupAnagrams(String[] strs) {
-        List<String> tempList = new ArrayList<>();
-        List<String> originalList = new ArrayList<>(Arrays.asList(strs));
-        List<List<String>> destList = new ArrayList<>();
-
-        while (!originalList.isEmpty()) {
-
-            String consider = originalList.get(0); // get the first element to consider
-            tempList.clear();
-
-            for (String item : originalList) {
-                if (!tempList.contains(consider))
-                    tempList.add(consider);
-
-                if (isAnagram(consider, item) && !tempList.contains(item))
-                    tempList.add(item);
+        // get the freq array -> create key with that array.
+        // use that key put if absent to the List of that key
+        Map<String, List<String>> res = new HashMap<>();
+        
+        for(String s : strs) {
+            int[] template = new int[26];
+            for (char c : s.toCharArray()) {
+                template[c - 'a']++; 
             }
-            originalList.removeAll(tempList);
-            destList.add(new ArrayList<>(tempList));
-            continue;
-        }
 
-        return destList;
-    }
 
-    public boolean isAnagram(String s, String t) {
-        char[] array1 = s.toCharArray();
-        char[] array2 = t.toCharArray();
+            String key = Arrays.toString(key);
+            res.putIfAbsent(key,   String key = template);
+        } 
 
-        if (array1.length != array2.length)
-            return false;
 
-        Arrays.sort(array1);
-        Arrays.sort(array2);
-
-        if (Arrays.equals(array1, array2))
-            return true;
-        return false;
+        return new ArrayList<>();
     }
 
     public static void main(String[] args) {

@@ -32,6 +32,16 @@ export interface SystemDesignModule {
   topics: SystemDesignTopic[];
 }
 
+export interface SystemDesignCitation {
+  id: string;
+  title: string;
+  author: string;
+  type: 'Book' | 'Roadmap' | 'Open Source' | 'Engineering Blog' | 'Course';
+  url: string;
+  description: string;
+  highlights: string[];
+}
+
 export function getSystemDesignStatusKey(topicId: string): string {
   return `system_design_status_${topicId}`;
 }
@@ -41,6 +51,156 @@ export function getSystemDesignNoteKey(topicId: string): string {
 }
 
 export const SYSTEM_DESIGN_MODULES: SystemDesignModule[] = [
+  {
+    id: 'module-0',
+    title: '0. Phương pháp học & Khung tư duy',
+    englishTitle: 'Mental Models & Learning Methodology',
+    badge: 'Module 0',
+    description: 'Kim chỉ nam và phương pháp tiếp cận toàn diện: Khung 4 bước phỏng vấn của Alex Xu, quy tắc ước tính tài nguyên (Back-of-the-envelope), tư duy đánh đổi kỹ thuật (Trade-offs) và lộ trình kết nối 4 module tiếp theo.',
+    topics: [
+      {
+        id: 'framework-and-mental-model',
+        title: 'Khung 4 bước & Mental Model',
+        englishTitle: '4-Step Framework & Mental Models',
+        summary: 'Nắm vững quy trình 4 bước chuẩn mực từ Alex Xu để phân tích và giải quyết bất kỳ bài toán System Design nào một cách tự tin, rõ ràng và có cấu trúc.',
+        estimatedMinutes: 20,
+        coreConcepts: [
+          {
+            heading: '1. Khung 4 bước giải bài System Design (Alex Xu 4-Step Framework)',
+            points: [
+              'Bước 1: Hiểu bài toán & Xác định phạm vi (Understand the Problem & Establish Design Scope - 3-10 phút): Đặt câu hỏi làm rõ Functional Requirements (người dùng làm được gì) và Non-functional Requirements (Scalability, Availability 99.99%, Low Latency, Consistency). Ước tính nhanh quy mô DAU/MAU, QPS và Storage.',
+              'Bước 2: Đề xuất thiết kế cấp cao (Propose High-Level Design & Get Buy-in - 10-15 phút): Phác thảo sơ đồ khối (Client -> DNS/CDN -> Load Balancer -> API Gateway -> Stateless Backend Services -> DB/Cache). Định nghĩa sơ bộ REST/gRPC API Endpoints và Database Schema cơ bản.',
+              'Bước 3: Đào sâu chi tiết kỹ thuật (Design Deep Dive - 10-25 phút): Đi sâu vào các nút thắt cổ chai (Bottlenecks), Single Point of Failure (SPOF), tối ưu Caching, Partitioning/Sharding dữ liệu, xử lý Race Condition và tính nhất quán phân tán.',
+              'Bước 4: Tổng kết & Vận hành (Wrap-up & Operational Excellence - 3-5 phút): Tóm tắt thiết kế, chỉ ra các lỗi có thể xảy ra (Failure Scenarios), chiến lược giám sát (Monitoring, Metrics, Alerts) và hướng mở rộng trong tương lai.',
+            ],
+          },
+          {
+            heading: '2. Mental Model: Luồng dữ liệu (Data Flow) & Phân tầng kiến trúc',
+            points: [
+              'Tư duy theo luồng dữ liệu 4 tầng: Client/Edge (CDN, DNS) -> Gateway/Routing (Load Balancer, Reverse Proxy, Rate Limiter) -> Application/Compute (Stateless Services, Message Queues) -> Storage/Data (Cache, RDBMS, NoSQL, Object Storage).',
+              'Quy tắc Vàng "Stateless First": Giữ cho tầng Application hoàn toàn không lưu trạng thái (Stateless), chuyển toàn bộ Session/State vào tầng Data (Redis/DB) để scale ngang (Horizontal Scaling) bằng cách thêm server một cách dễ dàng.',
+            ],
+          },
+        ],
+        interviewQA: [
+          {
+            question: 'Khi nhận được một đề bài rất rộng như "Thiết kế hệ thống YouTube" hoặc "Thiết kế Twitter", bạn nên bắt đầu như thế nào để không bị lạc đề?',
+            answer: 'Tuyệt đối KHÔNG nhảy vào vẽ kiến trúc ngay lập tức. Hãy bắt đầu bằng Bước 1 để thu hẹp phạm vi: 1. Hỏi người phỏng vấn về tính năng cốt lõi cần tập trung (vd: với YouTube là Upload video và Xem video, bỏ qua tính năng Comment, Like, Subscribe nếu không đủ thời gian). 2. Hỏi về quy mô hệ thống: Số lượng người dùng hoạt động hàng ngày (DAU), dung lượng video tải lên mỗi ngày để ước tính QPS và Storage cần thiết.',
+          },
+        ],
+      },
+      {
+        id: 'back-of-the-envelope-estimation',
+        title: 'Ước tính tài nguyên & Độ trễ phần cứng',
+        englishTitle: 'Back-of-the-Envelope Estimation & Hardware Latency Numbers',
+        summary: 'Kỹ năng tính toán nhẩm QPS, dung lượng lưu trữ, băng thông mạng và bảng số liệu độ trễ phần cứng kinh điển của Peter Norvig / Jeff Dean.',
+        estimatedMinutes: 25,
+        coreConcepts: [
+          {
+            heading: '1. Các con số độ trễ mọi kỹ sư cần ghi nhớ (Latency Numbers Every Programmer Should Know)',
+            points: [
+              'L1 Cache Reference: ~0.5 - 1 ns (Siêu tốc)',
+              'RAM (Main Memory) Read: ~100 ns (Nhanh gấp ~200 lần L1 Cache)',
+              'SSD Read ngẫu nhiên: ~100 µs (100,000 ns - Chậm gấp ~1,000 lần RAM)',
+              'HDD Disk Seek: ~10 ms (10,000,000 ns - Chậm gấp ~100,000 lần RAM)',
+              'Network Round Trip trong cùng 1 Datacenter: ~0.5 ms (500,000 ns)',
+              'Network Round Trip xuyên lục địa (California -> Hà Lan): ~150 ms',
+              'Kết luận: Luôn ưu tiên Cache trên RAM cho các dữ liệu đọc thường xuyên để giảm thiểu I/O Disk và Network round-trip.',
+            ],
+          },
+          {
+            heading: '2. Bảng quy đổi nhanh lũy thừa 2 & Ước lượng giây trong ngày',
+            points: [
+              '1 Ngày = 24 giờ * 3600 giây = 86,400 giây ≈ 10^5 (100,000 giây) để tính nhẩm nhanh trong phỏng vấn.',
+              '2^10 ≈ 1,000 = 1 KB (Thousand)',
+              '2^20 ≈ 1,000,000 = 1 MB (Million)',
+              '2^30 ≈ 1,000,000,000 = 1 GB (Billion)',
+              '2^40 ≈ 1,000,000,000,000 = 1 TB (Trillion)',
+              '2^50 ≈ 1 PB (Petabyte)',
+            ],
+          },
+          {
+            heading: '3. Công thức tính toán chuẩn mực (QPS, Băng thông & Bộ nhớ)',
+            points: [
+              'QPS (Query Per Second) trung bình = (DAU * Số request mỗi user mỗi ngày) / 86,400 (hoặc làm tròn 100,000).',
+              'Peak QPS (Lưu lượng giờ cao điểm) = 2 * Average QPS (hoặc 3-5x tùy thuộc vào sản phẩm).',
+              'Dung lượng lưu trữ mỗi ngày (Daily Storage) = Write QPS * 86,400 * Dung lượng 1 bản ghi (Record Size).',
+              'Lưu trữ trong 5 năm = Daily Storage * 365 * 5.',
+              'Quy tắc 80/20 về RAM Caching: 20% dữ liệu chiếm 80% lưu lượng truy cập -> Kích thước Cache RAM cần có = 20% tổng lượng dữ liệu đọc hàng ngày.',
+            ],
+          },
+        ],
+        javaDeepDive: {
+          title: 'Java Benchmark: So sánh tốc độ RAM vs Disk I/O',
+          description: 'Ví dụ minh họa sự chênh lệch thời gian khi đọc dữ liệu từ Heap Memory (RAM) so với File I/O (Disk).',
+          codeSnippet: `// Benchmark đo lường sự chênh lệch giữa RAM và Disk I/O trong Java
+long startRam = System.nanoTime();
+byte[] ramBuffer = new byte[1024 * 1024]; // 1MB RAM
+for (int i = 0; i < ramBuffer.length; i++) {
+    byte b = ramBuffer[i];
+}
+long durationRam = System.nanoTime() - startRam;
+System.out.println("RAM Access (1MB): " + durationRam / 1_000_000.0 + " ms");
+
+// Đọc 1MB từ Disk File
+long startDisk = System.nanoTime();
+Path tempFile = Files.createTempFile("benchmark", ".bin");
+Files.write(tempFile, ramBuffer);
+byte[] diskRead = Files.readAllBytes(tempFile);
+long durationDisk = System.nanoTime() - startDisk;
+System.out.println("Disk Access (1MB): " + durationDisk / 1_000_000.0 + " ms");
+// Kết quả: Disk I/O thường chậm hơn RAM từ 10 đến 1000 lần tùy thuộc vào HDD/SSD và Buffer Cache.`,
+        },
+        interviewQA: [
+          {
+            question: 'Tại sao việc ước tính Back-of-the-envelope lại quan trọng và người phỏng vấn muốn kiểm tra điều gì ở bạn?',
+            answer: 'Người phỏng vấn không yêu cầu con số chính xác 100%, mà muốn đánh giá: 1. Tư duy định lượng hệ thống (Quantitative thinking): Bạn có biết khi nào hệ thống cần 1 server hay 100 servers? Khi nào dùng MySQL là đủ và khi nào bắt buộc phải Sharding/NoSQL? 2. Kỹ năng giao tiếp và giả định hợp lý (Reasonable assumptions). 3. Khả năng thiết kế hệ thống vừa vặn, tránh over-engineering hoặc under-engineering.',
+          },
+        ],
+      },
+      {
+        id: 'trade-offs-and-roadmap-guide',
+        title: 'Tư duy đánh đổi & Hướng dẫn học 4 Module',
+        englishTitle: 'Engineering Trade-offs & Navigating the 4 Modules',
+        summary: 'Tư duy First Principles trong thiết kế hệ thống ("There are no solutions, only trade-offs") và bản đồ liên kết kiến thức qua 4 module chuyên sâu.',
+        estimatedMinutes: 20,
+        coreConcepts: [
+          {
+            heading: '1. Định luật Đánh đổi (Engineering Trade-offs & First Principles)',
+            points: [
+              'Nguyên lý cốt lõi: Không có một giải pháp hoặc công nghệ nào hoàn hảo cho mọi bài toán (No Silver Bullet). Mọi quyết định kỹ thuật đều là sự đánh đổi có chủ đích.',
+              'Latency vs Throughput: Tối ưu cho độ trễ thấp (gửi tin nhắn tức thì) hay tối ưu cho thông lượng cao (xử lý hàng loạt batching).',
+              'Consistency vs Availability (CAP Theorem): Chấp nhận hệ thống trả về dữ liệu cũ một chút nhưng luôn khả dụng (High Availability / Eventual Consistency), hay bắt buộc phải chính xác tuyệt đối dù phải tạm dừng phục vụ (Strong Consistency - như giao dịch tài chính).',
+              'Read Heavy vs Write Heavy: Hệ thống đọc nhiều (Twitter, News Feed -> Tối ưu Read Cache, CQRS, Fan-out-on-write) hay ghi nhiều (IoT Metrics, Logging -> Tối ưu LSM-Tree, Kafka, Sharded Write).',
+            ],
+          },
+          {
+            heading: '2. Bản đồ liên kết: Cách học và xâu chuỗi 4 Module tiếp theo',
+            points: [
+              'Module 1 - Nền tảng hệ thống & Mạng (Networking, Protocols, Load Balancing, Gateway): Tiếp nhận lưu lượng người dùng, phân luồng an toàn, loại bỏ nút thắt cổ chai ở tầng biên.',
+              'Module 2 - Lưu trữ dữ liệu & Đồng bộ phân tán (SQL vs NoSQL, ACID, CAP/PACELC, Sharding, Replication, Caching): Xây dựng kho dữ liệu vững chắc, đảm bảo dữ liệu không bị mất và scale hàng tỷ bản ghi.',
+              'Module 3 - Kiến trúc ứng dụng, Caching & Xử lý bất đồng bộ (Microservices, Kafka Message Queues, Saga/Distributed Tx, Rate Limiting, Circuit Breaker): Xử lý bất đồng bộ, phân tán tải công việc và bảo vệ hệ thống trước sự cố lan chuyền (Cascading Failure).',
+              'Module 4 - Độ tin cậy, Giám sát & Thiết kế thực chiến (URL Shortener, News Feed, Chat App, Observability): Lắp ráp toàn bộ các khối kiến trúc từ M0 -> M3 để thiết kế hoàn chỉnh các hệ thống quy mô lớn thực tế.',
+            ],
+          },
+          {
+            heading: '3. Phương pháp học và luyện tập hiệu quả',
+            points: [
+              'Vẽ trước khi code/đọc đáp án: Với mỗi bài toán, tự vẽ sơ đồ luồng dữ liệu (Data Flow) và tính toán dung lượng trước.',
+              'Luôn tự hỏi "Tại sao KHÔNG chọn công nghệ X?": Khi chọn Redis, hãy tự trả lời tại sao không dùng Memcached? Khi chọn Cassandra, tại sao không dùng PostgreSQL?',
+              'Đọc Tech Blogs từ các công ty lớn: Đọc cách Netflix, Uber, Discord giải quyết các sự cố thực tế để tích lũy kinh nghiệm thực chiến.',
+            ],
+          },
+        ],
+        interviewQA: [
+          {
+            question: 'Khi được hỏi "Công nghệ nào tốt hơn giữa PostgreSQL và MongoDB?", cách trả lời chuyên nghiệp nhất là gì?',
+            answer: 'Không bao giờ khẳng định công nghệ nào "tốt hơn" một cách tuyệt đối. Hãy trả lời theo hướng Trade-offs: 1. PostgreSQL xuất sắc khi cần tính toàn vẹn dữ liệu nghiêm ngặt (ACID), quan hệ bảng phức tạp (Relational JOINs) và cấu trúc dữ liệu cố định. 2. MongoDB phù hợp khi dữ liệu dạng Document/JSON không có schema cố định, cần phát triển nhanh (Rapid prototyping) và hỗ trợ Sharding phân tán ngang sẵn có (Out-of-the-box). Sau đó liên hệ với bối cảnh cụ thể của bài toán.',
+          },
+        ],
+      },
+    ],
+  },
   {
     id: 'foundation',
     title: '1. Nền tảng hệ thống & Mạng',
@@ -708,6 +868,100 @@ public class OrderEventConsumer {
           },
         ],
       },
+    ],
+  },
+];
+
+export const SYSTEM_DESIGN_CITATIONS: SystemDesignCitation[] = [
+  {
+    id: 'alex-xu',
+    title: 'System Design Interview – An Insider\'s Guide (Volume 1 & 2)',
+    author: 'Alex Xu & Sahn Lam (ByteByteGo)',
+    type: 'Book',
+    url: 'https://bytebytego.com/',
+    description: 'Nguồn tài liệu chuẩn mực về khung phỏng vấn 4 bước (4-Step Interview Framework) và các case studies kinh điển (Rate Limiter, Unique ID Generator, Chat System, YouTube, Payment System).',
+    highlights: [
+      'Khung 4 bước: 1. Hiểu bài toán & Scope -> 2. High-Level Design -> 3. Deep Dive -> 4. Wrap-up',
+      'Mô hình kiến trúc phân tầng: Client/CDN -> API Gateway -> Stateless Services -> DB/Cache',
+      'Minh họa trực quan, thực tế kèm ước tính tài nguyên phần cứng (Back-of-the-envelope)',
+    ],
+  },
+  {
+    id: 'ddia',
+    title: 'Designing Data-Intensive Applications (DDIA)',
+    author: 'Martin Kleppmann (Cambridge University / O\'Reilly)',
+    type: 'Book',
+    url: 'https://dataintensive.net/',
+    description: 'Cuốn sách kinh điển đào sâu bản chất của dữ liệu phân tán, giải thích chi tiết cấu trúc lưu trữ (B-Trees vs LSM-Trees), Replication, Partitioning, Transactions và CAP / Consensus.',
+    highlights: [
+      'Bản chất tầng lưu trữ: WAL, SSTable, LSM-Tree (Cassandra/RocksDB) vs B-Tree (RDBMS)',
+      'Phân tán & Đồng bộ: Single-leader, Multi-leader, Leaderless (Quorum read/write)',
+      'Giao dịch & Cô lập: ACID, Dirty reads, Snapshot isolation, Two-Phase Commit (2PC)',
+    ],
+  },
+  {
+    id: 'system-design-primer',
+    title: 'The System Design Primer',
+    author: 'Donne Martin (Open-source với >280k GitHub Stars)',
+    type: 'Open Source',
+    url: 'https://github.com/donnemartin/system-design-primer',
+    description: 'Kho lưu trữ mã nguồn mở toàn diện nhất về System Design, tổng hợp có hệ thống các building blocks, trade-offs (đánh đổi kỹ thuật) và các câu hỏi phỏng vấn thực tế.',
+    highlights: [
+      'Tổng quan đầy đủ các thành phần: DNS, CDN, Load Balancer, Reverse Proxy, Caching, Asynchronism',
+      'Bảng so sánh chi tiết: SQL vs NoSQL, REST vs RPC/gRPC, Strong vs Eventual Consistency',
+      'Flashcards và sơ đồ trực quan từng bước thiết kế hệ thống lớn',
+    ],
+  },
+  {
+    id: 'grokking',
+    title: 'Grokking Modern System Design Interview for Engineers & Managers',
+    author: 'Fahim ul Haq (Educative.io)',
+    type: 'Course',
+    url: 'https://www.educative.io/courses/grokking-modern-system-design-interview-for-engineers-managers',
+    description: 'Khóa học hướng dẫn phương pháp tiếp cận thiết kế hệ thống theo từng khối gạch kiến trúc (Building Blocks) và lắp ráp thành các bài toán thực tế quy mô lớn.',
+    highlights: [
+      'Phân rã hệ thống thành các khối độc lập: Distributed Messaging, Distributed Lock, Blob Store',
+      'Thiết kế chi tiết các hệ thống nổi tiếng: URL Shortener, Pastebin, Web Crawler, Typeahead Suggestion',
+      'Tập trung vào tính toán Availability, Scalability và Trade-offs trong phỏng vấn',
+    ],
+  },
+  {
+    id: 'roadmap-sh',
+    title: 'System Design Roadmap',
+    author: 'roadmap.sh Community',
+    type: 'Roadmap',
+    url: 'https://roadmap.sh/system-design',
+    description: 'Bản đồ kỹ năng kiến trúc hệ thống dạng cây bách khoa toàn thư, giúp định vị và tra cứu toàn bộ các công nghệ, giao thức và khái niệm từ cơ bản đến nâng cao.',
+    highlights: [
+      'Bản đồ phân nhánh trực quan: Network, Servers, Databases, Caching, Reliability, Microservices',
+      'Phân loại công nghệ theo danh mục thực tế (RDBMS, Document, Key-Value, Graph DBs)',
+      'Liên tục cập nhật theo xu hướng kiến trúc hiện đại (Event-Driven, Serverless, Edge Computing)',
+    ],
+  },
+  {
+    id: 'distributed-patterns',
+    title: 'Designing Distributed Systems',
+    author: 'Brendan Burns (Co-founder of Kubernetes / O\'Reilly)',
+    type: 'Book',
+    url: 'https://www.oreilly.com/library/view/designing-distributed-systems/9781491983638/',
+    description: 'Tập hợp các mẫu hình thiết kế phân tán (Design Patterns for Distributed Systems) như Sidecar, Ambassador, Adapter và Scatter/Gather trong kỷ nguyên Microservices và Container.',
+    highlights: [
+      'Single-node Patterns: Sidecar, Ambassador, Adapter',
+      'Multi-node Serving Patterns: Replicated Load-Balanced Services, Sharded Services, Scatter/Gather',
+      'Batch Computational Patterns: Work Queue Systems, Event-Driven Batch Processing',
+    ],
+  },
+  {
+    id: 'tech-blogs',
+    title: 'Big Tech Engineering Blogs (Netflix, Uber, Meta, Discord)',
+    author: 'Netflix TechBlog, Uber Eng, Meta Eng, Discord Eng',
+    type: 'Engineering Blog',
+    url: 'https://netflixtechblog.com/',
+    description: 'Nguồn học tập case studies thực chiến sống động nhất từ các kỹ sư đang trực tiếp vận hành hệ thống phục vụ hàng trăm triệu đến hàng tỷ người dùng trên toàn cầu.',
+    highlights: [
+      'Netflix TechBlog: Microservices resilience, Chaos Engineering (Simian Army), Multi-region Active-Active',
+      'Uber Engineering: Ringpop, Real-time dispatching, Schemaless sharding trên MySQL',
+      'Discord Engineering: Chuyển dịch từ MongoDB sang Cassandra rồi sang ScyllaDB để xử lý trillions messages',
     ],
   },
 ];

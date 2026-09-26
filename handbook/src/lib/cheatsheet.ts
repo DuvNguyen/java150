@@ -22,7 +22,7 @@ export const TOPIC_FILE_MAP: Record<string, { name: string; files: string[] }> =
   },
   'arrays-hashing': {
     name: 'Arrays & Hashing',
-    files: ['hashmap.md', 'arrays.md', 'arraylist.md', 'string.md', 'algorithms-patterns.md'],
+    files: ['hashmap.md', 'arrays.md', 'arraylist.md', 'string.md', 'stringbuilder.md', 'algorithms-patterns.md'],
   },
   'two-pointers': { name: 'Two Pointers', files: ['two-pointers.md'] },
   stack: { name: 'Stack', files: ['stack.md'] },
@@ -80,6 +80,7 @@ export function getSubtopicName(file: string, content: string): string {
     arraylist: 'ArrayList',
     arrays: 'Arrays',
     string: 'String',
+    stringbuilder: 'StringBuilder',
     'algorithms-patterns': 'Algorithm & Pattern',
     prerequisites: 'Prerequisites',
     'two-pointers': 'Two Pointers',

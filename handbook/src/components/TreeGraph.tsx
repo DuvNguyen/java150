@@ -120,16 +120,8 @@ export default function TreeGraph() {
         }}
       >
         <defs>
-          <linearGradient id="edgeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#c7bcb4" />
-            <stop offset="100%" stopColor="#d9cfc7" />
-          </linearGradient>
-          <linearGradient id="prereqGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#990f3d" />
-            <stop offset="100%" stopColor="#b31448" />
-          </linearGradient>
           <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="125%">
-            <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#33302e" floodOpacity="0.06" />
+            <feDropShadow dx="0" dy="1" stdDeviation="2" floodColor="#33302e" floodOpacity="0.05" />
           </filter>
         </defs>
 
@@ -150,8 +142,8 @@ export default function TreeGraph() {
               key={`edge-${i}`}
               d={`M ${x1} ${y1} C ${x1} ${midY}, ${x2} ${midY}, ${x2} ${y2}`}
               fill="none"
-              stroke={edge.isPrereqEdge ? '#990f3d' : 'url(#edgeGrad)'}
-              strokeWidth={edge.isPrereqEdge ? 2 : 1.8}
+              stroke={edge.isPrereqEdge ? '#990f3d' : '#d9cfc7'}
+              strokeWidth={edge.isPrereqEdge ? 2 : 1.5}
               strokeDasharray={edge.isPrereqEdge ? '4 3' : undefined}
             />
           );
@@ -171,11 +163,11 @@ export default function TreeGraph() {
                     y={rectY}
                     width={NODE_W}
                     height={NODE_H}
-                    rx={22}
-                    ry={22}
+                    rx={2}
+                    ry={2}
                     fill="#fff4e8"
                     stroke="#990f3d"
-                    strokeWidth={1.8}
+                    strokeWidth={1.5}
                     filter="url(#cardShadow)"
                     style={{ transition: 'all 0.2s ease' }}
                     onMouseEnter={(e) => {
@@ -201,7 +193,7 @@ export default function TreeGraph() {
                     fill="#990f3d"
                     style={{ cursor: 'pointer', userSelect: 'none', transition: 'fill 0.2s ease' }}
                   >
-                    ✦ Prerequisites
+                    Prerequisites
                   </text>
                 </g>
               </Link>
@@ -216,8 +208,8 @@ export default function TreeGraph() {
                   y={rectY}
                   width={NODE_W}
                   height={NODE_H}
-                  rx={6}
-                  ry={6}
+                  rx={2}
+                  ry={2}
                   fill="#fff9f4"
                   stroke="#d9cfc7"
                   strokeWidth={1.2}

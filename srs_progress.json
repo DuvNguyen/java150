@@ -26,14 +26,14 @@
   "nc_4": {
     "id": "nc_4",
     "status": "mastered",
-    "lastSolved": "2026-09-22",
+    "lastSolved": "2026-09-25",
     "lastRating": "medium",
-    "nextReview": "2026-09-25",
-    "interval": 3,
+    "nextReview": "2026-10-03",
+    "interval": 8,
     "easeFactor": 2.5,
-    "repetitions": 1,
-    "note": "",
-    "updatedAt": 1790072791157
+    "repetitions": 2,
+    "note": "- the rignt way to use Array to string?\n- dùng key bản string để làm gì với key? Tác động gì đến value của key?\n- Tại sao chỉ cần key không là biết anagram không?",
+    "updatedAt": 1790330820820
   },
   "nc_5": {
     "id": "nc_5",
@@ -58,5 +58,17 @@
     "repetitions": 2,
     "note": "",
     "updatedAt": 1790135719463
+  },
+  "nc_6": {
+    "id": "nc_6",
+    "status": "mastered",
+    "lastSolved": "2026-09-26",
+    "lastRating": "medium",
+    "nextReview": "2026-09-29",
+    "interval": 3,
+    "easeFactor": 2.5,
+    "repetitions": 1,
+    "note": "- tại sao không dùng String operation?\n- encode String sẽ trông thế nào? tai sao?\n- điều kiện dừng vòng lặp khi decode?",
+    "updatedAt": 1790413806334
   }
 }
