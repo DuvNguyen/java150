@@ -1972,10 +1972,17 @@ code, pre {
   font-size: 0.82rem;
   color: var(--color-secondary);
   background: #fff8f0;
-  border-left: 2px solid var(--color-border);
-  padding: 3px 8px;
-  margin-top: 4px;
+  border-left: 3px solid var(--color-border);
+  padding: 4px 8px;
+  margin-top: 5px;
   border-radius: 0 2px 2px 0;
+  transition: all 0.15s ease;
+}
+
+.problem-inline-note.clickable-note:hover {
+  background: #fff1e0;
+  border-left-color: var(--color-tertiary);
+  color: var(--color-primary);
 }
 
 /* Difficulty Badges - Financial Times Uniform Alignment */

@@ -6,6 +6,7 @@ import { NeetCodeProblem, NEETCODE_TOPICS } from '@/lib/neetcodeData';
 import { SrsProgressMap, SrsProgressItem, SRS } from '@/lib/srs';
 import SrsConfirmModal from './SrsConfirmModal';
 import JavaCodeViewerModal from './JavaCodeViewerModal';
+import ProblemNoteModal from './ProblemNoteModal';
 
 interface Props {
   problems: NeetCodeProblem[];
@@ -32,6 +33,7 @@ export default function NeetCodeProblemList({
 
   // Modals state
   const [selectedProblemForReview, setSelectedProblemForReview] = useState<NeetCodeProblem | null>(null);
+  const [selectedProblemForNote, setSelectedProblemForNote] = useState<NeetCodeProblem | null>(null);
   const [selectedProblemForCode, setSelectedProblemForCode] = useState<NeetCodeProblem | null>(null);
   const [toastMessage, setToastMessage] = useState('');
 
@@ -113,6 +115,46 @@ export default function NeetCodeProblemList({
     } catch (err) {
       console.error('Failed to sync progress:', err);
       showToast('Đã lưu cục bộ');
+    }
+  };
+
+  // Save only note without altering review intervals or repetitions
+  const handleSaveNoteOnly = async (problem: NeetCodeProblem, note: string) => {
+    const current = progressMap[problem.id];
+    const updatedItem: SrsProgressItem = {
+      id: problem.id,
+      status: current?.status || 'new',
+      lastSolved: current?.lastSolved,
+      lastRating: current?.lastRating,
+      nextReview: current?.nextReview,
+      interval: current?.interval,
+      easeFactor: current?.easeFactor,
+      repetitions: current?.repetitions,
+      note,
+      updatedAt: Date.now(),
+    };
+
+    const newMap: SrsProgressMap = {
+      ...progressMap,
+      [problem.id]: updatedItem,
+    };
+
+    setProgressMap(newMap);
+    setSelectedProblemForNote(null);
+    setSelectedProblemForReview(null);
+
+    try {
+      localStorage.setItem('srs_progress_cache', JSON.stringify(newMap));
+      await fetch('/api/srs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ [problem.id]: updatedItem }),
+      });
+      showToast(`Đã cập nhật ghi chú cho bài "${problem.name}"`);
+      if (onProgressUpdated) onProgressUpdated();
+    } catch (err) {
+      console.error('Failed to sync note:', err);
+      showToast('Đã lưu ghi chú cục bộ');
     }
   };
 
@@ -591,6 +633,16 @@ export default function NeetCodeProblemList({
         isOpen={Boolean(selectedProblemForReview)}
         onClose={() => setSelectedProblemForReview(null)}
         onConfirm={handleSaveProgress}
+        onSaveNoteOnly={handleSaveNoteOnly}
+      />
+
+      {/* Problem Note Modal (Edit note without changing SRS schedule) */}
+      <ProblemNoteModal
+        problem={selectedProblemForNote}
+        currentProgress={selectedProblemForNote ? progressMap[selectedProblemForNote.id] : undefined}
+        isOpen={Boolean(selectedProblemForNote)}
+        onClose={() => setSelectedProblemForNote(null)}
+        onSaveNote={handleSaveNoteOnly}
       />
 
       {/* Java Source Viewer Modal */}
@@ -683,7 +735,15 @@ export default function NeetCodeProblemList({
               </a>
             </div>
             {item?.note && (
-              <div className="problem-inline-note">
+              <div
+                className="problem-inline-note clickable-note"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedProblemForNote(problem);
+                }}
+                title="Bấm để chỉnh sửa ghi chú"
+                style={{ cursor: 'pointer' }}
+              >
                 <strong>Ghi chú:</strong> {item.note}
               </div>
             )}
@@ -759,6 +819,18 @@ export default function NeetCodeProblemList({
                   }}
                 >
                   Đánh dấu hoàn thành
+                </button>
+
+                <button
+                  type="button"
+                  className="action-menu-item"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setOpenActionMenuId(null);
+                    setSelectedProblemForNote(problem);
+                  }}
+                >
+                  Chỉnh sửa ghi chú
                 </button>
 
                 <button

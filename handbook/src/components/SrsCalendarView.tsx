@@ -5,6 +5,7 @@ import { ALL_NEETCODE_PROBLEMS, NeetCodeProblem } from '@/lib/neetcodeData';
 import { SrsProgressMap, SRS } from '@/lib/srs';
 import SrsConfirmModal from './SrsConfirmModal';
 import JavaCodeViewerModal from './JavaCodeViewerModal';
+import ProblemNoteModal from './ProblemNoteModal';
 
 interface Props {
   srsProgress: SrsProgressMap;
@@ -17,6 +18,7 @@ export default function SrsCalendarView({ srsProgress, onProgressUpdated }: Prop
   const [currentDate, setCurrentDate] = useState(() => new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [reviewProblem, setReviewProblem] = useState<NeetCodeProblem | null>(null);
+  const [noteProblem, setNoteProblem] = useState<NeetCodeProblem | null>(null);
   const [codeProblem, setCodeProblem] = useState<NeetCodeProblem | null>(null);
   const [openActionMenuId, setOpenActionMenuId] = useState<string | null>(null);
 
@@ -180,6 +182,35 @@ export default function SrsCalendarView({ srsProgress, onProgressUpdated }: Prop
       if (onProgressUpdated) onProgressUpdated();
     } catch (err) {
       console.error('Failed to update progress from calendar:', err);
+    }
+  };
+
+  const handleSaveNoteOnly = async (problem: NeetCodeProblem, note: string) => {
+    const current = srsProgress[problem.id];
+    const updatedItem = {
+      id: problem.id,
+      status: current?.status || 'new',
+      lastSolved: current?.lastSolved,
+      lastRating: current?.lastRating,
+      nextReview: current?.nextReview,
+      interval: current?.interval,
+      easeFactor: current?.easeFactor,
+      repetitions: current?.repetitions,
+      note,
+      updatedAt: Date.now(),
+    };
+
+    try {
+      await fetch('/api/srs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ [problem.id]: updatedItem }),
+      });
+      setNoteProblem(null);
+      setReviewProblem(null);
+      if (onProgressUpdated) onProgressUpdated();
+    } catch (err) {
+      console.error('Failed to update note from calendar:', err);
     }
   };
 
@@ -424,6 +455,18 @@ export default function SrsCalendarView({ srsProgress, onProgressUpdated }: Prop
                 }}
               >
                 Đánh giá SRS
+              </button>
+
+              <button
+                type="button"
+                className="action-menu-item"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setOpenActionMenuId(null);
+                  setNoteProblem(problem);
+                }}
+              >
+                Chỉnh sửa ghi chú
               </button>
 
               {problem.javaFilePath && (
@@ -988,6 +1031,18 @@ export default function SrsCalendarView({ srsProgress, onProgressUpdated }: Prop
           currentProgress={srsProgress[reviewProblem.id]}
           onClose={() => setReviewProblem(null)}
           onConfirm={handleSaveProgress}
+          onSaveNoteOnly={handleSaveNoteOnly}
+        />
+      )}
+
+      {/* Problem Note Modal */}
+      {noteProblem && (
+        <ProblemNoteModal
+          isOpen={Boolean(noteProblem)}
+          problem={noteProblem}
+          currentProgress={srsProgress[noteProblem.id]}
+          onClose={() => setNoteProblem(null)}
+          onSaveNote={handleSaveNoteOnly}
         />
       )}
 

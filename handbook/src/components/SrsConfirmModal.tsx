@@ -14,6 +14,7 @@ interface Props {
     rating: 'easy' | 'medium' | 'hard' | 'again',
     note: string
   ) => void;
+  onSaveNoteOnly?: (problem: NeetCodeProblem, note: string) => void;
 }
 
 export default function SrsConfirmModal({
@@ -22,6 +23,7 @@ export default function SrsConfirmModal({
   isOpen,
   onClose,
   onConfirm,
+  onSaveNoteOnly,
 }: Props) {
   const [rating, setRating] = useState<'easy' | 'medium' | 'hard' | 'again'>('easy');
   const [note, setNote] = useState('');
@@ -187,13 +189,28 @@ export default function SrsConfirmModal({
             </div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px', paddingTop: '12px', borderTop: '1px solid var(--color-border-light)' }}>
-            <button type="button" className="btn btn-secondary" onClick={onClose}>
-              Hủy
-            </button>
-            <button type="submit" className="btn btn-primary">
-              Xác nhận & Lưu tiến độ
-            </button>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', paddingTop: '12px', borderTop: '1px solid var(--color-border-light)' }}>
+            <div>
+              {onSaveNoteOnly && (
+                <button
+                  type="button"
+                  className="btn btn-secondary btn-sm"
+                  onClick={() => onSaveNoteOnly(problem, note)}
+                  title="Chỉ cập nhật nội dung ghi chú, giữ nguyên lịch ôn tập hiện tại"
+                  style={{ fontSize: '0.8rem', padding: '6px 12px' }}
+                >
+                  Chỉ lưu ghi chú (Không đổi lịch)
+                </button>
+              )}
+            </div>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button type="button" className="btn btn-secondary" onClick={onClose}>
+                Hủy
+              </button>
+              <button type="submit" className="btn btn-primary">
+                Xác nhận & Lưu tiến độ
+              </button>
+            </div>
           </div>
         </form>
       </div>
