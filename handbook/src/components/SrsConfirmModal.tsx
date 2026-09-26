@@ -196,10 +196,9 @@ export default function SrsConfirmModal({
                   type="button"
                   className="btn btn-secondary btn-sm"
                   onClick={() => onSaveNoteOnly(problem, note)}
-                  title="Chỉ cập nhật nội dung ghi chú, giữ nguyên lịch ôn tập hiện tại"
                   style={{ fontSize: '0.8rem', padding: '6px 12px' }}
                 >
-                  Chỉ lưu ghi chú (Không đổi lịch)
+                  Chỉ lưu ghi chú
                 </button>
               )}
             </div>

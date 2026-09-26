@@ -864,36 +864,6 @@ export default function NeetCodeProblemList({
                   }}
                 />
 
-                <a
-                  href={problem.leetcodeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="action-menu-item"
-                  style={{ textDecoration: 'none' }}
-                  onClick={() => setOpenActionMenuId(null)}
-                >
-                  Mở trên LeetCode
-                </a>
-
-                <a
-                  href={problem.neetcodeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="action-menu-item"
-                  style={{ textDecoration: 'none' }}
-                  onClick={() => setOpenActionMenuId(null)}
-                >
-                  Mở trên NeetCode
-                </a>
-
-                <div
-                  style={{
-                    height: '1px',
-                    backgroundColor: 'var(--color-border-light)',
-                    margin: '4px 0',
-                  }}
-                />
-
                 <button
                   type="button"
                   className="action-menu-item delete"
@@ -903,7 +873,7 @@ export default function NeetCodeProblemList({
                   }}
                   style={{ color: '#b91c1c' }}
                 >
-                  Đặt lại (Chưa làm)
+                  Đặt lại
                 </button>
               </div>
             )}

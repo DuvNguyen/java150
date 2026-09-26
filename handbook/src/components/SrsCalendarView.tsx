@@ -482,30 +482,6 @@ export default function SrsCalendarView({ srsProgress, onProgressUpdated }: Prop
                   Xem code Java
                 </button>
               )}
-
-              {problem.leetcodeUrl && (
-                <a
-                  href={problem.leetcodeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="action-menu-item"
-                  onClick={() => setOpenActionMenuId(null)}
-                >
-                  Mở LeetCode
-                </a>
-              )}
-
-              {problem.neetcodeUrl && (
-                <a
-                  href={problem.neetcodeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="action-menu-item"
-                  onClick={() => setOpenActionMenuId(null)}
-                >
-                  Mở NeetCode
-                </a>
-              )}
             </div>
           )}
         </div>
