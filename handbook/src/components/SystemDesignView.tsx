@@ -205,146 +205,133 @@ export default function SystemDesignView() {
       {/* Main Grid: Sidebar Modules & Topics + Main Detail Content */}
       <div className="track-layout-grid system-design-layout-grid">
         {/* LEFT SIDEBAR: Modules & Topics Tree */}
-        <div className="track-layout-sidebar system-design-sidebar">
-          {SYSTEM_DESIGN_MODULES.map((module) => {
-            const isModuleActive = module.id === selectedModuleId;
-            const moduleDone = module.topics.filter((t) => statusMap[t.id] === 'done').length;
+        <div
+          style={{
+            backgroundColor: 'var(--color-surface)',
+            border: '1px solid var(--color-border)',
+            borderRadius: '12px',
+            padding: '16px',
+            position: 'sticky',
+            top: '20px',
+            maxHeight: 'calc(100vh - 40px)',
+            overflowY: 'auto',
+          }}
+        >
+          <h3
+            style={{
+              fontSize: '0.92rem',
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px',
+              color: 'var(--color-secondary)',
+              margin: '0 0 12px 4px',
+            }}
+          >
+            Mục lục Lộ trình ({SYSTEM_DESIGN_MODULES.length} Modules)
+          </h3>
 
-            return (
-              <div
-                key={module.id}
-                style={{
-                  border: `1px solid ${isModuleActive ? 'var(--color-tertiary)' : 'var(--color-border)'}`,
-                  borderRadius: 'var(--rounded-lg)',
-                  backgroundColor: 'var(--color-surface)',
-                  overflow: 'hidden',
-                  transition: 'border-color 0.15s ease',
-                }}
-              >
-                {/* Module Header Card */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSelectedModuleId(module.id);
-                    setSelectedTopicId(module.topics[0].id);
-                  }}
-                  style={{
-                    width: '100%',
-                    padding: '10px 12px',
-                    textAlign: 'left',
-                    background: isModuleActive ? '#fff4e8' : 'transparent',
-                    border: 'none',
-                    borderBottom: '1px solid var(--color-border-light)',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: '0.68rem', fontFamily: 'var(--font-label)', color: 'var(--color-tertiary)', fontWeight: 700, textTransform: 'uppercase' }}>
-                      {module.badge}
-                    </div>
-                    <div style={{ fontSize: '0.86rem', fontWeight: 700, color: 'var(--color-primary)', marginTop: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      {module.title}
-                    </div>
-                  </div>
-                  <span
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {SYSTEM_DESIGN_MODULES.map((module) => {
+              const isModuleActive = module.id === selectedModuleId;
+              const moduleDone = module.topics.filter((t) => statusMap[t.id] === 'done').length;
+
+              return (
+                <div key={module.id}>
+                  <div
+                    onClick={() => {
+                      setSelectedModuleId(module.id);
+                      setSelectedTopicId(module.topics[0].id);
+                      setOpenQaIndex(null);
+                    }}
                     style={{
-                      fontSize: '0.72rem',
-                      fontFamily: 'var(--font-label)',
-                      padding: '2px 6px',
-                      borderRadius: '3px',
-                      backgroundColor: moduleDone === module.topics.length ? '#ecfdf5' : 'var(--color-border-light)',
-                      color: moduleDone === module.topics.length ? '#059669' : 'var(--color-secondary)',
-                      fontWeight: 600,
-                      flexShrink: 0,
-                      marginLeft: '6px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: '8px 10px',
+                      borderRadius: '8px',
+                      backgroundColor: isModuleActive ? 'rgba(153, 15, 61, 0.08)' : 'transparent',
+                      cursor: 'pointer',
+                      fontWeight: isModuleActive ? 700 : 600,
+                      color: isModuleActive ? '#990f3d' : 'var(--color-primary)',
+                      fontSize: '0.88rem',
                     }}
                   >
-                    {moduleDone}/{module.topics.length}
-                  </span>
-                </button>
+                    <span>{module.title}</span>
+                    <span
+                      style={{
+                        fontSize: '0.75rem',
+                        fontWeight: 600,
+                        color: moduleDone === module.topics.length ? '#137333' : 'var(--color-secondary)',
+                      }}
+                    >
+                      {moduleDone}/{module.topics.length}
+                    </span>
+                  </div>
 
-                {/* Topics List */}
-                <div style={{ padding: '4px 6px' }}>
-                  {module.topics.map((topic) => {
-                    const isTopicActive = topic.id === activeTopic.id && isModuleActive;
-                    const st = statusMap[topic.id] || 'not-started';
+                  {/* Sub-topics list */}
+                  {isModuleActive && (
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '4px',
+                        marginTop: '6px',
+                        marginLeft: '8px',
+                        paddingLeft: '10px',
+                        borderLeft: '2px solid rgba(153, 15, 61, 0.2)',
+                      }}
+                    >
+                      {module.topics.map((topic) => {
+                        const isTopicActive = topic.id === activeTopic.id;
+                        const st = statusMap[topic.id] || 'not-started';
 
-                    return (
-                      <button
-                        key={topic.id}
-                        type="button"
-                        onClick={() => {
-                          setSelectedModuleId(module.id);
-                          setSelectedTopicId(topic.id);
-                        }}
-                        style={{
-                          width: '100%',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          gap: '6px',
-                          padding: '6px 8px',
-                          margin: '2px 0',
-                          borderRadius: 'var(--rounded-sm)',
-                          border: isTopicActive ? '1px solid var(--color-tertiary)' : '1px solid transparent',
-                          backgroundColor: isTopicActive ? '#fff4e8' : 'transparent',
-                          cursor: 'pointer',
-                          textAlign: 'left',
-                          transition: 'all 0.15s ease',
-                        }}
-                      >
-                        <div style={{ flex: 1, minWidth: 0 }}>
+                        return (
                           <div
+                            key={topic.id}
+                            onClick={() => {
+                              setSelectedTopicId(topic.id);
+                              setOpenQaIndex(null);
+                            }}
                             style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              padding: '6px 8px',
+                              borderRadius: '6px',
+                              backgroundColor: isTopicActive ? 'var(--color-surface-hover)' : 'transparent',
+                              color: isTopicActive ? 'var(--color-primary)' : 'var(--color-secondary)',
+                              fontWeight: isTopicActive ? 600 : 400,
                               fontSize: '0.82rem',
-                              fontFamily: 'var(--font-label)',
-                              fontWeight: isTopicActive ? 700 : 500,
-                              color: isTopicActive ? 'var(--color-tertiary)' : 'var(--color-primary)',
-                              whiteSpace: 'nowrap',
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis',
+                              cursor: 'pointer',
                             }}
                           >
-                            {topic.title}
+                            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                              {topic.title}
+                            </span>
+                            <span
+                              style={{
+                                width: '7px',
+                                height: '7px',
+                                borderRadius: '50%',
+                                backgroundColor: st === 'done' ? '#137333' : st === 'in-progress' ? '#b06000' : '#cbd5e1',
+                                flexShrink: 0,
+                                marginLeft: '8px',
+                              }}
+                            />
                           </div>
-                          <div style={{ fontSize: '0.68rem', color: 'var(--color-secondary)', marginTop: '1px' }}>
-                            {topic.estimatedMinutes} phút
-                          </div>
-                        </div>
-
-                        {/* Status Dot / Pill */}
-                        <span
-                          style={{
-                            fontSize: '0.68rem',
-                            fontFamily: 'var(--font-label)',
-                            padding: '2px 6px',
-                            borderRadius: '3px',
-                            whiteSpace: 'nowrap',
-                            backgroundColor:
-                              st === 'done' ? '#ecfdf5' : st === 'in-progress' ? '#fffbeb' : 'var(--color-border-light)',
-                            color:
-                              st === 'done' ? '#047857' : st === 'in-progress' ? '#b45309' : 'var(--color-secondary)',
-                            fontWeight: 600,
-                            flexShrink: 0,
-                          }}
-                        >
-                          {st === 'done' ? 'Đã xong' : st === 'in-progress' ? 'Đang học' : 'Chưa học'}
-                        </span>
-                      </button>
-                    );
-                  })}
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
 
           {/* Stats Summary Panel */}
           <div
             style={{
-              marginTop: '2px',
+              marginTop: '16px',
               padding: '10px 14px',
               border: '1px solid var(--color-border-light)',
               borderRadius: 'var(--rounded-lg)',

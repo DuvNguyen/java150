@@ -10,6 +10,7 @@ import NoteModal, { getNoteStorageKey } from '@/components/NoteModal';
 import NeetCodeProblemList from '@/components/NeetCodeProblemList';
 import OopView from '@/components/OopView';
 import SystemDesignView from '@/components/SystemDesignView';
+import SpringBootView from '@/components/SpringBootView';
 import ReminderSettingsModal from '@/components/ReminderSettingsModal';
 import SrsCalendarView from '@/components/SrsCalendarView';
 import { Entry } from '@/components/FunctionTable';
@@ -24,7 +25,7 @@ interface SearchResultGroup {
 }
 
 export default function HomePage() {
-  const [activeTrack, setActiveTrack] = useState<'dsa' | 'oop' | 'system-design'>('dsa');
+  const [activeTrack, setActiveTrack] = useState<'dsa' | 'oop' | 'system-design' | 'spring-boot'>('dsa');
   const [activeMainView, setActiveMainView] = useState<'roadmap' | 'neetcode-all' | 'neetcode-due' | 'calendar'>('roadmap');
   const [query, setQuery] = useState('');
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
@@ -247,7 +248,7 @@ export default function HomePage() {
       {/* Page Header */}
       <div className="tree-page-intro" style={{ marginBottom: '16px' }}>
         <h1>Java Learning Platform</h1>
-        <p>Nền tảng học lập trình Java toàn diện: DSA (NeetCode 150), OOP (4 tính chất), System Design.</p>
+        <p>Nền tảng học lập trình Java toàn diện: DSA (NeetCode 150), OOP (4 tính chất), System Design, Spring Boot.</p>
       </div>
 
       {/* === TRACK SELECTOR — dùng CSS classes từ design system === */}
@@ -257,7 +258,8 @@ export default function HomePage() {
             { id: 'dsa', label: 'Java DSA', sub: 'NeetCode 150 + Cú pháp' },
             { id: 'oop', label: 'Java OOP', sub: '4 tính chất cốt lõi' },
             { id: 'system-design', label: 'System Design', sub: 'Roadmap 4 Modules' },
-          ] as { id: 'dsa' | 'oop' | 'system-design'; label: string; sub: string; disabled?: boolean }[]
+            { id: 'spring-boot', label: 'Spring Boot', sub: 'Roadmap 6 Modules' },
+          ] as { id: 'dsa' | 'oop' | 'system-design' | 'spring-boot'; label: string; sub: string; disabled?: boolean }[]
         ).map((track) => (
           <button
             key={track.id}
@@ -369,6 +371,14 @@ export default function HomePage() {
       {activeTrack === 'system-design' && (
         <div style={{ marginTop: '20px' }}>
           <SystemDesignView />
+        </div>
+      )}
+
+      {/* ======================================== */}
+      {/* SPRING BOOT TRACK */}
+      {activeTrack === 'spring-boot' && (
+        <div style={{ marginTop: '20px' }}>
+          <SpringBootView />
         </div>
       )}
 
