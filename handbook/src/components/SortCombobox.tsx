@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { SortOption } from './FunctionTable';
+import { useAutoDropdownPosition } from '@/lib/useAutoDropdownPosition';
 
 interface Props {
   value: SortOption;
@@ -24,6 +25,7 @@ export default function SortCombobox({
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const autoDropdownRef = useAutoDropdownPosition();
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -56,7 +58,7 @@ export default function SortCombobox({
 
         {/* Custom Animated Dropdown Menu */}
         {isOpen && (
-          <div className="combobox-menu" role="listbox">
+          <div className="combobox-menu" ref={autoDropdownRef} role="listbox">
             {options.map((option) => {
               const isSelected = option.value === value;
               return (

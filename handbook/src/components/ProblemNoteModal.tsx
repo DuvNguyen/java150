@@ -1,8 +1,30 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { NeetCodeProblem } from '@/lib/neetcodeData';
-import { SrsProgressItem, SRS } from '@/lib/srs';
+import { SrsProgressItem, SRS, ANKI_DSA_TEMPLATE } from '@/lib/srs';
+
+const MDXNoteEditor = dynamic(() => import('./MDXNoteEditor'), {
+  ssr: false,
+  loading: () => (
+    <div
+      style={{
+        height: '320px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#fffdfa',
+        border: '1px solid var(--color-border)',
+        borderRadius: '3px',
+        color: 'var(--color-secondary)',
+        fontSize: '0.85rem',
+      }}
+    >
+      Đang tải trình soạn thảo trực quan...
+    </div>
+  ),
+});
 
 interface Props {
   problem: NeetCodeProblem | null;
@@ -45,7 +67,7 @@ export default function ProblemNoteModal({
       <div
         className="modal-box srs-confirm-modal"
         onClick={(e) => e.stopPropagation()}
-        style={{ maxWidth: '640px', width: '95%' }}
+        style={{ maxWidth: '820px', width: '96%', maxHeight: '90vh', display: 'flex', flexDirection: 'column' }}
       >
         {/* Header */}
         <div
@@ -53,9 +75,9 @@ export default function ProblemNoteModal({
             display: 'flex',
             alignItems: 'flex-start',
             justifyContent: 'space-between',
-            marginBottom: '16px',
+            marginBottom: '14px',
             borderBottom: '1px solid var(--color-border)',
-            paddingBottom: '12px',
+            paddingBottom: '10px',
           }}
         >
           <div>
@@ -94,16 +116,16 @@ export default function ProblemNoteModal({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
           {/* Status info bar */}
           <div
             style={{
               backgroundColor: '#fff4e8',
               border: '1px solid var(--color-border)',
               borderLeft: '4px solid var(--color-tertiary)',
-              padding: '10px 12px',
+              padding: '8px 12px',
               borderRadius: '2px',
-              marginBottom: '14px',
+              marginBottom: '10px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
@@ -139,56 +161,59 @@ export default function ProblemNoteModal({
 
           <div
             style={{
-              fontSize: '0.78rem',
-              color: 'var(--color-secondary)',
-              marginBottom: '10px',
-              lineHeight: 1.5,
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '6px',
             }}
           >
-            Lưu ý: Chỉnh sửa ghi chú tại đây chỉ cập nhật nội dung ghi nhớ, <strong>không làm thay đổi hoặc kéo giãn</strong> chu kỳ và lịch ôn tập Spaced Repetition của bạn.
-          </div>
-
-          <div style={{ marginBottom: '16px' }}>
-            <div
+            <span
               style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '6px',
+                fontSize: '0.76rem',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                color: 'var(--color-secondary)',
+                fontWeight: 600,
               }}
             >
-              <label
-                className="srs-form-label"
-                htmlFor="problem-note-textarea"
-                style={{ margin: 0, fontSize: '0.82rem' }}
+              Ghi chú trực quan (WYSIWYG Markdown)
+            </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <button
+                type="button"
+                onClick={() => {
+                  if (!note.trim()) {
+                    setNote(ANKI_DSA_TEMPLATE);
+                  } else {
+                    setNote(note + '\n\n' + ANKI_DSA_TEMPLATE);
+                  }
+                }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--color-primary)',
+                  fontSize: '0.78rem',
+                  cursor: 'pointer',
+                  padding: 0,
+                  textDecoration: 'underline',
+                  fontFamily: 'inherit',
+                }}
               >
-                Nội dung ghi chú cá nhân:
-              </label>
+                + Chèn mẫu gợi ý
+              </button>
               <span style={{ fontSize: '0.72rem', color: 'var(--color-secondary)' }}>
                 {note.length} ký tự
               </span>
             </div>
-            <textarea
-              id="problem-note-textarea"
-              rows={9}
-              autoFocus
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              placeholder="Ghi chú thuật toán, ý tưởng chính, bẫy / edge cases hoặc template lời giải cho bài này..."
-              style={{
-                width: '100%',
-                minHeight: '200px',
-                maxHeight: '450px',
-                padding: '10px 14px',
-                borderRadius: '3px',
-                border: '1px solid var(--color-border)',
-                backgroundColor: 'var(--color-neutral)',
-                fontFamily: 'var(--font-mono)',
-                fontSize: '0.88rem',
-                lineHeight: '1.6',
-                resize: 'vertical',
-                boxSizing: 'border-box',
-              }}
+          </div>
+
+          {/* MDXEditor WYSIWYG Editor */}
+          <div style={{ marginBottom: '12px', flex: 1, minHeight: 0 }}>
+            <MDXNoteEditor
+              markdown={note}
+              onChange={setNote}
+              height="380px"
+              placeholder="Gõ trực tiếp hoặc dùng cú pháp Markdown (# Tiêu đề, **in đậm**, `code`, - danh sách)..."
             />
           </div>
 
@@ -197,7 +222,7 @@ export default function ProblemNoteModal({
               display: 'flex',
               justifyContent: 'flex-end',
               gap: '10px',
-              paddingTop: '12px',
+              paddingTop: '10px',
               borderTop: '1px solid var(--color-border-light)',
             }}
           >

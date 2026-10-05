@@ -4,6 +4,8 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import CodeBlock from './CodeBlock';
 import FormattedText from './FormattedText';
 import { AlgorithmPattern, DEFAULT_PATTERNS, UseCaseItem } from '@/lib/patterns';
+import { useAutoDropdownPosition } from '@/lib/useAutoDropdownPosition';
+import { ALL_NEETCODE_PROBLEMS } from '@/lib/neetcodeData';
 
 interface Props {
   topicId: string;
@@ -35,6 +37,7 @@ export default function PatternManager({ topicId, topicName }: Props) {
   const [toast, setToast] = useState('');
   const [openActionMenuId, setOpenActionMenuId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const autoDropdownRef = useAutoDropdownPosition();
   const [newTagInput, setNewTagInput] = useState('');
   const [tagManagerOpen, setTagManagerOpen] = useState(false);
   const [editingTagOriginal, setEditingTagOriginal] = useState<string | null>(null);
@@ -723,6 +726,29 @@ public void solve() {
                             {t}
                           </span>
                         ))}
+
+                        {/* Blind 75 count badge */}
+                        {(() => {
+                          if (!pat.useCases || pat.useCases.length === 0) return null;
+                          const total = pat.useCases.length;
+                          const b75Count = pat.useCases.filter((uc) => {
+                            const text = `${uc.title} ${uc.example || ''}`.toLowerCase();
+                            return ALL_NEETCODE_PROBLEMS.some(
+                              (p) => p.lists.includes('blind75') && text.includes(p.name.toLowerCase())
+                            );
+                          }).length;
+
+                          if (b75Count === 0) return null;
+                          return (
+                            <span
+                              className="list-chip blind75"
+                              title={`${b75Count}/${total} bài toán ví dụ trong pattern này thuộc danh sách Blind 75`}
+                              style={{ display: 'inline-flex', alignItems: 'center' }}
+                            >
+                              {b75Count}/{total} bài thuộc Blind 75
+                            </span>
+                          );
+                        })()}
                       </div>
                     </div>
                   </div>
@@ -747,7 +773,7 @@ public void solve() {
                     </button>
 
                     {openActionMenuId === pat.id && (
-                      <div className="action-dropdown-menu">
+                      <div className="action-dropdown-menu" ref={autoDropdownRef}>
                         <button
                           type="button"
                           className="action-menu-item"

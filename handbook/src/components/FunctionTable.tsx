@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import FormattedText from './FormattedText';
 import NoteModal, { getNoteStorageKey, getNoteUpdatedAt } from './NoteModal';
 import SortCombobox from './SortCombobox';
+import { useAutoDropdownPosition } from '@/lib/useAutoDropdownPosition';
 
 export interface Entry {
   topic?: string;
@@ -40,6 +41,7 @@ export default function FunctionTable({ entries, topicId, onRefresh, pageSize = 
   const [toast, setToast] = useState('');
   const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
   const [openActionMenuIndex, setOpenActionMenuIndex] = useState<number | null>(null);
+  const autoDropdownRef = useAutoDropdownPosition();
   const [selectedNoteEntry, setSelectedNoteEntry] = useState<Entry | null>(null);
   const [notesMap, setNotesMap] = useState<Record<string, boolean>>({});
   const [currentPage, setCurrentPage] = useState(1);
@@ -316,7 +318,7 @@ export default function FunctionTable({ entries, topicId, onRefresh, pageSize = 
                       </button>
 
                       {openActionMenuIndex === originalIdx && (
-                        <div className="action-dropdown-menu">
+                        <div className="action-dropdown-menu" ref={autoDropdownRef}>
                           <button
                             type="button"
                             className="action-menu-item"

@@ -546,10 +546,28 @@ code, pre {
   animation: menuDropSlide 0.18s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.action-dropdown-menu.drop-up {
+  top: auto;
+  bottom: calc(100% + 4px);
+  transform-origin: bottom right;
+  animation: menuDropSlideUp 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 @keyframes menuDropSlide {
   from {
     opacity: 0;
     transform: scale(0.92) translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes menuDropSlideUp {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(6px);
   }
   to {
     opacity: 1;
@@ -1040,6 +1058,13 @@ code, pre {
   z-index: 150;
   transform-origin: top right;
   animation: menuDropSlide 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.combobox-menu.drop-up {
+  top: auto;
+  bottom: calc(100% + 6px);
+  transform-origin: bottom right;
+  animation: menuDropSlideUp 0.18s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .combobox-menu-item {
@@ -1916,11 +1941,12 @@ code, pre {
   border: none;
   padding: 0;
   text-align: left;
-  font-family: var(--font-body);
-  font-size: 0.96rem;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
   font-weight: 600;
   color: var(--color-primary);
   cursor: pointer;
+  line-height: 1.3;
   transition: color 0.15s;
 }
 
@@ -1934,53 +1960,74 @@ code, pre {
   align-items: center;
   gap: 6px;
   flex-wrap: wrap;
+  margin-top: 2px;
 }
 
 .ext-link-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
   font-family: var(--font-label);
-  font-size: 0.72rem;
-  font-weight: 500;
-  padding: 1px 6px;
-  border-radius: 3px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0 7px;
+  border-radius: var(--rounded-md, 2px);
   border: 1px solid var(--color-border);
-  background: var(--color-neutral);
+  background: var(--color-surface);
   color: var(--color-secondary);
   text-decoration: none;
   cursor: pointer;
+  box-sizing: border-box;
+  white-space: nowrap;
+  line-height: 1;
   transition: all 0.12s ease;
 }
 
 .ext-link-tag:hover {
   border-color: var(--color-tertiary);
   color: var(--color-tertiary);
+  background: #fff4e8;
   text-decoration: none;
 }
 
 .java-tag-btn {
-  border-color: #cbd5e1;
-  background: #f1f5f9;
-  color: #334155;
+  border-color: var(--color-border);
+  background: var(--color-neutral);
+  color: var(--color-primary);
 }
 
 .java-tag-btn:hover {
-  background: #e2e8f0;
-  border-color: #94a3b8;
-  color: #0f172a;
+  background: #ede8e3;
+  border-color: var(--color-secondary);
+  color: var(--color-primary);
 }
 
 .problem-inline-note {
-  font-size: 0.82rem;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
   color: var(--color-secondary);
-  background: #fff8f0;
-  border-left: 3px solid var(--color-border);
-  padding: 4px 8px;
-  margin-top: 5px;
-  border-radius: 0 2px 2px 0;
+  background: var(--color-surface);
+  border-left: 2px solid var(--color-border);
+  padding: 4px 10px;
+  margin-top: 4px;
+  border-radius: 0 var(--rounded-md, 2px) var(--rounded-md, 2px) 0;
   transition: all 0.15s ease;
 }
 
+.problem-inline-note strong {
+  font-family: var(--font-label);
+  font-size: 0.70rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-primary);
+  margin-right: 4px;
+}
+
 .problem-inline-note.clickable-note:hover {
-  background: #fff1e0;
+  background: #fff4e8;
   border-left-color: var(--color-tertiary);
   color: var(--color-primary);
 }
@@ -2291,6 +2338,163 @@ code, pre {
   letter-spacing: 0.02em;
 }
 
+/* ============================================================ */
+/* DSA Track/List Switcher & Dual Progress Tracking */
+/* ============================================================ */
+.dsa-track-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--rounded-lg);
+  padding: 12px 16px;
+  margin-top: 10px;
+  margin-bottom: 16px;
+}
+
+.dsa-list-switcher {
+  display: inline-flex;
+  background-color: var(--color-neutral);
+  padding: 3px;
+  border-radius: var(--rounded-md);
+  border: 1px solid var(--color-border);
+  gap: 2px;
+}
+
+.dsa-list-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--rounded-sm);
+  border: none;
+  background: transparent;
+  font-family: var(--font-label);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dsa-list-btn:hover {
+  color: var(--color-primary);
+  background-color: rgba(255, 255, 255, 0.6);
+}
+
+.dsa-list-btn.active {
+  background-color: var(--color-surface);
+  color: var(--color-tertiary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.dsa-list-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background-color: rgba(153, 15, 61, 0.1);
+  color: var(--color-tertiary);
+}
+
+.dsa-list-btn:not(.active) .dsa-list-badge {
+  background-color: rgba(102, 94, 87, 0.12);
+  color: var(--color-secondary);
+}
+
+.dual-progress-panel {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.progress-stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 170px;
+}
+
+.progress-stat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-label);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-secondary);
+}
+
+.progress-stat-val {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.progress-stat-track {
+  width: 100%;
+  height: 6px;
+  background-color: var(--color-neutral);
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid var(--color-border-light);
+}
+
+.progress-stat-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.progress-stat-fill.blind75 {
+  background-color: var(--color-primary);
+}
+
+.progress-stat-fill.nc150 {
+  background-color: var(--color-tertiary);
+}
+
+/* Problem List Chips */
+.list-chips-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.list-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  font-family: var(--font-label);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0 7px;
+  border-radius: var(--rounded-md, 2px);
+  box-sizing: border-box;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.list-chip.blind75 {
+  background-color: #ede8e3;
+  color: var(--color-primary);
+  border: 1px solid var(--color-border);
+}
+
+.list-chip.neetcode150 {
+  background-color: var(--color-surface);
+  color: var(--color-secondary);
+  border: 1px solid var(--color-border);
+}
+
 
 /* ============================================================ */
 /* Due Notification Button — cạnh bánh răng setting            */
@@ -2470,3 +2674,111 @@ code, pre {
     font-size: 0.78rem;
   }
 }
+
+/* MDXEditor Compact & Sleek Typography */
+.mdx-editor-wrapper {
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  line-height: 1.6;
+  color: var(--color-primary);
+}
+
+.mdx-editor-wrapper [role="toolbar"] {
+  background: var(--color-neutral) !important;
+  border-bottom: 1px solid var(--color-border-light) !important;
+  padding: 4px 8px !important;
+  gap: 4px !important;
+}
+
+.mdx-editor-wrapper [role="toolbar"] button {
+  font-size: 0.76rem !important;
+  padding: 2px 6px !important;
+  height: 26px !important;
+  min-width: 24px !important;
+}
+
+.mdx-editor-wrapper [role="toolbar"] select {
+  font-size: 0.76rem !important;
+  height: 26px !important;
+  padding: 2px 6px !important;
+}
+
+.mdx-editor-wrapper .mdx-content-editable,
+.mdx-editor-wrapper [contenteditable="true"] {
+  font-family: var(--font-body) !important;
+  font-size: 0.86rem !important;
+  line-height: 1.65 !important;
+  color: var(--color-primary) !important;
+  padding: 10px 14px !important;
+}
+
+.mdx-editor-wrapper [contenteditable="true"] h1 {
+  font-size: 1.15rem !important;
+  font-family: var(--font-display) !important;
+  font-weight: 700 !important;
+  margin: 12px 0 6px 0 !important;
+  color: var(--color-primary) !important;
+}
+
+.mdx-editor-wrapper [contenteditable="true"] h2 {
+  font-size: 1.02rem !important;
+  font-family: var(--font-display) !important;
+  font-weight: 700 !important;
+  margin: 10px 0 6px 0 !important;
+  color: var(--color-primary) !important;
+}
+
+.mdx-editor-wrapper [contenteditable="true"] h3 {
+  font-size: 0.92rem !important;
+  font-family: var(--font-display) !important;
+  font-weight: 700 !important;
+  margin: 8px 0 4px 0 !important;
+  color: var(--color-tertiary) !important;
+}
+
+.mdx-editor-wrapper [contenteditable="true"] p {
+  font-size: 0.86rem !important;
+  margin: 0 0 6px 0 !important;
+  line-height: 1.6 !important;
+}
+
+.mdx-editor-wrapper [contenteditable="true"] ul,
+.mdx-editor-wrapper [contenteditable="true"] ol {
+  font-size: 0.86rem !important;
+  margin: 4px 0 8px 18px !important;
+  padding: 0 !important;
+  line-height: 1.6 !important;
+}
+
+.mdx-editor-wrapper [contenteditable="true"] li {
+  margin-bottom: 3px !important;
+}
+
+.mdx-editor-wrapper [contenteditable="true"] code {
+  font-family: var(--font-mono) !important;
+  font-size: 0.82em !important;
+  background-color: #fff !important;
+  border: 1px solid var(--color-border) !important;
+  padding: 1px 4px !important;
+  border-radius: 3px !important;
+  color: var(--color-primary) !important;
+}
+
+.mdx-editor-wrapper [contenteditable="true"] pre {
+  font-family: var(--font-mono) !important;
+  font-size: 0.80rem !important;
+  background-color: #2d3748 !important;
+  color: #f7fafc !important;
+  padding: 8px 12px !important;
+  border-radius: 4px !important;
+  margin: 6px 0 !important;
+}
+
+.mdx-editor-wrapper [contenteditable="true"] blockquote {
+  font-size: 0.84rem !important;
+  padding: 6px 12px !important;
+  margin: 6px 0 !important;
+  border-left: 3px solid var(--color-tertiary) !important;
+  background-color: #fff7ed !important;
+}
+

@@ -29,6 +29,9 @@
 - **Nút đóng & Icon đơn lẻ (Close & Icon Buttons)**:
   - **KHÔNG** bao quanh khung viền (border / outline / box stroke) hình hộp thô quanh các nút đóng (`✕`, `close`) hay icon đơn lẻ trên modal, header hay thanh công cụ.
   - Luôn giữ nút phẳng tối giản (`border: none`, `background: transparent`), chỉ đổi màu chữ/icon khi hover (`:hover`).
+- **Kích thước Modal & Ổn định Layout (Modal Dimensions & Layout Stability)**:
+  - Khi thiết kế modal có các tab chuyển đổi (ví dụ: Soạn thảo <-> Xem trước / Preview), modal phải có kích thước đủ to rộng, và vùng chứa nội dung (editor, preview, viewer) **BẮT BUỘC có chiều cao cố định đồng nhất** (`height`, `min-height`), nội dung bên trong cuộn dọc (`overflow-y: auto`).
+  - **TUYỆT ĐỐI KHÔNG** để modal bị co giật, nhảy kích thước hay thay đổi chiều cao khi người dùng chuyển qua lại giữa các tab.
 
 ## Ngôn ngữ giao tiếp (Communication Language)
 - **Luôn phản lời bằng tiếng Việt**: Dù người dùng sử dụng bất kỳ ngôn ngữ nào (tiếng Anh, tiếng Nhật, tiếng Trung,...), AI trợ lý MUST (bắt buộc) luôn trả lời và trao đổi bằng **tiếng Việt**.

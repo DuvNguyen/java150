@@ -1,4 +1,5 @@
 export type Difficulty = 'Easy' | 'Medium' | 'Hard';
+export type TrackList = 'blind75' | 'neetcode150' | 'all';
 
 export interface NeetCodeProblem {
   id: string;
@@ -10,6 +11,7 @@ export interface NeetCodeProblem {
   leetcodeUrl: string;
   neetcodeUrl: string;
   javaFilePath: string;
+  lists: ('neetcode150' | 'blind75')[];
 }
 
 export interface TopicNeetCodeGroup {
@@ -32,7 +34,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Arrays & Hashing",
         "leetcodeUrl": "https://leetcode.com/problems/contains-duplicate/",
         "neetcodeUrl": "https://neetcode.io/problems/duplicate-integer?list=neetcode150",
-        "javaFilePath": "src/Arrays___Hashing/ContainsDuplicate.java"
+        "javaFilePath": "src/Arrays___Hashing/ContainsDuplicate.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_2",
@@ -43,7 +49,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Arrays & Hashing",
         "leetcodeUrl": "https://leetcode.com/problems/valid-anagram/",
         "neetcodeUrl": "https://neetcode.io/problems/is-anagram?list=neetcode150",
-        "javaFilePath": "src/Arrays___Hashing/ValidAnagram.java"
+        "javaFilePath": "src/Arrays___Hashing/ValidAnagram.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_3",
@@ -54,7 +64,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Arrays & Hashing",
         "leetcodeUrl": "https://leetcode.com/problems/two-sum/",
         "neetcodeUrl": "https://neetcode.io/problems/two-integer-sum?list=neetcode150",
-        "javaFilePath": "src/Arrays___Hashing/TwoSum.java"
+        "javaFilePath": "src/Arrays___Hashing/TwoSum.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_4",
@@ -65,7 +79,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Arrays & Hashing",
         "leetcodeUrl": "https://leetcode.com/problems/group-anagrams/",
         "neetcodeUrl": "https://neetcode.io/problems/anagram-groups?list=neetcode150",
-        "javaFilePath": "src/Arrays___Hashing/GroupAnagrams.java"
+        "javaFilePath": "src/Arrays___Hashing/GroupAnagrams.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_5",
@@ -76,7 +94,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Arrays & Hashing",
         "leetcodeUrl": "https://leetcode.com/problems/top-k-frequent-elements/",
         "neetcodeUrl": "https://neetcode.io/problems/top-k-elements-in-list?list=neetcode150",
-        "javaFilePath": "src/Arrays___Hashing/TopKFrequentElements.java"
+        "javaFilePath": "src/Arrays___Hashing/TopKFrequentElements.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_6",
@@ -87,7 +109,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Arrays & Hashing",
         "leetcodeUrl": "https://leetcode.com/problems/encode-and-decode-strings/",
         "neetcodeUrl": "https://neetcode.io/problems/string-encode-and-decode?list=neetcode150",
-        "javaFilePath": "src/Arrays___Hashing/EncodeandDecodeStrings.java"
+        "javaFilePath": "src/Arrays___Hashing/EncodeandDecodeStrings.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_7",
@@ -98,7 +124,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Arrays & Hashing",
         "leetcodeUrl": "https://leetcode.com/problems/product-of-array-except-self/",
         "neetcodeUrl": "https://neetcode.io/problems/products-of-array-discluding-self?list=neetcode150",
-        "javaFilePath": "src/Arrays___Hashing/ProductofArrayExceptSelf.java"
+        "javaFilePath": "src/Arrays___Hashing/ProductofArrayExceptSelf.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_8",
@@ -109,7 +139,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Arrays & Hashing",
         "leetcodeUrl": "https://leetcode.com/problems/valid-sudoku/",
         "neetcodeUrl": "https://neetcode.io/problems/valid-sudoku?list=neetcode150",
-        "javaFilePath": "src/Arrays___Hashing/ValidSudoku.java"
+        "javaFilePath": "src/Arrays___Hashing/ValidSudoku.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_9",
@@ -120,7 +153,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Arrays & Hashing",
         "leetcodeUrl": "https://leetcode.com/problems/longest-consecutive-sequence/",
         "neetcodeUrl": "https://neetcode.io/problems/longest-consecutive-sequence?list=neetcode150",
-        "javaFilePath": "src/Arrays___Hashing/LongestConsecutiveSequence.java"
+        "javaFilePath": "src/Arrays___Hashing/LongestConsecutiveSequence.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       }
     ]
   },
@@ -137,7 +174,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Two Pointers",
         "leetcodeUrl": "https://leetcode.com/problems/valid-palindrome/",
         "neetcodeUrl": "https://neetcode.io/problems/is-palindrome?list=neetcode150",
-        "javaFilePath": "src/Two_Pointers/ValidPalindrome.java"
+        "javaFilePath": "src/Two_Pointers/ValidPalindrome.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_11",
@@ -148,7 +189,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Two Pointers",
         "leetcodeUrl": "https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/",
         "neetcodeUrl": "https://neetcode.io/problems/two-integer-sum-ii?list=neetcode150",
-        "javaFilePath": "src/Two_Pointers/TwoSumIIInputArrayIsSorted.java"
+        "javaFilePath": "src/Two_Pointers/TwoSumIIInputArrayIsSorted.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_12",
@@ -159,7 +203,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Two Pointers",
         "leetcodeUrl": "https://leetcode.com/problems/3sum/",
         "neetcodeUrl": "https://neetcode.io/problems/three-integer-sum?list=neetcode150",
-        "javaFilePath": "src/Two_Pointers/3Sum.java"
+        "javaFilePath": "src/Two_Pointers/3Sum.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_13",
@@ -170,7 +218,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Two Pointers",
         "leetcodeUrl": "https://leetcode.com/problems/container-with-most-water/",
         "neetcodeUrl": "https://neetcode.io/problems/max-water-container?list=neetcode150",
-        "javaFilePath": "src/Two_Pointers/ContainerWithMostWater.java"
+        "javaFilePath": "src/Two_Pointers/ContainerWithMostWater.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_14",
@@ -181,7 +233,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Two Pointers",
         "leetcodeUrl": "https://leetcode.com/problems/trapping-rain-water/",
         "neetcodeUrl": "https://neetcode.io/problems/trapping-rain-water?list=neetcode150",
-        "javaFilePath": "src/Two_Pointers/TrappingRainWater.java"
+        "javaFilePath": "src/Two_Pointers/TrappingRainWater.java",
+        "lists": [
+          "neetcode150"
+        ]
       }
     ]
   },
@@ -198,7 +253,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Sliding Window",
         "leetcodeUrl": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/",
         "neetcodeUrl": "https://neetcode.io/problems/buy-and-sell-crypto?list=neetcode150",
-        "javaFilePath": "src/Sliding_Window/BestTimetoBuyAndSellStock.java"
+        "javaFilePath": "src/Sliding_Window/BestTimetoBuyAndSellStock.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_16",
@@ -209,7 +268,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Sliding Window",
         "leetcodeUrl": "https://leetcode.com/problems/longest-substring-without-repeating-characters/",
         "neetcodeUrl": "https://neetcode.io/problems/longest-substring-without-duplicates?list=neetcode150",
-        "javaFilePath": "src/Sliding_Window/LongestSubstringWithoutRepeatingCharacters.java"
+        "javaFilePath": "src/Sliding_Window/LongestSubstringWithoutRepeatingCharacters.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_17",
@@ -220,7 +283,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Sliding Window",
         "leetcodeUrl": "https://leetcode.com/problems/longest-repeating-character-replacement/",
         "neetcodeUrl": "https://neetcode.io/problems/longest-repeating-substring-with-replacement?list=neetcode150",
-        "javaFilePath": "src/Sliding_Window/LongestRepeatingCharacterReplacement.java"
+        "javaFilePath": "src/Sliding_Window/LongestRepeatingCharacterReplacement.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_18",
@@ -231,7 +298,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Sliding Window",
         "leetcodeUrl": "https://leetcode.com/problems/permutation-in-string/",
         "neetcodeUrl": "https://neetcode.io/problems/permutation-string?list=neetcode150",
-        "javaFilePath": "src/Sliding_Window/PermutationInString.java"
+        "javaFilePath": "src/Sliding_Window/PermutationInString.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_19",
@@ -242,7 +312,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Sliding Window",
         "leetcodeUrl": "https://leetcode.com/problems/minimum-window-substring/",
         "neetcodeUrl": "https://neetcode.io/problems/minimum-window-with-characters?list=neetcode150",
-        "javaFilePath": "src/Sliding_Window/MinimumWindowSubstring.java"
+        "javaFilePath": "src/Sliding_Window/MinimumWindowSubstring.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_20",
@@ -253,7 +327,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Sliding Window",
         "leetcodeUrl": "https://leetcode.com/problems/sliding-window-maximum/",
         "neetcodeUrl": "https://neetcode.io/problems/sliding-window-maximum?list=neetcode150",
-        "javaFilePath": "src/Sliding_Window/SlidingWindowMaximum.java"
+        "javaFilePath": "src/Sliding_Window/SlidingWindowMaximum.java",
+        "lists": [
+          "neetcode150"
+        ]
       }
     ]
   },
@@ -270,7 +347,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Stack",
         "leetcodeUrl": "https://leetcode.com/problems/valid-parentheses/",
         "neetcodeUrl": "https://neetcode.io/problems/validate-parentheses?list=neetcode150",
-        "javaFilePath": "src/Stack/ValidParentheses.java"
+        "javaFilePath": "src/Stack/ValidParentheses.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_22",
@@ -281,7 +362,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Stack",
         "leetcodeUrl": "https://leetcode.com/problems/min-stack/",
         "neetcodeUrl": "https://neetcode.io/problems/minimum-stack?list=neetcode150",
-        "javaFilePath": "src/Stack/MinStack.java"
+        "javaFilePath": "src/Stack/MinStack.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_23",
@@ -292,7 +376,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Stack",
         "leetcodeUrl": "https://leetcode.com/problems/evaluate-reverse-polish-notation/",
         "neetcodeUrl": "https://neetcode.io/problems/evaluate-reverse-polish-notation?list=neetcode150",
-        "javaFilePath": "src/Stack/EvaluateReversePolishNotation.java"
+        "javaFilePath": "src/Stack/EvaluateReversePolishNotation.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_24",
@@ -303,7 +390,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Stack",
         "leetcodeUrl": "https://leetcode.com/problems/daily-temperatures/",
         "neetcodeUrl": "https://neetcode.io/problems/daily-temperatures?list=neetcode150",
-        "javaFilePath": "src/Stack/DailyTemperatures.java"
+        "javaFilePath": "src/Stack/DailyTemperatures.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_25",
@@ -314,7 +404,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Stack",
         "leetcodeUrl": "https://leetcode.com/problems/car-fleet/",
         "neetcodeUrl": "https://neetcode.io/problems/car-fleet?list=neetcode150",
-        "javaFilePath": "src/Stack/CarFleet.java"
+        "javaFilePath": "src/Stack/CarFleet.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_26",
@@ -325,7 +418,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Stack",
         "leetcodeUrl": "https://leetcode.com/problems/largest-rectangle-in-histogram/",
         "neetcodeUrl": "https://neetcode.io/problems/largest-rectangle-in-histogram?list=neetcode150",
-        "javaFilePath": "src/Stack/LargestRectangleInHistogram.java"
+        "javaFilePath": "src/Stack/LargestRectangleInHistogram.java",
+        "lists": [
+          "neetcode150"
+        ]
       }
     ]
   },
@@ -342,7 +438,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Binary Search",
         "leetcodeUrl": "https://leetcode.com/problems/binary-search/",
         "neetcodeUrl": "https://neetcode.io/problems/binary-search?list=neetcode150",
-        "javaFilePath": "src/Binary_Search/BinarySearch.java"
+        "javaFilePath": "src/Binary_Search/BinarySearch.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_28",
@@ -353,7 +452,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Binary Search",
         "leetcodeUrl": "https://leetcode.com/problems/search-a-2d-matrix/",
         "neetcodeUrl": "https://neetcode.io/problems/search-2d-matrix?list=neetcode150",
-        "javaFilePath": "src/Binary_Search/Searcha2DMatrix.java"
+        "javaFilePath": "src/Binary_Search/Searcha2DMatrix.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_29",
@@ -364,7 +466,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Binary Search",
         "leetcodeUrl": "https://leetcode.com/problems/koko-eating-bananas/",
         "neetcodeUrl": "https://neetcode.io/problems/eating-bananas?list=neetcode150",
-        "javaFilePath": "src/Binary_Search/KokoEatingBananas.java"
+        "javaFilePath": "src/Binary_Search/KokoEatingBananas.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_30",
@@ -375,7 +480,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Binary Search",
         "leetcodeUrl": "https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/",
         "neetcodeUrl": "https://neetcode.io/problems/find-minimum-in-rotated-sorted-array?list=neetcode150",
-        "javaFilePath": "src/Binary_Search/FindMinimumInRotatedSortedArray.java"
+        "javaFilePath": "src/Binary_Search/FindMinimumInRotatedSortedArray.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_31",
@@ -386,7 +495,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Binary Search",
         "leetcodeUrl": "https://leetcode.com/problems/search-in-rotated-sorted-array/",
         "neetcodeUrl": "https://neetcode.io/problems/find-target-in-rotated-sorted-array?list=neetcode150",
-        "javaFilePath": "src/Binary_Search/SearchInRotatedSortedArray.java"
+        "javaFilePath": "src/Binary_Search/SearchInRotatedSortedArray.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_32",
@@ -397,7 +510,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Binary Search",
         "leetcodeUrl": "https://leetcode.com/problems/time-based-key-value-store/",
         "neetcodeUrl": "https://neetcode.io/problems/time-based-key-value-store?list=neetcode150",
-        "javaFilePath": "src/Binary_Search/TimeBasedKeyValueStore.java"
+        "javaFilePath": "src/Binary_Search/TimeBasedKeyValueStore.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_33",
@@ -408,7 +524,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Binary Search",
         "leetcodeUrl": "https://leetcode.com/problems/median-of-two-sorted-arrays/",
         "neetcodeUrl": "https://neetcode.io/problems/median-of-two-sorted-arrays?list=neetcode150",
-        "javaFilePath": "src/Binary_Search/MedianofTwoSortedArrays.java"
+        "javaFilePath": "src/Binary_Search/MedianofTwoSortedArrays.java",
+        "lists": [
+          "neetcode150"
+        ]
       }
     ]
   },
@@ -425,7 +544,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Linked List",
         "leetcodeUrl": "https://leetcode.com/problems/reverse-linked-list/",
         "neetcodeUrl": "https://neetcode.io/problems/reverse-a-linked-list?list=neetcode150",
-        "javaFilePath": "src/Linked_List/ReverseLinkedList.java"
+        "javaFilePath": "src/Linked_List/ReverseLinkedList.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_35",
@@ -436,7 +559,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Linked List",
         "leetcodeUrl": "https://leetcode.com/problems/merge-two-sorted-lists/",
         "neetcodeUrl": "https://neetcode.io/problems/merge-two-sorted-linked-lists?list=neetcode150",
-        "javaFilePath": "src/Linked_List/MergeTwoSortedLists.java"
+        "javaFilePath": "src/Linked_List/MergeTwoSortedLists.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_36",
@@ -447,7 +574,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Linked List",
         "leetcodeUrl": "https://leetcode.com/problems/linked-list-cycle/",
         "neetcodeUrl": "https://neetcode.io/problems/linked-list-cycle-detection?list=neetcode150",
-        "javaFilePath": "src/Linked_List/LinkedListCycle.java"
+        "javaFilePath": "src/Linked_List/LinkedListCycle.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_37",
@@ -458,7 +589,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Linked List",
         "leetcodeUrl": "https://leetcode.com/problems/reorder-list/",
         "neetcodeUrl": "https://neetcode.io/problems/reorder-linked-list?list=neetcode150",
-        "javaFilePath": "src/Linked_List/ReorderList.java"
+        "javaFilePath": "src/Linked_List/ReorderList.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_38",
@@ -469,7 +604,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Linked List",
         "leetcodeUrl": "https://leetcode.com/problems/remove-nth-node-from-end-of-list/",
         "neetcodeUrl": "https://neetcode.io/problems/remove-node-from-end-of-linked-list?list=neetcode150",
-        "javaFilePath": "src/Linked_List/RemoveNthNodeFromEndofList.java"
+        "javaFilePath": "src/Linked_List/RemoveNthNodeFromEndofList.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_39",
@@ -480,7 +619,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Linked List",
         "leetcodeUrl": "https://leetcode.com/problems/copy-list-with-random-pointer/",
         "neetcodeUrl": "https://neetcode.io/problems/copy-linked-list-with-random-pointer?list=neetcode150",
-        "javaFilePath": "src/Linked_List/CopyListWithRandomPointer.java"
+        "javaFilePath": "src/Linked_List/CopyListWithRandomPointer.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_40",
@@ -491,7 +633,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Linked List",
         "leetcodeUrl": "https://leetcode.com/problems/add-two-numbers/",
         "neetcodeUrl": "https://neetcode.io/problems/add-two-numbers?list=neetcode150",
-        "javaFilePath": "src/Linked_List/AddTwoNumbers.java"
+        "javaFilePath": "src/Linked_List/AddTwoNumbers.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_41",
@@ -502,7 +647,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Linked List",
         "leetcodeUrl": "https://leetcode.com/problems/find-the-duplicate-number/",
         "neetcodeUrl": "https://neetcode.io/problems/find-duplicate-integer?list=neetcode150",
-        "javaFilePath": "src/Linked_List/FindTheDuplicateNumber.java"
+        "javaFilePath": "src/Linked_List/FindTheDuplicateNumber.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_42",
@@ -513,7 +661,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Linked List",
         "leetcodeUrl": "https://leetcode.com/problems/lru-cache/",
         "neetcodeUrl": "https://neetcode.io/problems/lru-cache?list=neetcode150",
-        "javaFilePath": "src/Linked_List/LRUCache.java"
+        "javaFilePath": "src/Linked_List/LRUCache.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_43",
@@ -524,7 +675,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Linked List",
         "leetcodeUrl": "https://leetcode.com/problems/merge-k-sorted-lists/",
         "neetcodeUrl": "https://neetcode.io/problems/merge-k-sorted-linked-lists?list=neetcode150",
-        "javaFilePath": "src/Linked_List/MergeKSortedLists.java"
+        "javaFilePath": "src/Linked_List/MergeKSortedLists.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_44",
@@ -535,7 +690,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Linked List",
         "leetcodeUrl": "https://leetcode.com/problems/reverse-nodes-in-k-group/",
         "neetcodeUrl": "https://neetcode.io/problems/reverse-nodes-in-k-group?list=neetcode150",
-        "javaFilePath": "src/Linked_List/ReverseNodesInKGroup.java"
+        "javaFilePath": "src/Linked_List/ReverseNodesInKGroup.java",
+        "lists": [
+          "neetcode150"
+        ]
       }
     ]
   },
@@ -552,7 +710,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Trees",
         "leetcodeUrl": "https://leetcode.com/problems/invert-binary-tree/",
         "neetcodeUrl": "https://neetcode.io/problems/invert-a-binary-tree?list=neetcode150",
-        "javaFilePath": "src/Trees/InvertBinaryTree.java"
+        "javaFilePath": "src/Trees/InvertBinaryTree.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_46",
@@ -563,7 +725,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Trees",
         "leetcodeUrl": "https://leetcode.com/problems/maximum-depth-of-binary-tree/",
         "neetcodeUrl": "https://neetcode.io/problems/depth-of-binary-tree?list=neetcode150",
-        "javaFilePath": "src/Trees/MaximumDepthofBinaryTree.java"
+        "javaFilePath": "src/Trees/MaximumDepthofBinaryTree.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_47",
@@ -574,7 +740,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Trees",
         "leetcodeUrl": "https://leetcode.com/problems/diameter-of-binary-tree/",
         "neetcodeUrl": "https://neetcode.io/problems/binary-tree-diameter?list=neetcode150",
-        "javaFilePath": "src/Trees/DiameterofBinaryTree.java"
+        "javaFilePath": "src/Trees/DiameterofBinaryTree.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_48",
@@ -585,7 +754,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Trees",
         "leetcodeUrl": "https://leetcode.com/problems/balanced-binary-tree/",
         "neetcodeUrl": "https://neetcode.io/problems/balanced-binary-tree?list=neetcode150",
-        "javaFilePath": "src/Trees/BalancedBinaryTree.java"
+        "javaFilePath": "src/Trees/BalancedBinaryTree.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_49",
@@ -596,7 +768,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Trees",
         "leetcodeUrl": "https://leetcode.com/problems/same-tree/",
         "neetcodeUrl": "https://neetcode.io/problems/same-binary-tree?list=neetcode150",
-        "javaFilePath": "src/Trees/SameTree.java"
+        "javaFilePath": "src/Trees/SameTree.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_50",
@@ -607,7 +783,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Trees",
         "leetcodeUrl": "https://leetcode.com/problems/subtree-of-another-tree/",
         "neetcodeUrl": "https://neetcode.io/problems/subtree-of-a-binary-tree?list=neetcode150",
-        "javaFilePath": "src/Trees/SubtreeofAnotherTree.java"
+        "javaFilePath": "src/Trees/SubtreeofAnotherTree.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_51",
@@ -618,7 +798,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Trees",
         "leetcodeUrl": "https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/",
         "neetcodeUrl": "https://neetcode.io/problems/lowest-common-ancestor-in-binary-search-tree?list=neetcode150",
-        "javaFilePath": "src/Trees/LowestCommonAncestorofaBinarySearchTree.java"
+        "javaFilePath": "src/Trees/LowestCommonAncestorofaBinarySearchTree.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_52",
@@ -629,7 +813,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Trees",
         "leetcodeUrl": "https://leetcode.com/problems/binary-tree-level-order-traversal/",
         "neetcodeUrl": "https://neetcode.io/problems/level-order-traversal-of-binary-tree?list=neetcode150",
-        "javaFilePath": "src/Trees/BinaryTreeLevelOrderTraversal.java"
+        "javaFilePath": "src/Trees/BinaryTreeLevelOrderTraversal.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_53",
@@ -640,7 +828,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Trees",
         "leetcodeUrl": "https://leetcode.com/problems/binary-tree-right-side-view/",
         "neetcodeUrl": "https://neetcode.io/problems/binary-tree-right-side-view?list=neetcode150",
-        "javaFilePath": "src/Trees/BinaryTreeRightSideView.java"
+        "javaFilePath": "src/Trees/BinaryTreeRightSideView.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_54",
@@ -651,7 +842,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Trees",
         "leetcodeUrl": "https://leetcode.com/problems/count-good-nodes-in-binary-tree/",
         "neetcodeUrl": "https://neetcode.io/problems/count-good-nodes-in-binary-tree?list=neetcode150",
-        "javaFilePath": "src/Trees/CountGoodNodesInBinaryTree.java"
+        "javaFilePath": "src/Trees/CountGoodNodesInBinaryTree.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_55",
@@ -662,7 +856,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Trees",
         "leetcodeUrl": "https://leetcode.com/problems/validate-binary-search-tree/",
         "neetcodeUrl": "https://neetcode.io/problems/valid-binary-search-tree?list=neetcode150",
-        "javaFilePath": "src/Trees/ValidateBinarySearchTree.java"
+        "javaFilePath": "src/Trees/ValidateBinarySearchTree.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_56",
@@ -673,7 +871,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Trees",
         "leetcodeUrl": "https://leetcode.com/problems/kth-smallest-element-in-a-bst/",
         "neetcodeUrl": "https://neetcode.io/problems/kth-smallest-integer-in-bst?list=neetcode150",
-        "javaFilePath": "src/Trees/KthSmallestElementInaBst.java"
+        "javaFilePath": "src/Trees/KthSmallestElementInaBst.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_57",
@@ -684,7 +886,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Trees",
         "leetcodeUrl": "https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/",
         "neetcodeUrl": "https://neetcode.io/problems/binary-tree-from-preorder-and-inorder-traversal?list=neetcode150",
-        "javaFilePath": "src/Trees/ConstructBinaryTreeFromPreorderAndInorderTraversal.java"
+        "javaFilePath": "src/Trees/ConstructBinaryTreeFromPreorderAndInorderTraversal.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_58",
@@ -695,7 +901,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Trees",
         "leetcodeUrl": "https://leetcode.com/problems/binary-tree-maximum-path-sum/",
         "neetcodeUrl": "https://neetcode.io/problems/binary-tree-maximum-path-sum?list=neetcode150",
-        "javaFilePath": "src/Trees/BinaryTreeMaximumPathSum.java"
+        "javaFilePath": "src/Trees/BinaryTreeMaximumPathSum.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_59",
@@ -706,7 +916,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Trees",
         "leetcodeUrl": "https://leetcode.com/problems/serialize-and-deserialize-binary-tree/",
         "neetcodeUrl": "https://neetcode.io/problems/serialize-and-deserialize-binary-tree?list=neetcode150",
-        "javaFilePath": "src/Trees/SerializeAndDeserializeBinaryTree.java"
+        "javaFilePath": "src/Trees/SerializeAndDeserializeBinaryTree.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       }
     ]
   },
@@ -723,7 +937,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Heap / Priority Queue",
         "leetcodeUrl": "https://leetcode.com/problems/kth-largest-element-in-a-stream/",
         "neetcodeUrl": "https://neetcode.io/problems/kth-largest-integer-in-a-stream?list=neetcode150",
-        "javaFilePath": "src/Heap___Priority_Queue/KthLargestElementInaStream.java"
+        "javaFilePath": "src/Heap___Priority_Queue/KthLargestElementInaStream.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_61",
@@ -734,7 +951,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Heap / Priority Queue",
         "leetcodeUrl": "https://leetcode.com/problems/last-stone-weight/",
         "neetcodeUrl": "https://neetcode.io/problems/last-stone-weight?list=neetcode150",
-        "javaFilePath": "src/Heap___Priority_Queue/LastStoneWeight.java"
+        "javaFilePath": "src/Heap___Priority_Queue/LastStoneWeight.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_62",
@@ -745,7 +965,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Heap / Priority Queue",
         "leetcodeUrl": "https://leetcode.com/problems/k-closest-points-to-origin/",
         "neetcodeUrl": "https://neetcode.io/problems/k-closest-points-to-origin?list=neetcode150",
-        "javaFilePath": "src/Heap___Priority_Queue/KClosestPointstoOrigin.java"
+        "javaFilePath": "src/Heap___Priority_Queue/KClosestPointstoOrigin.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_63",
@@ -756,7 +979,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Heap / Priority Queue",
         "leetcodeUrl": "https://leetcode.com/problems/kth-largest-element-in-an-array/",
         "neetcodeUrl": "https://neetcode.io/problems/kth-largest-element-in-an-array?list=neetcode150",
-        "javaFilePath": "src/Heap___Priority_Queue/KthLargestElementInAnArray.java"
+        "javaFilePath": "src/Heap___Priority_Queue/KthLargestElementInAnArray.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_64",
@@ -767,7 +993,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Heap / Priority Queue",
         "leetcodeUrl": "https://leetcode.com/problems/task-scheduler/",
         "neetcodeUrl": "https://neetcode.io/problems/task-scheduling?list=neetcode150",
-        "javaFilePath": "src/Heap___Priority_Queue/TaskScheduler.java"
+        "javaFilePath": "src/Heap___Priority_Queue/TaskScheduler.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_65",
@@ -778,7 +1007,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Heap / Priority Queue",
         "leetcodeUrl": "https://leetcode.com/problems/design-twitter/",
         "neetcodeUrl": "https://neetcode.io/problems/design-twitter-feed?list=neetcode150",
-        "javaFilePath": "src/Heap___Priority_Queue/DesignTwitter.java"
+        "javaFilePath": "src/Heap___Priority_Queue/DesignTwitter.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_66",
@@ -789,7 +1021,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Heap / Priority Queue",
         "leetcodeUrl": "https://leetcode.com/problems/find-median-from-data-stream/",
         "neetcodeUrl": "https://neetcode.io/problems/find-median-in-a-data-stream?list=neetcode150",
-        "javaFilePath": "src/Heap___Priority_Queue/FindMedianFromDataStream.java"
+        "javaFilePath": "src/Heap___Priority_Queue/FindMedianFromDataStream.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       }
     ]
   },
@@ -806,7 +1042,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Backtracking",
         "leetcodeUrl": "https://leetcode.com/problems/subsets/",
         "neetcodeUrl": "https://neetcode.io/problems/subsets?list=neetcode150",
-        "javaFilePath": "src/Backtracking/Subsets.java"
+        "javaFilePath": "src/Backtracking/Subsets.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_68",
@@ -817,7 +1056,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Backtracking",
         "leetcodeUrl": "https://leetcode.com/problems/combination-sum/",
         "neetcodeUrl": "https://neetcode.io/problems/combination-target-sum?list=neetcode150",
-        "javaFilePath": "src/Backtracking/CombinationSum.java"
+        "javaFilePath": "src/Backtracking/CombinationSum.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_69",
@@ -828,7 +1071,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Backtracking",
         "leetcodeUrl": "https://leetcode.com/problems/combination-sum-ii/",
         "neetcodeUrl": "https://neetcode.io/problems/combination-target-sum-ii?list=neetcode150",
-        "javaFilePath": "src/Backtracking/CombinationSumII.java"
+        "javaFilePath": "src/Backtracking/CombinationSumII.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_70",
@@ -839,7 +1085,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Backtracking",
         "leetcodeUrl": "https://leetcode.com/problems/permutations/",
         "neetcodeUrl": "https://neetcode.io/problems/permutations?list=neetcode150",
-        "javaFilePath": "src/Backtracking/Permutations.java"
+        "javaFilePath": "src/Backtracking/Permutations.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_71",
@@ -850,7 +1099,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Backtracking",
         "leetcodeUrl": "https://leetcode.com/problems/subsets-ii/",
         "neetcodeUrl": "https://neetcode.io/problems/subsets-ii?list=neetcode150",
-        "javaFilePath": "src/Backtracking/SubsetsII.java"
+        "javaFilePath": "src/Backtracking/SubsetsII.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_72",
@@ -861,7 +1113,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Backtracking",
         "leetcodeUrl": "https://leetcode.com/problems/generate-parentheses/",
         "neetcodeUrl": "https://neetcode.io/problems/generate-parentheses?list=neetcode150",
-        "javaFilePath": "src/Backtracking/GenerateParentheses.java"
+        "javaFilePath": "src/Backtracking/GenerateParentheses.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_73",
@@ -872,7 +1127,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Backtracking",
         "leetcodeUrl": "https://leetcode.com/problems/word-search/",
         "neetcodeUrl": "https://neetcode.io/problems/search-for-word?list=neetcode150",
-        "javaFilePath": "src/Backtracking/WordSearch.java"
+        "javaFilePath": "src/Backtracking/WordSearch.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_74",
@@ -883,7 +1142,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Backtracking",
         "leetcodeUrl": "https://leetcode.com/problems/palindrome-partitioning/",
         "neetcodeUrl": "https://neetcode.io/problems/palindrome-partitioning?list=neetcode150",
-        "javaFilePath": "src/Backtracking/PalindromePartitioning.java"
+        "javaFilePath": "src/Backtracking/PalindromePartitioning.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_75",
@@ -894,7 +1156,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Backtracking",
         "leetcodeUrl": "https://leetcode.com/problems/letter-combinations-of-a-phone-number/",
         "neetcodeUrl": "https://neetcode.io/problems/combinations-of-a-phone-number?list=neetcode150",
-        "javaFilePath": "src/Backtracking/LetterCombinationsofaPhoneNumber.java"
+        "javaFilePath": "src/Backtracking/LetterCombinationsofaPhoneNumber.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_76",
@@ -905,7 +1170,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Backtracking",
         "leetcodeUrl": "https://leetcode.com/problems/n-queens/",
         "neetcodeUrl": "https://neetcode.io/problems/n-queens?list=neetcode150",
-        "javaFilePath": "src/Backtracking/NQueens.java"
+        "javaFilePath": "src/Backtracking/NQueens.java",
+        "lists": [
+          "neetcode150"
+        ]
       }
     ]
   },
@@ -922,7 +1190,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Tries",
         "leetcodeUrl": "https://leetcode.com/problems/implement-trie-prefix-tree/",
         "neetcodeUrl": "https://neetcode.io/problems/implement-prefix-tree?list=neetcode150",
-        "javaFilePath": "src/Tries/ImplementTriePrefixTree.java"
+        "javaFilePath": "src/Tries/ImplementTriePrefixTree.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_78",
@@ -933,7 +1205,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Tries",
         "leetcodeUrl": "https://leetcode.com/problems/design-add-and-search-words-data-structure/",
         "neetcodeUrl": "https://neetcode.io/problems/design-word-search-data-structure?list=neetcode150",
-        "javaFilePath": "src/Tries/DesignAddAndSearchWordsDataStructure.java"
+        "javaFilePath": "src/Tries/DesignAddAndSearchWordsDataStructure.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_79",
@@ -944,7 +1220,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Tries",
         "leetcodeUrl": "https://leetcode.com/problems/word-search-ii/",
         "neetcodeUrl": "https://neetcode.io/problems/search-for-word-ii?list=neetcode150",
-        "javaFilePath": "src/Tries/WordSearchII.java"
+        "javaFilePath": "src/Tries/WordSearchII.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       }
     ]
   },
@@ -961,7 +1241,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Graphs",
         "leetcodeUrl": "https://leetcode.com/problems/number-of-islands/",
         "neetcodeUrl": "https://neetcode.io/problems/count-number-of-islands?list=neetcode150",
-        "javaFilePath": "src/Graphs/NumberofIslands.java"
+        "javaFilePath": "src/Graphs/NumberofIslands.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_81",
@@ -972,7 +1256,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Graphs",
         "leetcodeUrl": "https://leetcode.com/problems/max-area-of-island/",
         "neetcodeUrl": "https://neetcode.io/problems/max-area-of-island?list=neetcode150",
-        "javaFilePath": "src/Graphs/MaxAreaofIsland.java"
+        "javaFilePath": "src/Graphs/MaxAreaofIsland.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_82",
@@ -983,7 +1270,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Graphs",
         "leetcodeUrl": "https://leetcode.com/problems/clone-graph/",
         "neetcodeUrl": "https://neetcode.io/problems/clone-graph?list=neetcode150",
-        "javaFilePath": "src/Graphs/CloneGraph.java"
+        "javaFilePath": "src/Graphs/CloneGraph.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_83",
@@ -994,7 +1285,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Graphs",
         "leetcodeUrl": "https://leetcode.com/problems/walls-and-gates/",
         "neetcodeUrl": "https://neetcode.io/problems/islands-and-treasure?list=neetcode150",
-        "javaFilePath": "src/Graphs/WallsAndGates.java"
+        "javaFilePath": "src/Graphs/WallsAndGates.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_84",
@@ -1005,7 +1299,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Graphs",
         "leetcodeUrl": "https://leetcode.com/problems/rotting-oranges/",
         "neetcodeUrl": "https://neetcode.io/problems/rotting-fruit?list=neetcode150",
-        "javaFilePath": "src/Graphs/RottingOranges.java"
+        "javaFilePath": "src/Graphs/RottingOranges.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_85",
@@ -1016,7 +1313,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Graphs",
         "leetcodeUrl": "https://leetcode.com/problems/pacific-atlantic-water-flow/",
         "neetcodeUrl": "https://neetcode.io/problems/pacific-atlantic-water-flow?list=neetcode150",
-        "javaFilePath": "src/Graphs/PacificAtlanticWaterFlow.java"
+        "javaFilePath": "src/Graphs/PacificAtlanticWaterFlow.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_86",
@@ -1027,7 +1328,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Graphs",
         "leetcodeUrl": "https://leetcode.com/problems/surrounded-regions/",
         "neetcodeUrl": "https://neetcode.io/problems/surrounded-regions?list=neetcode150",
-        "javaFilePath": "src/Graphs/SurroundedRegions.java"
+        "javaFilePath": "src/Graphs/SurroundedRegions.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_87",
@@ -1038,7 +1342,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Graphs",
         "leetcodeUrl": "https://leetcode.com/problems/course-schedule/",
         "neetcodeUrl": "https://neetcode.io/problems/course-schedule?list=neetcode150",
-        "javaFilePath": "src/Graphs/CourseSchedule.java"
+        "javaFilePath": "src/Graphs/CourseSchedule.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_88",
@@ -1049,7 +1357,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Graphs",
         "leetcodeUrl": "https://leetcode.com/problems/course-schedule-ii/",
         "neetcodeUrl": "https://neetcode.io/problems/course-schedule-ii?list=neetcode150",
-        "javaFilePath": "src/Graphs/CourseScheduleII.java"
+        "javaFilePath": "src/Graphs/CourseScheduleII.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_89",
@@ -1060,7 +1371,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Graphs",
         "leetcodeUrl": "https://leetcode.com/problems/graph-valid-tree/",
         "neetcodeUrl": "https://neetcode.io/problems/valid-tree?list=neetcode150",
-        "javaFilePath": "src/Graphs/GraphValidTree.java"
+        "javaFilePath": "src/Graphs/GraphValidTree.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_90",
@@ -1071,7 +1386,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Graphs",
         "leetcodeUrl": "https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/",
         "neetcodeUrl": "https://neetcode.io/problems/count-connected-components?list=neetcode150",
-        "javaFilePath": "src/Graphs/NumberofConnectedComponentsInAnUndirectedGraph.java"
+        "javaFilePath": "src/Graphs/NumberofConnectedComponentsInAnUndirectedGraph.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_91",
@@ -1082,7 +1401,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Graphs",
         "leetcodeUrl": "https://leetcode.com/problems/redundant-connection/",
         "neetcodeUrl": "https://neetcode.io/problems/redundant-connection?list=neetcode150",
-        "javaFilePath": "src/Graphs/RedundantConnection.java"
+        "javaFilePath": "src/Graphs/RedundantConnection.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_92",
@@ -1093,7 +1415,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Graphs",
         "leetcodeUrl": "https://leetcode.com/problems/word-ladder/",
         "neetcodeUrl": "https://neetcode.io/problems/word-ladder?list=neetcode150",
-        "javaFilePath": "src/Graphs/WordLadder.java"
+        "javaFilePath": "src/Graphs/WordLadder.java",
+        "lists": [
+          "neetcode150"
+        ]
       }
     ]
   },
@@ -1110,7 +1435,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Advanced Graphs",
         "leetcodeUrl": "https://leetcode.com/problems/network-delay-time/",
         "neetcodeUrl": "https://neetcode.io/problems/network-delay-time?list=neetcode150",
-        "javaFilePath": "src/Advanced_Graphs/NetworkDelayTime.java"
+        "javaFilePath": "src/Advanced_Graphs/NetworkDelayTime.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_94",
@@ -1121,7 +1449,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Advanced Graphs",
         "leetcodeUrl": "https://leetcode.com/problems/reconstruct-itinerary/",
         "neetcodeUrl": "https://neetcode.io/problems/reconstruct-flight-path?list=neetcode150",
-        "javaFilePath": "src/Advanced_Graphs/ReconstructItinerary.java"
+        "javaFilePath": "src/Advanced_Graphs/ReconstructItinerary.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_95",
@@ -1132,7 +1463,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Advanced Graphs",
         "leetcodeUrl": "https://leetcode.com/problems/min-cost-to-connect-all-points/",
         "neetcodeUrl": "https://neetcode.io/problems/min-cost-to-connect-points?list=neetcode150",
-        "javaFilePath": "src/Advanced_Graphs/MinCosttoConnectAllPoints.java"
+        "javaFilePath": "src/Advanced_Graphs/MinCosttoConnectAllPoints.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_96",
@@ -1143,7 +1477,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Advanced Graphs",
         "leetcodeUrl": "https://leetcode.com/problems/swim-in-rising-water/",
         "neetcodeUrl": "https://neetcode.io/problems/swim-in-rising-water?list=neetcode150",
-        "javaFilePath": "src/Advanced_Graphs/SwimInRisingWater.java"
+        "javaFilePath": "src/Advanced_Graphs/SwimInRisingWater.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_97",
@@ -1154,7 +1491,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Advanced Graphs",
         "leetcodeUrl": "https://leetcode.com/problems/alien-dictionary/",
         "neetcodeUrl": "https://neetcode.io/problems/foreign-dictionary?list=neetcode150",
-        "javaFilePath": "src/Advanced_Graphs/AlienDictionary.java"
+        "javaFilePath": "src/Advanced_Graphs/AlienDictionary.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_98",
@@ -1165,7 +1506,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Advanced Graphs",
         "leetcodeUrl": "https://leetcode.com/problems/cheapest-flights-within-k-stops/",
         "neetcodeUrl": "https://neetcode.io/problems/cheapest-flight-path?list=neetcode150",
-        "javaFilePath": "src/Advanced_Graphs/CheapestFlightsWithinKStops.java"
+        "javaFilePath": "src/Advanced_Graphs/CheapestFlightsWithinKStops.java",
+        "lists": [
+          "neetcode150"
+        ]
       }
     ]
   },
@@ -1182,7 +1526,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "1-D Dynamic Programming",
         "leetcodeUrl": "https://leetcode.com/problems/climbing-stairs/",
         "neetcodeUrl": "https://neetcode.io/problems/climbing-stairs?list=neetcode150",
-        "javaFilePath": "src/1_D_Dynamic_Programming/ClimbingStairs.java"
+        "javaFilePath": "src/1_D_Dynamic_Programming/ClimbingStairs.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_100",
@@ -1193,7 +1541,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "1-D Dynamic Programming",
         "leetcodeUrl": "https://leetcode.com/problems/min-cost-climbing-stairs/",
         "neetcodeUrl": "https://neetcode.io/problems/min-cost-climbing-stairs?list=neetcode150",
-        "javaFilePath": "src/1_D_Dynamic_Programming/MinCostClimbingStairs.java"
+        "javaFilePath": "src/1_D_Dynamic_Programming/MinCostClimbingStairs.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_101",
@@ -1204,7 +1555,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "1-D Dynamic Programming",
         "leetcodeUrl": "https://leetcode.com/problems/house-robber/",
         "neetcodeUrl": "https://neetcode.io/problems/house-robber?list=neetcode150",
-        "javaFilePath": "src/1_D_Dynamic_Programming/HouseRobber.java"
+        "javaFilePath": "src/1_D_Dynamic_Programming/HouseRobber.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_102",
@@ -1215,7 +1570,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "1-D Dynamic Programming",
         "leetcodeUrl": "https://leetcode.com/problems/house-robber-ii/",
         "neetcodeUrl": "https://neetcode.io/problems/house-robber-ii?list=neetcode150",
-        "javaFilePath": "src/1_D_Dynamic_Programming/HouseRobberII.java"
+        "javaFilePath": "src/1_D_Dynamic_Programming/HouseRobberII.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_103",
@@ -1226,7 +1585,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "1-D Dynamic Programming",
         "leetcodeUrl": "https://leetcode.com/problems/longest-palindromic-substring/",
         "neetcodeUrl": "https://neetcode.io/problems/longest-palindromic-substring?list=neetcode150",
-        "javaFilePath": "src/1_D_Dynamic_Programming/LongestPalindromicSubstring.java"
+        "javaFilePath": "src/1_D_Dynamic_Programming/LongestPalindromicSubstring.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_104",
@@ -1237,7 +1600,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "1-D Dynamic Programming",
         "leetcodeUrl": "https://leetcode.com/problems/palindromic-substrings/",
         "neetcodeUrl": "https://neetcode.io/problems/palindromic-substrings?list=neetcode150",
-        "javaFilePath": "src/1_D_Dynamic_Programming/PalindromicSubstrings.java"
+        "javaFilePath": "src/1_D_Dynamic_Programming/PalindromicSubstrings.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_105",
@@ -1248,7 +1615,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "1-D Dynamic Programming",
         "leetcodeUrl": "https://leetcode.com/problems/decode-ways/",
         "neetcodeUrl": "https://neetcode.io/problems/decode-ways?list=neetcode150",
-        "javaFilePath": "src/1_D_Dynamic_Programming/DecodeWays.java"
+        "javaFilePath": "src/1_D_Dynamic_Programming/DecodeWays.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_106",
@@ -1259,7 +1630,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "1-D Dynamic Programming",
         "leetcodeUrl": "https://leetcode.com/problems/coin-change/",
         "neetcodeUrl": "https://neetcode.io/problems/coin-change?list=neetcode150",
-        "javaFilePath": "src/1_D_Dynamic_Programming/CoinChange.java"
+        "javaFilePath": "src/1_D_Dynamic_Programming/CoinChange.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_107",
@@ -1270,7 +1645,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "1-D Dynamic Programming",
         "leetcodeUrl": "https://leetcode.com/problems/maximum-product-subarray/",
         "neetcodeUrl": "https://neetcode.io/problems/maximum-product-subarray?list=neetcode150",
-        "javaFilePath": "src/1_D_Dynamic_Programming/MaximumProductSubarray.java"
+        "javaFilePath": "src/1_D_Dynamic_Programming/MaximumProductSubarray.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_108",
@@ -1281,7 +1660,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "1-D Dynamic Programming",
         "leetcodeUrl": "https://leetcode.com/problems/word-break/",
         "neetcodeUrl": "https://neetcode.io/problems/word-break?list=neetcode150",
-        "javaFilePath": "src/1_D_Dynamic_Programming/WordBreak.java"
+        "javaFilePath": "src/1_D_Dynamic_Programming/WordBreak.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_109",
@@ -1292,7 +1675,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "1-D Dynamic Programming",
         "leetcodeUrl": "https://leetcode.com/problems/longest-increasing-subsequence/",
         "neetcodeUrl": "https://neetcode.io/problems/longest-increasing-subsequence?list=neetcode150",
-        "javaFilePath": "src/1_D_Dynamic_Programming/LongestIncreasingSubsequence.java"
+        "javaFilePath": "src/1_D_Dynamic_Programming/LongestIncreasingSubsequence.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_110",
@@ -1303,7 +1690,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "1-D Dynamic Programming",
         "leetcodeUrl": "https://leetcode.com/problems/partition-equal-subset-sum/",
         "neetcodeUrl": "https://neetcode.io/problems/partition-equal-subset-sum?list=neetcode150",
-        "javaFilePath": "src/1_D_Dynamic_Programming/PartitionEqualSubsetSum.java"
+        "javaFilePath": "src/1_D_Dynamic_Programming/PartitionEqualSubsetSum.java",
+        "lists": [
+          "neetcode150"
+        ]
       }
     ]
   },
@@ -1320,7 +1710,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "2-D Dynamic Programming",
         "leetcodeUrl": "https://leetcode.com/problems/unique-paths/",
         "neetcodeUrl": "https://neetcode.io/problems/count-paths?list=neetcode150",
-        "javaFilePath": "src/2_D_Dynamic_Programming/UniquePaths.java"
+        "javaFilePath": "src/2_D_Dynamic_Programming/UniquePaths.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_112",
@@ -1331,7 +1725,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "2-D Dynamic Programming",
         "leetcodeUrl": "https://leetcode.com/problems/longest-common-subsequence/",
         "neetcodeUrl": "https://neetcode.io/problems/longest-common-subsequence?list=neetcode150",
-        "javaFilePath": "src/2_D_Dynamic_Programming/LongestCommonSubsequence.java"
+        "javaFilePath": "src/2_D_Dynamic_Programming/LongestCommonSubsequence.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_113",
@@ -1342,7 +1740,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "2-D Dynamic Programming",
         "leetcodeUrl": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/",
         "neetcodeUrl": "https://neetcode.io/problems/buy-and-sell-crypto-with-cooldown?list=neetcode150",
-        "javaFilePath": "src/2_D_Dynamic_Programming/BestTimetoBuyAndSellStockWithCooldown.java"
+        "javaFilePath": "src/2_D_Dynamic_Programming/BestTimetoBuyAndSellStockWithCooldown.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_114",
@@ -1353,7 +1754,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "2-D Dynamic Programming",
         "leetcodeUrl": "https://leetcode.com/problems/coin-change-ii/",
         "neetcodeUrl": "https://neetcode.io/problems/coin-change-ii?list=neetcode150",
-        "javaFilePath": "src/2_D_Dynamic_Programming/CoinChangeII.java"
+        "javaFilePath": "src/2_D_Dynamic_Programming/CoinChangeII.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_115",
@@ -1364,7 +1768,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "2-D Dynamic Programming",
         "leetcodeUrl": "https://leetcode.com/problems/target-sum/",
         "neetcodeUrl": "https://neetcode.io/problems/target-sum?list=neetcode150",
-        "javaFilePath": "src/2_D_Dynamic_Programming/TargetSum.java"
+        "javaFilePath": "src/2_D_Dynamic_Programming/TargetSum.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_116",
@@ -1375,7 +1782,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "2-D Dynamic Programming",
         "leetcodeUrl": "https://leetcode.com/problems/interleaving-string/",
         "neetcodeUrl": "https://neetcode.io/problems/interleaving-string?list=neetcode150",
-        "javaFilePath": "src/2_D_Dynamic_Programming/InterleavingString.java"
+        "javaFilePath": "src/2_D_Dynamic_Programming/InterleavingString.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_117",
@@ -1386,7 +1796,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "2-D Dynamic Programming",
         "leetcodeUrl": "https://leetcode.com/problems/longest-increasing-path-in-a-matrix/",
         "neetcodeUrl": "https://neetcode.io/problems/longest-increasing-path-in-matrix?list=neetcode150",
-        "javaFilePath": "src/2_D_Dynamic_Programming/LongestIncreasingPathInaMatrix.java"
+        "javaFilePath": "src/2_D_Dynamic_Programming/LongestIncreasingPathInaMatrix.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_118",
@@ -1397,7 +1810,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "2-D Dynamic Programming",
         "leetcodeUrl": "https://leetcode.com/problems/distinct-subsequences/",
         "neetcodeUrl": "https://neetcode.io/problems/count-subsequences?list=neetcode150",
-        "javaFilePath": "src/2_D_Dynamic_Programming/DistinctSubsequences.java"
+        "javaFilePath": "src/2_D_Dynamic_Programming/DistinctSubsequences.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_119",
@@ -1408,7 +1824,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "2-D Dynamic Programming",
         "leetcodeUrl": "https://leetcode.com/problems/edit-distance/",
         "neetcodeUrl": "https://neetcode.io/problems/edit-distance?list=neetcode150",
-        "javaFilePath": "src/2_D_Dynamic_Programming/EditDistance.java"
+        "javaFilePath": "src/2_D_Dynamic_Programming/EditDistance.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_120",
@@ -1419,7 +1838,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "2-D Dynamic Programming",
         "leetcodeUrl": "https://leetcode.com/problems/burst-balloons/",
         "neetcodeUrl": "https://neetcode.io/problems/burst-balloons?list=neetcode150",
-        "javaFilePath": "src/2_D_Dynamic_Programming/BurstBalloons.java"
+        "javaFilePath": "src/2_D_Dynamic_Programming/BurstBalloons.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_121",
@@ -1430,7 +1852,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "2-D Dynamic Programming",
         "leetcodeUrl": "https://leetcode.com/problems/regular-expression-matching/",
         "neetcodeUrl": "https://neetcode.io/problems/regular-expression-matching?list=neetcode150",
-        "javaFilePath": "src/2_D_Dynamic_Programming/RegularExpressionMatching.java"
+        "javaFilePath": "src/2_D_Dynamic_Programming/RegularExpressionMatching.java",
+        "lists": [
+          "neetcode150"
+        ]
       }
     ]
   },
@@ -1447,7 +1872,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Greedy",
         "leetcodeUrl": "https://leetcode.com/problems/maximum-subarray/",
         "neetcodeUrl": "https://neetcode.io/problems/maximum-subarray?list=neetcode150",
-        "javaFilePath": "src/Greedy/MaximumSubarray.java"
+        "javaFilePath": "src/Greedy/MaximumSubarray.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_123",
@@ -1458,7 +1887,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Greedy",
         "leetcodeUrl": "https://leetcode.com/problems/jump-game/",
         "neetcodeUrl": "https://neetcode.io/problems/jump-game?list=neetcode150",
-        "javaFilePath": "src/Greedy/JumpGame.java"
+        "javaFilePath": "src/Greedy/JumpGame.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_124",
@@ -1469,7 +1902,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Greedy",
         "leetcodeUrl": "https://leetcode.com/problems/jump-game-ii/",
         "neetcodeUrl": "https://neetcode.io/problems/jump-game-ii?list=neetcode150",
-        "javaFilePath": "src/Greedy/JumpGameII.java"
+        "javaFilePath": "src/Greedy/JumpGameII.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_125",
@@ -1480,7 +1916,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Greedy",
         "leetcodeUrl": "https://leetcode.com/problems/gas-station/",
         "neetcodeUrl": "https://neetcode.io/problems/gas-station?list=neetcode150",
-        "javaFilePath": "src/Greedy/GasStation.java"
+        "javaFilePath": "src/Greedy/GasStation.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_126",
@@ -1491,7 +1930,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Greedy",
         "leetcodeUrl": "https://leetcode.com/problems/hand-of-straights/",
         "neetcodeUrl": "https://neetcode.io/problems/hand-of-straights?list=neetcode150",
-        "javaFilePath": "src/Greedy/HandofStraights.java"
+        "javaFilePath": "src/Greedy/HandofStraights.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_127",
@@ -1502,7 +1944,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Greedy",
         "leetcodeUrl": "https://leetcode.com/problems/merge-triplets-to-form-target-triplet/",
         "neetcodeUrl": "https://neetcode.io/problems/merge-triplets-to-form-target?list=neetcode150",
-        "javaFilePath": "src/Greedy/MergeTripletstoFormTargetTriplet.java"
+        "javaFilePath": "src/Greedy/MergeTripletstoFormTargetTriplet.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_128",
@@ -1513,7 +1958,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Greedy",
         "leetcodeUrl": "https://leetcode.com/problems/partition-labels/",
         "neetcodeUrl": "https://neetcode.io/problems/partition-labels?list=neetcode150",
-        "javaFilePath": "src/Greedy/PartitionLabels.java"
+        "javaFilePath": "src/Greedy/PartitionLabels.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_129",
@@ -1524,7 +1972,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Greedy",
         "leetcodeUrl": "https://leetcode.com/problems/valid-parenthesis-string/",
         "neetcodeUrl": "https://neetcode.io/problems/valid-parenthesis-string?list=neetcode150",
-        "javaFilePath": "src/Greedy/ValidParenthesisString.java"
+        "javaFilePath": "src/Greedy/ValidParenthesisString.java",
+        "lists": [
+          "neetcode150"
+        ]
       }
     ]
   },
@@ -1541,7 +1992,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Intervals",
         "leetcodeUrl": "https://leetcode.com/problems/insert-interval/",
         "neetcodeUrl": "https://neetcode.io/problems/insert-new-interval?list=neetcode150",
-        "javaFilePath": "src/Intervals/InsertInterval.java"
+        "javaFilePath": "src/Intervals/InsertInterval.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_131",
@@ -1552,7 +2007,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Intervals",
         "leetcodeUrl": "https://leetcode.com/problems/merge-intervals/",
         "neetcodeUrl": "https://neetcode.io/problems/merge-intervals?list=neetcode150",
-        "javaFilePath": "src/Intervals/MergeIntervals.java"
+        "javaFilePath": "src/Intervals/MergeIntervals.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_132",
@@ -1563,7 +2022,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Intervals",
         "leetcodeUrl": "https://leetcode.com/problems/non-overlapping-intervals/",
         "neetcodeUrl": "https://neetcode.io/problems/non-overlapping-intervals?list=neetcode150",
-        "javaFilePath": "src/Intervals/NonOverlappingIntervals.java"
+        "javaFilePath": "src/Intervals/NonOverlappingIntervals.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_133",
@@ -1574,7 +2037,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Intervals",
         "leetcodeUrl": "https://leetcode.com/problems/meeting-rooms/",
         "neetcodeUrl": "https://neetcode.io/problems/meeting-schedule?list=neetcode150",
-        "javaFilePath": "src/Intervals/MeetingRooms.java"
+        "javaFilePath": "src/Intervals/MeetingRooms.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_134",
@@ -1585,7 +2052,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Intervals",
         "leetcodeUrl": "https://leetcode.com/problems/meeting-rooms-ii/",
         "neetcodeUrl": "https://neetcode.io/problems/meeting-schedule-ii?list=neetcode150",
-        "javaFilePath": "src/Intervals/MeetingRoomsII.java"
+        "javaFilePath": "src/Intervals/MeetingRoomsII.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_135",
@@ -1596,7 +2067,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Intervals",
         "leetcodeUrl": "https://leetcode.com/problems/minimum-interval-to-include-each-query/",
         "neetcodeUrl": "https://neetcode.io/problems/minimum-interval-including-query?list=neetcode150",
-        "javaFilePath": "src/Intervals/MinimumIntervaltoIncludeEachQuery.java"
+        "javaFilePath": "src/Intervals/MinimumIntervaltoIncludeEachQuery.java",
+        "lists": [
+          "neetcode150"
+        ]
       }
     ]
   },
@@ -1613,7 +2087,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Math & Geometry",
         "leetcodeUrl": "https://leetcode.com/problems/rotate-image/",
         "neetcodeUrl": "https://neetcode.io/problems/rotate-matrix?list=neetcode150",
-        "javaFilePath": "src/Math___Geometry/RotateImage.java"
+        "javaFilePath": "src/Math___Geometry/RotateImage.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_137",
@@ -1624,7 +2102,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Math & Geometry",
         "leetcodeUrl": "https://leetcode.com/problems/spiral-matrix/",
         "neetcodeUrl": "https://neetcode.io/problems/spiral-matrix?list=neetcode150",
-        "javaFilePath": "src/Math___Geometry/SpiralMatrix.java"
+        "javaFilePath": "src/Math___Geometry/SpiralMatrix.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_138",
@@ -1635,7 +2117,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Math & Geometry",
         "leetcodeUrl": "https://leetcode.com/problems/set-matrix-zeroes/",
         "neetcodeUrl": "https://neetcode.io/problems/set-zeroes-in-matrix?list=neetcode150",
-        "javaFilePath": "src/Math___Geometry/SetMatrixZeroes.java"
+        "javaFilePath": "src/Math___Geometry/SetMatrixZeroes.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_139",
@@ -1646,7 +2132,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Math & Geometry",
         "leetcodeUrl": "https://leetcode.com/problems/happy-number/",
         "neetcodeUrl": "https://neetcode.io/problems/non-cyclical-number?list=neetcode150",
-        "javaFilePath": "src/Math___Geometry/HappyNumber.java"
+        "javaFilePath": "src/Math___Geometry/HappyNumber.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_140",
@@ -1657,7 +2146,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Math & Geometry",
         "leetcodeUrl": "https://leetcode.com/problems/plus-one/",
         "neetcodeUrl": "https://neetcode.io/problems/plus-one?list=neetcode150",
-        "javaFilePath": "src/Math___Geometry/PlusOne.java"
+        "javaFilePath": "src/Math___Geometry/PlusOne.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_141",
@@ -1668,7 +2160,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Math & Geometry",
         "leetcodeUrl": "https://leetcode.com/problems/powx-n/",
         "neetcodeUrl": "https://neetcode.io/problems/pow-x-n?list=neetcode150",
-        "javaFilePath": "src/Math___Geometry/Powxn.java"
+        "javaFilePath": "src/Math___Geometry/Powxn.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_142",
@@ -1679,7 +2174,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Math & Geometry",
         "leetcodeUrl": "https://leetcode.com/problems/multiply-strings/",
         "neetcodeUrl": "https://neetcode.io/problems/multiply-strings?list=neetcode150",
-        "javaFilePath": "src/Math___Geometry/MultiplyStrings.java"
+        "javaFilePath": "src/Math___Geometry/MultiplyStrings.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_143",
@@ -1690,7 +2188,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Math & Geometry",
         "leetcodeUrl": "https://leetcode.com/problems/detect-squares/",
         "neetcodeUrl": "https://neetcode.io/problems/count-squares?list=neetcode150",
-        "javaFilePath": "src/Math___Geometry/DetectSquares.java"
+        "javaFilePath": "src/Math___Geometry/DetectSquares.java",
+        "lists": [
+          "neetcode150"
+        ]
       }
     ]
   },
@@ -1707,7 +2208,10 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Bit Manipulation",
         "leetcodeUrl": "https://leetcode.com/problems/single-number/",
         "neetcodeUrl": "https://neetcode.io/problems/single-number?list=neetcode150",
-        "javaFilePath": "src/Bit_Manipulation/SingleNumber.java"
+        "javaFilePath": "src/Bit_Manipulation/SingleNumber.java",
+        "lists": [
+          "neetcode150"
+        ]
       },
       {
         "id": "nc_145",
@@ -1718,7 +2222,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Bit Manipulation",
         "leetcodeUrl": "https://leetcode.com/problems/number-of-1-bits/",
         "neetcodeUrl": "https://neetcode.io/problems/number-of-one-bits?list=neetcode150",
-        "javaFilePath": "src/Bit_Manipulation/Numberof1Bits.java"
+        "javaFilePath": "src/Bit_Manipulation/Numberof1Bits.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_146",
@@ -1729,7 +2237,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Bit Manipulation",
         "leetcodeUrl": "https://leetcode.com/problems/counting-bits/",
         "neetcodeUrl": "https://neetcode.io/problems/counting-bits?list=neetcode150",
-        "javaFilePath": "src/Bit_Manipulation/CountingBits.java"
+        "javaFilePath": "src/Bit_Manipulation/CountingBits.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_147",
@@ -1740,7 +2252,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Bit Manipulation",
         "leetcodeUrl": "https://leetcode.com/problems/reverse-bits/",
         "neetcodeUrl": "https://neetcode.io/problems/reverse-bits?list=neetcode150",
-        "javaFilePath": "src/Bit_Manipulation/ReverseBits.java"
+        "javaFilePath": "src/Bit_Manipulation/ReverseBits.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_148",
@@ -1751,7 +2267,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Bit Manipulation",
         "leetcodeUrl": "https://leetcode.com/problems/missing-number/",
         "neetcodeUrl": "https://neetcode.io/problems/missing-number?list=neetcode150",
-        "javaFilePath": "src/Bit_Manipulation/MissingNumber.java"
+        "javaFilePath": "src/Bit_Manipulation/MissingNumber.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_149",
@@ -1762,7 +2282,11 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Bit Manipulation",
         "leetcodeUrl": "https://leetcode.com/problems/sum-of-two-integers/",
         "neetcodeUrl": "https://neetcode.io/problems/sum-of-two-integers?list=neetcode150",
-        "javaFilePath": "src/Bit_Manipulation/SumofTwoIntegers.java"
+        "javaFilePath": "src/Bit_Manipulation/SumofTwoIntegers.java",
+        "lists": [
+          "neetcode150",
+          "blind75"
+        ]
       },
       {
         "id": "nc_150",
@@ -1773,13 +2297,18 @@ export const NEETCODE_TOPICS: TopicNeetCodeGroup[] = [
         "topicName": "Bit Manipulation",
         "leetcodeUrl": "https://leetcode.com/problems/reverse-integer/",
         "neetcodeUrl": "https://neetcode.io/problems/reverse-integer?list=neetcode150",
-        "javaFilePath": "src/Bit_Manipulation/ReverseInteger.java"
+        "javaFilePath": "src/Bit_Manipulation/ReverseInteger.java",
+        "lists": [
+          "neetcode150"
+        ]
       }
     ]
   }
 ];
 
 export const ALL_NEETCODE_PROBLEMS: NeetCodeProblem[] = NEETCODE_TOPICS.flatMap(t => t.problems);
+
+export const BLIND_75_PROBLEMS: NeetCodeProblem[] = ALL_NEETCODE_PROBLEMS.filter(p => p.lists.includes('blind75'));
 
 export const PROBLEMS_BY_TOPIC: Record<string, NeetCodeProblem[]> = NEETCODE_TOPICS.reduce((acc, t) => {
   acc[t.topicId] = t.problems;
@@ -1790,3 +2319,8 @@ export const PROBLEM_BY_ID: Record<string, NeetCodeProblem> = ALL_NEETCODE_PROBL
   acc[p.id] = p;
   return acc;
 }, {} as Record<string, NeetCodeProblem>);
+
+export function filterProblemsByTrack(problems: NeetCodeProblem[], track: TrackList): NeetCodeProblem[] {
+  if (track === 'all') return problems;
+  return problems.filter(p => p.lists.includes(track));
+}

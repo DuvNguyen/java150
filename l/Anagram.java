@@ -4,26 +4,21 @@ import java.util.Arrays;
 
 public class Anagram {
     public boolean isAnagram(String s, String t) {
-        if (s.toCharArray().length != t.toCharArray().length)
+        if (s.length() != t.length())
             return false;
 
-        char[] arrayS = s.toCharArray();
-        char[] arrayT = t.toCharArray();
-
-        // iterate each character to get the freq
-
-        int[] countS = new int[26];
-        int[] countT = new int[26];
-
-        for (int i = 0; i < arrayS.length; i++) {
-            countS[arrayS[i] - 'a']++;
-            countT[arrayT[i] - 'a']++;
+        int[] res = new int[26];
+        for (int i = 0; i < s.length(); i++) {
+            res[s.charAt(i) - 'a']++;
+            res[t.charAt(i) - 'a']--;
         }
 
-        if (Arrays.toString(countS).equals(Arrays.toString(countT)))
-            return true;
+        for (int num : res) {
+            if (num > 0)
+                return false;
+        }
 
-        return false;
+        return true;
     }
 
     public static void main(String[] args) {

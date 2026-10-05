@@ -1,6 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+import { PROBLEMS_BY_TOPIC, TrackList, filterProblemsByTrack } from '@/lib/neetcodeData';
+import { SrsProgressMap, SRS } from '@/lib/srs';
 
 interface NodeData {
   id: string;
@@ -14,6 +16,11 @@ interface EdgeData {
   from: string;
   to: string;
   isPrereqEdge?: boolean;
+}
+
+interface TreeGraphProps {
+  trackList?: TrackList;
+  srsProgress?: SrsProgressMap;
 }
 
 const NODE_W = 150;
@@ -106,7 +113,7 @@ const EDGES: EdgeData[] = [
 
 const nodeMap = new Map<string, NodeData>(NODES.map((n) => [n.id, n]));
 
-export default function TreeGraph() {
+export default function TreeGraph({ trackList = 'blind75', srsProgress }: TreeGraphProps) {
   return (
     <div className="tree-scroll" style={{ width: '100%', overflowX: 'auto', textAlign: 'center' }}>
       <svg
@@ -163,8 +170,8 @@ export default function TreeGraph() {
                     y={rectY}
                     width={NODE_W}
                     height={NODE_H}
-                    rx={2}
-                    ry={2}
+                    rx={4}
+                    ry={4}
                     fill="#fff4e8"
                     stroke="#990f3d"
                     strokeWidth={1.5}
@@ -172,13 +179,13 @@ export default function TreeGraph() {
                     style={{ transition: 'all 0.2s ease' }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.fill = '#990f3d';
-                      const text = e.currentTarget.parentElement?.querySelector('text');
-                      if (text) text.setAttribute('fill', '#ffffff');
+                      const texts = e.currentTarget.parentElement?.querySelectorAll('text');
+                      texts?.forEach(t => t.setAttribute('fill', '#ffffff'));
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.fill = '#fff4e8';
-                      const text = e.currentTarget.parentElement?.querySelector('text');
-                      if (text) text.setAttribute('fill', '#990f3d');
+                      const texts = e.currentTarget.parentElement?.querySelectorAll('text');
+                      texts?.forEach(t => t.setAttribute('fill', '#990f3d'));
                     }}
                   />
                   <text
@@ -200,44 +207,77 @@ export default function TreeGraph() {
             );
           }
 
+          const rawTopicProblems = PROBLEMS_BY_TOPIC[node.id] || [];
+          const topicProblems = filterProblemsByTrack(rawTopicProblems, trackList);
+          const totalProblems = topicProblems.length;
+          const isDimmed = totalProblems === 0;
+
+          let masteredCount = 0;
+          if (srsProgress) {
+            masteredCount = topicProblems.filter(p => srsProgress[p.id]?.status === 'mastered' && !SRS.isDue(srsProgress[p.id])).length;
+          }
+
+          const countLabel = masteredCount > 0 
+            ? `${masteredCount}/${totalProblems}` 
+            : `${totalProblems} bài`;
+
           return (
-            <Link key={node.id} href={`/topic/${node.id}`}>
-              <g style={{ cursor: 'pointer' }} className="node-group">
+            <Link key={node.id} href={isDimmed ? '#' : `/topic/${node.id}`} style={{ opacity: isDimmed ? 0.35 : 1 }}>
+              <g style={{ cursor: isDimmed ? 'not-allowed' : 'pointer' }} className="node-group">
                 <rect
                   x={rectX}
                   y={rectY}
                   width={NODE_W}
                   height={NODE_H}
-                  rx={2}
-                  ry={2}
+                  rx={4}
+                  ry={4}
                   fill="#fff9f4"
-                  stroke="#d9cfc7"
-                  strokeWidth={1.2}
+                  stroke={masteredCount === totalProblems && totalProblems > 0 ? '#15803d' : '#d9cfc7'}
+                  strokeWidth={masteredCount === totalProblems && totalProblems > 0 ? 1.5 : 1.2}
                   filter="url(#cardShadow)"
                   style={{ transition: 'all 0.2s ease' }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.stroke = '#990f3d';
-                    e.currentTarget.style.strokeWidth = '1.8';
-                    e.currentTarget.style.fill = '#ffffff';
+                    if (!isDimmed) {
+                      e.currentTarget.style.stroke = '#990f3d';
+                      e.currentTarget.style.strokeWidth = '1.8';
+                      e.currentTarget.style.fill = '#ffffff';
+                    }
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.stroke = '#d9cfc7';
-                    e.currentTarget.style.strokeWidth = '1.2';
-                    e.currentTarget.style.fill = '#fff9f4';
+                    if (!isDimmed) {
+                      e.currentTarget.style.stroke = masteredCount === totalProblems && totalProblems > 0 ? '#15803d' : '#d9cfc7';
+                      e.currentTarget.style.strokeWidth = masteredCount === totalProblems && totalProblems > 0 ? '1.5' : '1.2';
+                      e.currentTarget.style.fill = '#fff9f4';
+                    }
                   }}
                 />
+                {/* Topic Title */}
                 <text
                   x={node.x}
-                  y={node.y + 1}
+                  y={node.y - 4}
                   textAnchor="middle"
                   dominantBaseline="middle"
-                  fontSize={12}
+                  fontSize={11.5}
                   fontFamily="IBM Plex Sans, sans-serif"
                   fontWeight={600}
                   fill="#33302e"
-                  style={{ cursor: 'pointer', userSelect: 'none' }}
+                  style={{ cursor: isDimmed ? 'not-allowed' : 'pointer', userSelect: 'none' }}
                 >
-                  {node.label.length > 20 ? node.label.slice(0, 18) + '…' : node.label}
+                  {node.label.length > 18 ? node.label.slice(0, 16) + '…' : node.label}
+                </text>
+                {/* Topic Count Badge / Subtext */}
+                <text
+                  x={node.x}
+                  y={node.y + 11}
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  fontSize={9.5}
+                  fontFamily="IBM Plex Sans, sans-serif"
+                  fontWeight={500}
+                  fill={masteredCount === totalProblems && totalProblems > 0 ? '#15803d' : '#8c827a'}
+                  style={{ cursor: isDimmed ? 'not-allowed' : 'pointer', userSelect: 'none' }}
+                >
+                  {countLabel}
                 </text>
               </g>
             </Link>

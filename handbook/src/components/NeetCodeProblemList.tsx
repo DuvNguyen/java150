@@ -2,11 +2,12 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import Link from 'next/link';
-import { NeetCodeProblem, NEETCODE_TOPICS } from '@/lib/neetcodeData';
-import { SrsProgressMap, SrsProgressItem, SRS } from '@/lib/srs';
+import { NeetCodeProblem, NEETCODE_TOPICS, TrackList, filterProblemsByTrack } from '@/lib/neetcodeData';
+import { SrsProgressMap, SrsProgressItem, SRS, extractComplexityFromNote } from '@/lib/srs';
 import SrsConfirmModal from './SrsConfirmModal';
 import JavaCodeViewerModal from './JavaCodeViewerModal';
 import ProblemNoteModal from './ProblemNoteModal';
+import { useAutoDropdownPosition } from '@/lib/useAutoDropdownPosition';
 
 interface Props {
   problems: NeetCodeProblem[];
@@ -14,6 +15,7 @@ interface Props {
   onProgressUpdated?: () => void;
   showTopicColumn?: boolean;
   groupByTopicDefault?: boolean;
+  trackList?: TrackList;
 }
 
 export default function NeetCodeProblemList({
@@ -21,6 +23,7 @@ export default function NeetCodeProblemList({
   topicId,
   onProgressUpdated,
   groupByTopicDefault = true,
+  trackList,
 }: Props) {
   const [progressMap, setProgressMap] = useState<SrsProgressMap>({});
   const [loading, setLoading] = useState(true);
@@ -30,6 +33,7 @@ export default function NeetCodeProblemList({
   const [selectedTopicNodes, setSelectedTopicNodes] = useState<string[]>([]);
   const [openActionMenuId, setOpenActionMenuId] = useState<string | null>(null);
   const [expandedNodes, setExpandedNodes] = useState<Record<string, boolean>>({});
+  const autoDropdownRef = useAutoDropdownPosition();
 
   // Modals state
   const [selectedProblemForReview, setSelectedProblemForReview] = useState<NeetCodeProblem | null>(null);
@@ -253,6 +257,13 @@ export default function NeetCodeProblemList({
     const q = searchQuery.toLowerCase().trim();
 
     return problems.filter((problem) => {
+      // Track list filter
+      if (trackList && trackList !== 'all') {
+        if (!problem.lists || !problem.lists.includes(trackList)) {
+          return false;
+        }
+      }
+
       // Search filter
       if (q) {
         const matchesName = problem.name.toLowerCase().includes(q);
@@ -287,7 +298,7 @@ export default function NeetCodeProblemList({
 
       return true;
     });
-  }, [problems, searchQuery, selectedTopicNodes, selectedDifficulty, selectedStatus, progressMap]);
+  }, [problems, searchQuery, selectedTopicNodes, selectedDifficulty, selectedStatus, progressMap, trackList]);
 
   // Group problems by topic node
   const groupedProblems = useMemo(() => {
@@ -733,20 +744,65 @@ export default function NeetCodeProblemList({
               >
                 NeetCode
               </a>
+              {problem.lists?.includes('blind75') && (
+                <span className="list-chip blind75" title="Thuộc danh sách Blind 75">
+                  Blind 75
+                </span>
+              )}
+              {problem.lists?.includes('neetcode150') && (
+                <span className="list-chip neetcode150" title="Thuộc danh sách NeetCode 150">
+                  NC 150
+                </span>
+              )}
             </div>
-            {item?.note && (
-              <div
-                className="problem-inline-note clickable-note"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setSelectedProblemForNote(problem);
-                }}
-                title="Bấm để chỉnh sửa ghi chú"
-                style={{ cursor: 'pointer' }}
-              >
-                <strong>Ghi chú:</strong> {item.note}
-              </div>
-            )}
+            {(() => {
+              const complexity = extractComplexityFromNote(item?.note);
+              if (!complexity || (!complexity.time && !complexity.space)) return null;
+              return (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    marginTop: '4px',
+                    flexWrap: 'wrap',
+                  }}
+                >
+                  {complexity.time && (
+                    <span
+                      style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: '0.72rem',
+                        backgroundColor: 'var(--color-surface)',
+                        border: '1px solid var(--color-border)',
+                        padding: '1px 6px',
+                        borderRadius: '2px',
+                        color: 'var(--color-primary)',
+                      }}
+                      title="Độ phức tạp thời gian"
+                    >
+                      Time: <strong>{complexity.time}</strong>
+                    </span>
+                  )}
+                  {complexity.space && (
+                    <span
+                      style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: '0.72rem',
+                        backgroundColor: 'var(--color-surface)',
+                        border: '1px solid var(--color-border)',
+                        padding: '1px 6px',
+                        borderRadius: '2px',
+                        color: 'var(--color-secondary)',
+                      }}
+                      title="Độ phức tạp bộ nhớ không gian"
+                    >
+                      Space: <strong>{complexity.space}</strong>
+                    </span>
+                  )}
+                </div>
+              );
+            })()}
           </div>
         </td>
 
@@ -808,7 +864,7 @@ export default function NeetCodeProblemList({
             </button>
 
             {isDropdownOpen && (
-              <div className="action-dropdown-menu">
+              <div className="action-dropdown-menu" ref={autoDropdownRef}>
                 <button
                   type="button"
                   className="action-menu-item"

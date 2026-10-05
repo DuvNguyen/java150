@@ -3,786 +3,1311 @@
         "Contains Duplicate": {
             "nurl": "https://neetcode.io/problems/duplicate-integer?list=neetcode150",
             "url": "https://leetcode.com/problems/contains-duplicate/",
-            "difficulty": "Easy"
+            "difficulty": "Easy",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Valid Anagram": {
             "nurl": "https://neetcode.io/problems/is-anagram?list=neetcode150",
             "url": "https://leetcode.com/problems/valid-anagram/",
-            "difficulty": "Easy"
+            "difficulty": "Easy",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Two Sum": {
             "nurl": "https://neetcode.io/problems/two-integer-sum?list=neetcode150",
             "url": "https://leetcode.com/problems/two-sum/",
-            "difficulty": "Easy"
+            "difficulty": "Easy",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Group Anagrams": {
             "nurl": "https://neetcode.io/problems/anagram-groups?list=neetcode150",
             "url": "https://leetcode.com/problems/group-anagrams/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Top K Frequent Elements": {
             "nurl": "https://neetcode.io/problems/top-k-elements-in-list?list=neetcode150",
             "url": "https://leetcode.com/problems/top-k-frequent-elements/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Encode and Decode Strings": {
             "nurl": "https://neetcode.io/problems/string-encode-and-decode?list=neetcode150",
             "url": "https://leetcode.com/problems/encode-and-decode-strings/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Product of Array Except Self": {
             "nurl": "https://neetcode.io/problems/products-of-array-discluding-self?list=neetcode150",
             "url": "https://leetcode.com/problems/product-of-array-except-self/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Valid Sudoku": {
             "nurl": "https://neetcode.io/problems/valid-sudoku?list=neetcode150",
             "url": "https://leetcode.com/problems/valid-sudoku/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Longest Consecutive Sequence": {
             "nurl": "https://neetcode.io/problems/longest-consecutive-sequence?list=neetcode150",
             "url": "https://leetcode.com/problems/longest-consecutive-sequence/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         }
     },
     "Two Pointers": {
         "Valid Palindrome": {
             "nurl": "https://neetcode.io/problems/is-palindrome?list=neetcode150",
             "url": "https://leetcode.com/problems/valid-palindrome/",
-            "difficulty": "Easy"
+            "difficulty": "Easy",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Two Sum II Input Array Is Sorted": {
             "nurl": "https://neetcode.io/problems/two-integer-sum-ii?list=neetcode150",
             "url": "https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "3Sum": {
             "nurl": "https://neetcode.io/problems/three-integer-sum?list=neetcode150",
             "url": "https://leetcode.com/problems/3sum/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Container With Most Water": {
             "nurl": "https://neetcode.io/problems/max-water-container?list=neetcode150",
             "url": "https://leetcode.com/problems/container-with-most-water/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Trapping Rain Water": {
             "nurl": "https://neetcode.io/problems/trapping-rain-water?list=neetcode150",
             "url": "https://leetcode.com/problems/trapping-rain-water/",
-            "difficulty": "Hard"
+            "difficulty": "Hard",
+            "lists": [
+                "neetcode150"
+            ]
         }
     },
     "Sliding Window": {
         "Best Time to Buy And Sell Stock": {
             "nurl": "https://neetcode.io/problems/buy-and-sell-crypto?list=neetcode150",
             "url": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/",
-            "difficulty": "Easy"
+            "difficulty": "Easy",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Longest Substring Without Repeating Characters": {
             "nurl": "https://neetcode.io/problems/longest-substring-without-duplicates?list=neetcode150",
             "url": "https://leetcode.com/problems/longest-substring-without-repeating-characters/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Longest Repeating Character Replacement": {
             "nurl": "https://neetcode.io/problems/longest-repeating-substring-with-replacement?list=neetcode150",
             "url": "https://leetcode.com/problems/longest-repeating-character-replacement/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Permutation In String": {
             "nurl": "https://neetcode.io/problems/permutation-string?list=neetcode150",
             "url": "https://leetcode.com/problems/permutation-in-string/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Minimum Window Substring": {
             "nurl": "https://neetcode.io/problems/minimum-window-with-characters?list=neetcode150",
             "url": "https://leetcode.com/problems/minimum-window-substring/",
-            "difficulty": "Hard"
+            "difficulty": "Hard",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Sliding Window Maximum": {
             "nurl": "https://neetcode.io/problems/sliding-window-maximum?list=neetcode150",
             "url": "https://leetcode.com/problems/sliding-window-maximum/",
-            "difficulty": "Hard"
+            "difficulty": "Hard",
+            "lists": [
+                "neetcode150"
+            ]
         }
     },
     "Stack": {
         "Valid Parentheses": {
             "nurl": "https://neetcode.io/problems/validate-parentheses?list=neetcode150",
             "url": "https://leetcode.com/problems/valid-parentheses/",
-            "difficulty": "Easy"
+            "difficulty": "Easy",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Min Stack": {
             "nurl": "https://neetcode.io/problems/minimum-stack?list=neetcode150",
             "url": "https://leetcode.com/problems/min-stack/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Evaluate Reverse Polish Notation": {
             "nurl": "https://neetcode.io/problems/evaluate-reverse-polish-notation?list=neetcode150",
             "url": "https://leetcode.com/problems/evaluate-reverse-polish-notation/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Daily Temperatures": {
             "nurl": "https://neetcode.io/problems/daily-temperatures?list=neetcode150",
             "url": "https://leetcode.com/problems/daily-temperatures/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Car Fleet": {
             "nurl": "https://neetcode.io/problems/car-fleet?list=neetcode150",
             "url": "https://leetcode.com/problems/car-fleet/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Largest Rectangle In Histogram": {
             "nurl": "https://neetcode.io/problems/largest-rectangle-in-histogram?list=neetcode150",
             "url": "https://leetcode.com/problems/largest-rectangle-in-histogram/",
-            "difficulty": "Hard"
+            "difficulty": "Hard",
+            "lists": [
+                "neetcode150"
+            ]
         }
     },
     "Binary Search": {
         "Binary Search": {
             "nurl": "https://neetcode.io/problems/binary-search?list=neetcode150",
             "url": "https://leetcode.com/problems/binary-search/",
-            "difficulty": "Easy"
+            "difficulty": "Easy",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Search a 2D Matrix": {
             "nurl": "https://neetcode.io/problems/search-2d-matrix?list=neetcode150",
             "url": "https://leetcode.com/problems/search-a-2d-matrix/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Koko Eating Bananas": {
             "nurl": "https://neetcode.io/problems/eating-bananas?list=neetcode150",
             "url": "https://leetcode.com/problems/koko-eating-bananas/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Find Minimum In Rotated Sorted Array": {
             "nurl": "https://neetcode.io/problems/find-minimum-in-rotated-sorted-array?list=neetcode150",
             "url": "https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Search In Rotated Sorted Array": {
             "nurl": "https://neetcode.io/problems/find-target-in-rotated-sorted-array?list=neetcode150",
             "url": "https://leetcode.com/problems/search-in-rotated-sorted-array/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Time Based Key Value Store": {
             "nurl": "https://neetcode.io/problems/time-based-key-value-store?list=neetcode150",
             "url": "https://leetcode.com/problems/time-based-key-value-store/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Median of Two Sorted Arrays": {
             "nurl": "https://neetcode.io/problems/median-of-two-sorted-arrays?list=neetcode150",
             "url": "https://leetcode.com/problems/median-of-two-sorted-arrays/",
-            "difficulty": "Hard"
+            "difficulty": "Hard",
+            "lists": [
+                "neetcode150"
+            ]
         }
     },
     "Linked List": {
         "Reverse Linked List": {
             "nurl": "https://neetcode.io/problems/reverse-a-linked-list?list=neetcode150",
             "url": "https://leetcode.com/problems/reverse-linked-list/",
-            "difficulty": "Easy"
+            "difficulty": "Easy",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Merge Two Sorted Lists": {
             "nurl": "https://neetcode.io/problems/merge-two-sorted-linked-lists?list=neetcode150",
             "url": "https://leetcode.com/problems/merge-two-sorted-lists/",
-            "difficulty": "Easy"
+            "difficulty": "Easy",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Linked List Cycle": {
             "nurl": "https://neetcode.io/problems/linked-list-cycle-detection?list=neetcode150",
             "url": "https://leetcode.com/problems/linked-list-cycle/",
-            "difficulty": "Easy"
+            "difficulty": "Easy",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Reorder List": {
             "nurl": "https://neetcode.io/problems/reorder-linked-list?list=neetcode150",
             "url": "https://leetcode.com/problems/reorder-list/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Remove Nth Node From End of List": {
             "nurl": "https://neetcode.io/problems/remove-node-from-end-of-linked-list?list=neetcode150",
             "url": "https://leetcode.com/problems/remove-nth-node-from-end-of-list/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Copy List With Random Pointer": {
             "nurl": "https://neetcode.io/problems/copy-linked-list-with-random-pointer?list=neetcode150",
             "url": "https://leetcode.com/problems/copy-list-with-random-pointer/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Add Two Numbers": {
             "nurl": "https://neetcode.io/problems/add-two-numbers?list=neetcode150",
             "url": "https://leetcode.com/problems/add-two-numbers/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Find The Duplicate Number": {
             "nurl": "https://neetcode.io/problems/find-duplicate-integer?list=neetcode150",
             "url": "https://leetcode.com/problems/find-the-duplicate-number/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "LRU Cache": {
             "nurl": "https://neetcode.io/problems/lru-cache?list=neetcode150",
             "url": "https://leetcode.com/problems/lru-cache/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Merge K Sorted Lists": {
             "nurl": "https://neetcode.io/problems/merge-k-sorted-linked-lists?list=neetcode150",
             "url": "https://leetcode.com/problems/merge-k-sorted-lists/",
-            "difficulty": "Hard"
+            "difficulty": "Hard",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Reverse Nodes In K Group": {
             "nurl": "https://neetcode.io/problems/reverse-nodes-in-k-group?list=neetcode150",
             "url": "https://leetcode.com/problems/reverse-nodes-in-k-group/",
-            "difficulty": "Hard"
+            "difficulty": "Hard",
+            "lists": [
+                "neetcode150"
+            ]
         }
     },
     "Trees": {
         "Invert Binary Tree": {
             "nurl": "https://neetcode.io/problems/invert-a-binary-tree?list=neetcode150",
             "url": "https://leetcode.com/problems/invert-binary-tree/",
-            "difficulty": "Easy"
+            "difficulty": "Easy",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Maximum Depth of Binary Tree": {
             "nurl": "https://neetcode.io/problems/depth-of-binary-tree?list=neetcode150",
             "url": "https://leetcode.com/problems/maximum-depth-of-binary-tree/",
-            "difficulty": "Easy"
+            "difficulty": "Easy",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Diameter of Binary Tree": {
             "nurl": "https://neetcode.io/problems/binary-tree-diameter?list=neetcode150",
             "url": "https://leetcode.com/problems/diameter-of-binary-tree/",
-            "difficulty": "Easy"
+            "difficulty": "Easy",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Balanced Binary Tree": {
             "nurl": "https://neetcode.io/problems/balanced-binary-tree?list=neetcode150",
             "url": "https://leetcode.com/problems/balanced-binary-tree/",
-            "difficulty": "Easy"
+            "difficulty": "Easy",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Same Tree": {
             "nurl": "https://neetcode.io/problems/same-binary-tree?list=neetcode150",
             "url": "https://leetcode.com/problems/same-tree/",
-            "difficulty": "Easy"
+            "difficulty": "Easy",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Subtree of Another Tree": {
             "nurl": "https://neetcode.io/problems/subtree-of-a-binary-tree?list=neetcode150",
             "url": "https://leetcode.com/problems/subtree-of-another-tree/",
-            "difficulty": "Easy"
+            "difficulty": "Easy",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Lowest Common Ancestor of a Binary Search Tree": {
             "nurl": "https://neetcode.io/problems/lowest-common-ancestor-in-binary-search-tree?list=neetcode150",
             "url": "https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Binary Tree Level Order Traversal": {
             "nurl": "https://neetcode.io/problems/level-order-traversal-of-binary-tree?list=neetcode150",
             "url": "https://leetcode.com/problems/binary-tree-level-order-traversal/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Binary Tree Right Side View": {
             "nurl": "https://neetcode.io/problems/binary-tree-right-side-view?list=neetcode150",
             "url": "https://leetcode.com/problems/binary-tree-right-side-view/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Count Good Nodes In Binary Tree": {
             "nurl": "https://neetcode.io/problems/count-good-nodes-in-binary-tree?list=neetcode150",
             "url": "https://leetcode.com/problems/count-good-nodes-in-binary-tree/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Validate Binary Search Tree": {
             "nurl": "https://neetcode.io/problems/valid-binary-search-tree?list=neetcode150",
             "url": "https://leetcode.com/problems/validate-binary-search-tree/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Kth Smallest Element In a Bst": {
             "nurl": "https://neetcode.io/problems/kth-smallest-integer-in-bst?list=neetcode150",
             "url": "https://leetcode.com/problems/kth-smallest-element-in-a-bst/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Construct Binary Tree From Preorder And Inorder Traversal": {
             "nurl": "https://neetcode.io/problems/binary-tree-from-preorder-and-inorder-traversal?list=neetcode150",
             "url": "https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Binary Tree Maximum Path Sum": {
             "nurl": "https://neetcode.io/problems/binary-tree-maximum-path-sum?list=neetcode150",
             "url": "https://leetcode.com/problems/binary-tree-maximum-path-sum/",
-            "difficulty": "Hard"
+            "difficulty": "Hard",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Serialize And Deserialize Binary Tree": {
             "nurl": "https://neetcode.io/problems/serialize-and-deserialize-binary-tree?list=neetcode150",
             "url": "https://leetcode.com/problems/serialize-and-deserialize-binary-tree/",
-            "difficulty": "Hard"
+            "difficulty": "Hard",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         }
     },
     "Heap / Priority Queue": {
         "Kth Largest Element In a Stream": {
             "nurl": "https://neetcode.io/problems/kth-largest-integer-in-a-stream?list=neetcode150",
             "url": "https://leetcode.com/problems/kth-largest-element-in-a-stream/",
-            "difficulty": "Easy"
+            "difficulty": "Easy",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Last Stone Weight": {
             "nurl": "https://neetcode.io/problems/last-stone-weight?list=neetcode150",
             "url": "https://leetcode.com/problems/last-stone-weight/",
-            "difficulty": "Easy"
+            "difficulty": "Easy",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "K Closest Points to Origin": {
             "nurl": "https://neetcode.io/problems/k-closest-points-to-origin?list=neetcode150",
             "url": "https://leetcode.com/problems/k-closest-points-to-origin/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Kth Largest Element In An Array": {
             "nurl": "https://neetcode.io/problems/kth-largest-element-in-an-array?list=neetcode150",
             "url": "https://leetcode.com/problems/kth-largest-element-in-an-array/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Task Scheduler": {
             "nurl": "https://neetcode.io/problems/task-scheduling?list=neetcode150",
             "url": "https://leetcode.com/problems/task-scheduler/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Design Twitter": {
             "nurl": "https://neetcode.io/problems/design-twitter-feed?list=neetcode150",
             "url": "https://leetcode.com/problems/design-twitter/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Find Median From Data Stream": {
             "nurl": "https://neetcode.io/problems/find-median-in-a-data-stream?list=neetcode150",
             "url": "https://leetcode.com/problems/find-median-from-data-stream/",
-            "difficulty": "Hard"
+            "difficulty": "Hard",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         }
     },
     "Backtracking": {
         "Subsets": {
             "nurl": "https://neetcode.io/problems/subsets?list=neetcode150",
             "url": "https://leetcode.com/problems/subsets/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Combination Sum": {
             "nurl": "https://neetcode.io/problems/combination-target-sum?list=neetcode150",
             "url": "https://leetcode.com/problems/combination-sum/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Combination Sum II": {
             "nurl": "https://neetcode.io/problems/combination-target-sum-ii?list=neetcode150",
             "url": "https://leetcode.com/problems/combination-sum-ii/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Permutations": {
             "nurl": "https://neetcode.io/problems/permutations?list=neetcode150",
             "url": "https://leetcode.com/problems/permutations/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Subsets II": {
             "nurl": "https://neetcode.io/problems/subsets-ii?list=neetcode150",
             "url": "https://leetcode.com/problems/subsets-ii/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Generate Parentheses": {
             "nurl": "https://neetcode.io/problems/generate-parentheses?list=neetcode150",
             "url": "https://leetcode.com/problems/generate-parentheses/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Word Search": {
             "nurl": "https://neetcode.io/problems/search-for-word?list=neetcode150",
             "url": "https://leetcode.com/problems/word-search/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Palindrome Partitioning": {
             "nurl": "https://neetcode.io/problems/palindrome-partitioning?list=neetcode150",
             "url": "https://leetcode.com/problems/palindrome-partitioning/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Letter Combinations of a Phone Number": {
             "nurl": "https://neetcode.io/problems/combinations-of-a-phone-number?list=neetcode150",
             "url": "https://leetcode.com/problems/letter-combinations-of-a-phone-number/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "N Queens": {
             "nurl": "https://neetcode.io/problems/n-queens?list=neetcode150",
             "url": "https://leetcode.com/problems/n-queens/",
-            "difficulty": "Hard"
+            "difficulty": "Hard",
+            "lists": [
+                "neetcode150"
+            ]
         }
     },
     "Tries": {
         "Implement Trie Prefix Tree": {
             "nurl": "https://neetcode.io/problems/implement-prefix-tree?list=neetcode150",
             "url": "https://leetcode.com/problems/implement-trie-prefix-tree/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Design Add And Search Words Data Structure": {
             "nurl": "https://neetcode.io/problems/design-word-search-data-structure?list=neetcode150",
             "url": "https://leetcode.com/problems/design-add-and-search-words-data-structure/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Word Search II": {
             "nurl": "https://neetcode.io/problems/search-for-word-ii?list=neetcode150",
             "url": "https://leetcode.com/problems/word-search-ii/",
-            "difficulty": "Hard"
+            "difficulty": "Hard",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         }
     },
     "Graphs": {
         "Number of Islands": {
             "nurl": "https://neetcode.io/problems/count-number-of-islands?list=neetcode150",
             "url": "https://leetcode.com/problems/number-of-islands/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Max Area of Island": {
             "nurl": "https://neetcode.io/problems/max-area-of-island?list=neetcode150",
             "url": "https://leetcode.com/problems/max-area-of-island/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Clone Graph": {
             "nurl": "https://neetcode.io/problems/clone-graph?list=neetcode150",
             "url": "https://leetcode.com/problems/clone-graph/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Walls And Gates": {
             "nurl": "https://neetcode.io/problems/islands-and-treasure?list=neetcode150",
             "url": "https://leetcode.com/problems/walls-and-gates/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Rotting Oranges": {
             "nurl": "https://neetcode.io/problems/rotting-fruit?list=neetcode150",
             "url": "https://leetcode.com/problems/rotting-oranges/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Pacific Atlantic Water Flow": {
             "nurl": "https://neetcode.io/problems/pacific-atlantic-water-flow?list=neetcode150",
             "url": "https://leetcode.com/problems/pacific-atlantic-water-flow/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Surrounded Regions": {
             "nurl": "https://neetcode.io/problems/surrounded-regions?list=neetcode150",
             "url": "https://leetcode.com/problems/surrounded-regions/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Course Schedule": {
             "nurl": "https://neetcode.io/problems/course-schedule?list=neetcode150",
             "url": "https://leetcode.com/problems/course-schedule/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Course Schedule II": {
             "nurl": "https://neetcode.io/problems/course-schedule-ii?list=neetcode150",
             "url": "https://leetcode.com/problems/course-schedule-ii/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Graph Valid Tree": {
             "nurl": "https://neetcode.io/problems/valid-tree?list=neetcode150",
             "url": "https://leetcode.com/problems/graph-valid-tree/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Number of Connected Components In An Undirected Graph": {
             "nurl": "https://neetcode.io/problems/count-connected-components?list=neetcode150",
             "url": "https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Redundant Connection": {
             "nurl": "https://neetcode.io/problems/redundant-connection?list=neetcode150",
             "url": "https://leetcode.com/problems/redundant-connection/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Word Ladder": {
             "nurl": "https://neetcode.io/problems/word-ladder?list=neetcode150",
             "url": "https://leetcode.com/problems/word-ladder/",
-            "difficulty": "Hard"
+            "difficulty": "Hard",
+            "lists": [
+                "neetcode150"
+            ]
         }
     },
     "Advanced Graphs": {
         "Network Delay Time": {
             "nurl": "https://neetcode.io/problems/network-delay-time?list=neetcode150",
             "url": "https://leetcode.com/problems/network-delay-time/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Reconstruct Itinerary": {
             "nurl": "https://neetcode.io/problems/reconstruct-flight-path?list=neetcode150",
             "url": "https://leetcode.com/problems/reconstruct-itinerary/",
-            "difficulty": "Hard"
+            "difficulty": "Hard",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Min Cost to Connect All Points": {
             "nurl": "https://neetcode.io/problems/min-cost-to-connect-points?list=neetcode150",
             "url": "https://leetcode.com/problems/min-cost-to-connect-all-points/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Swim In Rising Water": {
             "nurl": "https://neetcode.io/problems/swim-in-rising-water?list=neetcode150",
             "url": "https://leetcode.com/problems/swim-in-rising-water/",
-            "difficulty": "Hard"
+            "difficulty": "Hard",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Alien Dictionary": {
             "nurl": "https://neetcode.io/problems/foreign-dictionary?list=neetcode150",
             "url": "https://leetcode.com/problems/alien-dictionary/",
-            "difficulty": "Hard"
+            "difficulty": "Hard",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Cheapest Flights Within K Stops": {
             "nurl": "https://neetcode.io/problems/cheapest-flight-path?list=neetcode150",
             "url": "https://leetcode.com/problems/cheapest-flights-within-k-stops/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         }
     },
     "1-D Dynamic Programming": {
         "Climbing Stairs": {
             "nurl": "https://neetcode.io/problems/climbing-stairs?list=neetcode150",
             "url": "https://leetcode.com/problems/climbing-stairs/",
-            "difficulty": "Easy"
+            "difficulty": "Easy",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Min Cost Climbing Stairs": {
             "nurl": "https://neetcode.io/problems/min-cost-climbing-stairs?list=neetcode150",
             "url": "https://leetcode.com/problems/min-cost-climbing-stairs/",
-            "difficulty": "Easy"
+            "difficulty": "Easy",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "House Robber": {
             "nurl": "https://neetcode.io/problems/house-robber?list=neetcode150",
             "url": "https://leetcode.com/problems/house-robber/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "House Robber II": {
             "nurl": "https://neetcode.io/problems/house-robber-ii?list=neetcode150",
             "url": "https://leetcode.com/problems/house-robber-ii/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Longest Palindromic Substring": {
             "nurl": "https://neetcode.io/problems/longest-palindromic-substring?list=neetcode150",
             "url": "https://leetcode.com/problems/longest-palindromic-substring/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Palindromic Substrings": {
             "nurl": "https://neetcode.io/problems/palindromic-substrings?list=neetcode150",
             "url": "https://leetcode.com/problems/palindromic-substrings/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Decode Ways": {
             "nurl": "https://neetcode.io/problems/decode-ways?list=neetcode150",
             "url": "https://leetcode.com/problems/decode-ways/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Coin Change": {
             "nurl": "https://neetcode.io/problems/coin-change?list=neetcode150",
             "url": "https://leetcode.com/problems/coin-change/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Maximum Product Subarray": {
             "nurl": "https://neetcode.io/problems/maximum-product-subarray?list=neetcode150",
             "url": "https://leetcode.com/problems/maximum-product-subarray/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Word Break": {
             "nurl": "https://neetcode.io/problems/word-break?list=neetcode150",
             "url": "https://leetcode.com/problems/word-break/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Longest Increasing Subsequence": {
             "nurl": "https://neetcode.io/problems/longest-increasing-subsequence?list=neetcode150",
             "url": "https://leetcode.com/problems/longest-increasing-subsequence/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Partition Equal Subset Sum": {
             "nurl": "https://neetcode.io/problems/partition-equal-subset-sum?list=neetcode150",
             "url": "https://leetcode.com/problems/partition-equal-subset-sum/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         }
     },
     "2-D Dynamic Programming": {
         "Unique Paths": {
             "nurl": "https://neetcode.io/problems/count-paths?list=neetcode150",
             "url": "https://leetcode.com/problems/unique-paths/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Longest Common Subsequence": {
             "nurl": "https://neetcode.io/problems/longest-common-subsequence?list=neetcode150",
             "url": "https://leetcode.com/problems/longest-common-subsequence/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Best Time to Buy And Sell Stock With Cooldown": {
             "nurl": "https://neetcode.io/problems/buy-and-sell-crypto-with-cooldown?list=neetcode150",
             "url": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Coin Change II": {
             "nurl": "https://neetcode.io/problems/coin-change-ii?list=neetcode150",
             "url": "https://leetcode.com/problems/coin-change-ii/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Target Sum": {
             "nurl": "https://neetcode.io/problems/target-sum?list=neetcode150",
             "url": "https://leetcode.com/problems/target-sum/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Interleaving String": {
             "nurl": "https://neetcode.io/problems/interleaving-string?list=neetcode150",
             "url": "https://leetcode.com/problems/interleaving-string/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Longest Increasing Path In a Matrix": {
             "nurl": "https://neetcode.io/problems/longest-increasing-path-in-matrix?list=neetcode150",
             "url": "https://leetcode.com/problems/longest-increasing-path-in-a-matrix/",
-            "difficulty": "Hard"
+            "difficulty": "Hard",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Distinct Subsequences": {
             "nurl": "https://neetcode.io/problems/count-subsequences?list=neetcode150",
             "url": "https://leetcode.com/problems/distinct-subsequences/",
-            "difficulty": "Hard"
+            "difficulty": "Hard",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Edit Distance": {
             "nurl": "https://neetcode.io/problems/edit-distance?list=neetcode150",
             "url": "https://leetcode.com/problems/edit-distance/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Burst Balloons": {
             "nurl": "https://neetcode.io/problems/burst-balloons?list=neetcode150",
             "url": "https://leetcode.com/problems/burst-balloons/",
-            "difficulty": "Hard"
+            "difficulty": "Hard",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Regular Expression Matching": {
             "nurl": "https://neetcode.io/problems/regular-expression-matching?list=neetcode150",
             "url": "https://leetcode.com/problems/regular-expression-matching/",
-            "difficulty": "Hard"
+            "difficulty": "Hard",
+            "lists": [
+                "neetcode150"
+            ]
         }
     },
     "Greedy": {
         "Maximum Subarray": {
             "nurl": "https://neetcode.io/problems/maximum-subarray?list=neetcode150",
             "url": "https://leetcode.com/problems/maximum-subarray/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Jump Game": {
             "nurl": "https://neetcode.io/problems/jump-game?list=neetcode150",
             "url": "https://leetcode.com/problems/jump-game/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Jump Game II": {
             "nurl": "https://neetcode.io/problems/jump-game-ii?list=neetcode150",
             "url": "https://leetcode.com/problems/jump-game-ii/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Gas Station": {
             "nurl": "https://neetcode.io/problems/gas-station?list=neetcode150",
             "url": "https://leetcode.com/problems/gas-station/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Hand of Straights": {
             "nurl": "https://neetcode.io/problems/hand-of-straights?list=neetcode150",
             "url": "https://leetcode.com/problems/hand-of-straights/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Merge Triplets to Form Target Triplet": {
             "nurl": "https://neetcode.io/problems/merge-triplets-to-form-target?list=neetcode150",
             "url": "https://leetcode.com/problems/merge-triplets-to-form-target-triplet/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Partition Labels": {
             "nurl": "https://neetcode.io/problems/partition-labels?list=neetcode150",
             "url": "https://leetcode.com/problems/partition-labels/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Valid Parenthesis String": {
             "nurl": "https://neetcode.io/problems/valid-parenthesis-string?list=neetcode150",
             "url": "https://leetcode.com/problems/valid-parenthesis-string/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         }
     },
     "Intervals": {
         "Insert Interval": {
             "nurl": "https://neetcode.io/problems/insert-new-interval?list=neetcode150",
             "url": "https://leetcode.com/problems/insert-interval/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Merge Intervals": {
             "nurl": "https://neetcode.io/problems/merge-intervals?list=neetcode150",
             "url": "https://leetcode.com/problems/merge-intervals/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Non Overlapping Intervals": {
             "nurl": "https://neetcode.io/problems/non-overlapping-intervals?list=neetcode150",
             "url": "https://leetcode.com/problems/non-overlapping-intervals/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Meeting Rooms": {
             "nurl": "https://neetcode.io/problems/meeting-schedule?list=neetcode150",
             "url": "https://leetcode.com/problems/meeting-rooms/",
-            "difficulty": "Easy"
+            "difficulty": "Easy",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Meeting Rooms II": {
             "nurl": "https://neetcode.io/problems/meeting-schedule-ii?list=neetcode150",
             "url": "https://leetcode.com/problems/meeting-rooms-ii/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Minimum Interval to Include Each Query": {
             "nurl": "https://neetcode.io/problems/minimum-interval-including-query?list=neetcode150",
             "url": "https://leetcode.com/problems/minimum-interval-to-include-each-query/",
-            "difficulty": "Hard"
+            "difficulty": "Hard",
+            "lists": [
+                "neetcode150"
+            ]
         }
     },
     "Math & Geometry": {
         "Rotate Image": {
             "nurl": "https://neetcode.io/problems/rotate-matrix?list=neetcode150",
             "url": "https://leetcode.com/problems/rotate-image/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Spiral Matrix": {
             "nurl": "https://neetcode.io/problems/spiral-matrix?list=neetcode150",
             "url": "https://leetcode.com/problems/spiral-matrix/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Set Matrix Zeroes": {
             "nurl": "https://neetcode.io/problems/set-zeroes-in-matrix?list=neetcode150",
             "url": "https://leetcode.com/problems/set-matrix-zeroes/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Happy Number": {
             "nurl": "https://neetcode.io/problems/non-cyclical-number?list=neetcode150",
             "url": "https://leetcode.com/problems/happy-number/",
-            "difficulty": "Easy"
+            "difficulty": "Easy",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Plus One": {
             "nurl": "https://neetcode.io/problems/plus-one?list=neetcode150",
             "url": "https://leetcode.com/problems/plus-one/",
-            "difficulty": "Easy"
+            "difficulty": "Easy",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Pow(x, n)": {
             "nurl": "https://neetcode.io/problems/pow-x-n?list=neetcode150",
             "url": "https://leetcode.com/problems/powx-n/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Multiply Strings": {
             "nurl": "https://neetcode.io/problems/multiply-strings?list=neetcode150",
             "url": "https://leetcode.com/problems/multiply-strings/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Detect Squares": {
             "nurl": "https://neetcode.io/problems/count-squares?list=neetcode150",
             "url": "https://leetcode.com/problems/detect-squares/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         }
     },
     "Bit Manipulation": {
         "Single Number": {
             "nurl": "https://neetcode.io/problems/single-number?list=neetcode150",
             "url": "https://leetcode.com/problems/single-number/",
-            "difficulty": "Easy"
+            "difficulty": "Easy",
+            "lists": [
+                "neetcode150"
+            ]
         },
         "Number of 1 Bits": {
             "nurl": "https://neetcode.io/problems/number-of-one-bits?list=neetcode150",
             "url": "https://leetcode.com/problems/number-of-1-bits/",
-            "difficulty": "Easy"
+            "difficulty": "Easy",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Counting Bits": {
             "nurl": "https://neetcode.io/problems/counting-bits?list=neetcode150",
             "url": "https://leetcode.com/problems/counting-bits/",
-            "difficulty": "Easy"
+            "difficulty": "Easy",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Reverse Bits": {
             "nurl": "https://neetcode.io/problems/reverse-bits?list=neetcode150",
             "url": "https://leetcode.com/problems/reverse-bits/",
-            "difficulty": "Easy"
+            "difficulty": "Easy",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Missing Number": {
             "nurl": "https://neetcode.io/problems/missing-number?list=neetcode150",
             "url": "https://leetcode.com/problems/missing-number/",
-            "difficulty": "Easy"
+            "difficulty": "Easy",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Sum of Two Integers": {
             "nurl": "https://neetcode.io/problems/sum-of-two-integers?list=neetcode150",
             "url": "https://leetcode.com/problems/sum-of-two-integers/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150",
+                "blind75"
+            ]
         },
         "Reverse Integer": {
             "nurl": "https://neetcode.io/problems/reverse-integer?list=neetcode150",
             "url": "https://leetcode.com/problems/reverse-integer/",
-            "difficulty": "Medium"
+            "difficulty": "Medium",
+            "lists": [
+                "neetcode150"
+            ]
         }
     }
 }

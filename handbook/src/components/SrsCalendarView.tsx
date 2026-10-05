@@ -1,26 +1,29 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { ALL_NEETCODE_PROBLEMS, NeetCodeProblem } from '@/lib/neetcodeData';
+import { ALL_NEETCODE_PROBLEMS, NeetCodeProblem, TrackList, filterProblemsByTrack } from '@/lib/neetcodeData';
 import { SrsProgressMap, SRS } from '@/lib/srs';
 import SrsConfirmModal from './SrsConfirmModal';
 import JavaCodeViewerModal from './JavaCodeViewerModal';
 import ProblemNoteModal from './ProblemNoteModal';
+import { useAutoDropdownPosition } from '@/lib/useAutoDropdownPosition';
 
 interface Props {
   srsProgress: SrsProgressMap;
   onProgressUpdated?: () => void;
+  trackList?: TrackList;
 }
 
 const WEEKDAYS = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật'];
 
-export default function SrsCalendarView({ srsProgress, onProgressUpdated }: Props) {
+export default function SrsCalendarView({ srsProgress, onProgressUpdated, trackList = 'blind75' }: Props) {
   const [currentDate, setCurrentDate] = useState(() => new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [reviewProblem, setReviewProblem] = useState<NeetCodeProblem | null>(null);
   const [noteProblem, setNoteProblem] = useState<NeetCodeProblem | null>(null);
   const [codeProblem, setCodeProblem] = useState<NeetCodeProblem | null>(null);
   const [openActionMenuId, setOpenActionMenuId] = useState<string | null>(null);
+  const autoDropdownRef = useAutoDropdownPosition();
 
   const todayStr = useMemo(() => SRS.getTodayStr(), []);
 
@@ -39,7 +42,8 @@ export default function SrsCalendarView({ srsProgress, onProgressUpdated }: Prop
   // Map problems by nextReview date
   const problemsByDate = useMemo(() => {
     const map: Record<string, NeetCodeProblem[]> = {};
-    for (const p of ALL_NEETCODE_PROBLEMS) {
+    const trackProblems = filterProblemsByTrack(ALL_NEETCODE_PROBLEMS, trackList);
+    for (const p of trackProblems) {
       const item = srsProgress[p.id];
       if (item && item.status === 'mastered' && item.nextReview) {
         if (!map[item.nextReview]) {
@@ -49,7 +53,7 @@ export default function SrsCalendarView({ srsProgress, onProgressUpdated }: Prop
       }
     }
     return map;
-  }, [srsProgress]);
+  }, [srsProgress, trackList]);
 
   // Tất cả các bài bị quá hạn từ các ngày trước hôm nay
   const overdueProblemsWithDate = useMemo(() => {
@@ -395,6 +399,13 @@ export default function SrsCalendarView({ srsProgress, onProgressUpdated }: Prop
               Lần {item.repetitions}
             </span>
           ) : null}
+
+          {/* Track Chip */}
+          {problem.lists?.includes('blind75') && (
+            <span className="list-chip blind75" title="Thuộc danh sách Blind 75" style={{ height: '22px', display: 'inline-flex', alignItems: 'center' }}>
+              Blind 75
+            </span>
+          )}
         </div>
 
         {/* Right: Square Kebab Menu Button (Identical 22px height & width) */}
@@ -435,8 +446,8 @@ export default function SrsCalendarView({ srsProgress, onProgressUpdated }: Prop
           {isDropdownOpen && (
             <div
               className="action-dropdown-menu"
+              ref={autoDropdownRef}
               style={{
-                top: 'calc(100% + 4px)',
                 right: 0,
                 minWidth: '160px',
                 zIndex: 100,

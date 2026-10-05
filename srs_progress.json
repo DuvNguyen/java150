@@ -2,62 +2,62 @@
   "nc_2": {
     "id": "nc_2",
     "status": "mastered",
-    "lastSolved": "2026-09-22",
-    "lastRating": "easy",
-    "nextReview": "2026-09-29",
-    "interval": 7,
+    "lastSolved": "2026-10-03",
+    "lastRating": "medium",
+    "nextReview": "2026-10-22",
+    "interval": 19,
     "easeFactor": 2.65,
-    "repetitions": 2,
+    "repetitions": 3,
     "note": "",
-    "updatedAt": 1790072803591
+    "updatedAt": 1791015304891
   },
   "nc_3": {
     "id": "nc_3",
     "status": "mastered",
-    "lastSolved": "2026-09-22",
-    "lastRating": "easy",
-    "nextReview": "2026-09-29",
-    "interval": 7,
-    "easeFactor": 2.65,
-    "repetitions": 2,
+    "lastSolved": "2026-10-03",
+    "lastRating": "medium",
+    "nextReview": "2026-10-06",
+    "interval": 3,
+    "easeFactor": 2.45,
+    "repetitions": 1,
     "note": "",
-    "updatedAt": 1790072807729
+    "updatedAt": 1791013740080
   },
   "nc_4": {
     "id": "nc_4",
     "status": "mastered",
-    "lastSolved": "2026-09-25",
+    "lastSolved": "2026-10-05",
     "lastRating": "medium",
-    "nextReview": "2026-10-03",
-    "interval": 8,
-    "easeFactor": 2.5,
+    "nextReview": "2026-10-08",
+    "interval": 3,
+    "easeFactor": 2.2,
     "repetitions": 2,
-    "note": "- the rignt way to use Array to string?\n- dùng key bản string để làm gì với key? Tác động gì đến value của key?\n- Tại sao chỉ cần key không là biết anagram không?",
-    "updatedAt": 1790330820820
+    "note": "### 1. Pattern & Data Structure\n\n* Kỹ thuật chính: Mảng tần suất cho từng String\n* Dùng Map lưu pattern anagram và value là danh sách các anagram match pattern đó\n\n### 2. Key Intuition (Ý tưởng cốt lõi)\n\n* **dùng mảng tần suất** để lấy được key.\n\n### 3. Edge Cases & Tricky Points\n\n* Tricky là ý tưởng có một hasmap chứa toàn bộ pattern của toàn bộ String, mình duyệt qua từng String, lấy pattern của nó rồi add nó nào danh sách của pattern đó là được.\n* chỉ cần loop qua từng chữ, mỗi chữ lấy pattern -> add vào trong value (danh sách các anagram của pattern đó)\n\n### 4. Complexity\n\n* Time: `O(N * K)`\n* Space: `O(N * K)`",
+    "updatedAt": 1791200553508
   },
   "nc_5": {
     "id": "nc_5",
     "status": "mastered",
-    "lastSolved": "2026-09-24",
+    "lastSolved": "2026-10-05",
     "lastRating": "medium",
-    "nextReview": "2026-09-27",
-    "interval": 3,
+    "nextReview": "2026-10-21",
+    "interval": 16,
     "easeFactor": 2.35,
-    "repetitions": 3,
-    "note": "- Mảng các list thì dùng lấy giá trị theo kiểu của mảng\n- Trước khi có thể gán cho List thì cần gán giá trị new ArrayList vì mặc định nó null\n- Duyệt ngược dừng khi nào?",
-    "updatedAt": 1790249265730
+    "repetitions": 5,
+    "note": "### 1. Pattern & Data Structure\n\n* Kỹ thuật chính:\n  * &#x20;Dùng pattern đếm tần suất.\n  * duyệt keyset của hashmap đó để khởi tạo bucket\n  * duyệt ngược bucket để có được mảng kết quả\n\n### 2. Key Intuition (Ý tưởng cốt lõi)\n\n* Dùng bucket sort, khi mà các tần suất xuất hiện của các số sẽ được sort theo thức tự tăng dần, vì chúng ta lưu theo index, index i thì ô nhớ i đó lưu các số có tần suất xuất hiện i lần.\n\n### 3. Edge Cases & Tricky Points\n\n* tricky là cách mà chúng ta lưu được vào bucket, và dùng map để lưu tần suất xuất hiện của mảng nums ban đầu\n\n### 4. Complexity\n\n* Time: `O(N)`\n* Space: `O(N)`",
+    "updatedAt": 1791201952042
   },
   "nc_1": {
     "id": "nc_1",
     "status": "mastered",
-    "lastSolved": "2026-09-23",
+    "lastSolved": "2026-10-03",
     "lastRating": "easy",
-    "nextReview": "2026-09-30",
-    "interval": 7,
-    "easeFactor": 2.5,
-    "repetitions": 2,
+    "nextReview": "2026-10-21",
+    "interval": 18,
+    "easeFactor": 2.65,
+    "repetitions": 3,
     "note": "",
-    "updatedAt": 1790135719463
+    "updatedAt": 1791011812702
   },
   "nc_6": {
     "id": "nc_6",
@@ -70,5 +70,17 @@
     "repetitions": 1,
     "note": "- tại sao không dùng String operation?\n- encode String sẽ trông thế nào? tai sao?\n- điều kiện dừng vòng lặp khi decode?",
     "updatedAt": 1790413806334
+  },
+  "nc_7": {
+    "id": "nc_7",
+    "status": "mastered",
+    "lastSolved": "2026-09-28",
+    "lastRating": "hard",
+    "nextReview": "2026-09-29",
+    "interval": 1,
+    "easeFactor": 2.35,
+    "repetitions": 1,
+    "note": "- Try again without using division and still O(n)\n- learn the suffix & prefix technique",
+    "updatedAt": 1790598649390
   }
 }

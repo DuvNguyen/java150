@@ -14,7 +14,7 @@ import SpringBootView from '@/components/SpringBootView';
 import ReminderSettingsModal from '@/components/ReminderSettingsModal';
 import SrsCalendarView from '@/components/SrsCalendarView';
 import { Entry } from '@/components/FunctionTable';
-import { ALL_NEETCODE_PROBLEMS } from '@/lib/neetcodeData';
+import { ALL_NEETCODE_PROBLEMS, BLIND_75_PROBLEMS, TrackList, filterProblemsByTrack } from '@/lib/neetcodeData';
 import { SrsProgressMap, SRS } from '@/lib/srs';
 import TabsNav, { TabItem } from '@/components/TabsNav';
 
@@ -100,8 +100,52 @@ export default function HomePage() {
     fetchSrsData();
   }, [fetchSrsData]);
 
-  // Derive Due and Mastered count
-  const srsStats = useMemo(() => {
+  const [dsaTrackList, setDsaTrackList] = useState<TrackList>('blind75');
+
+  // Load saved track preference (default: 'blind75')
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('handbook_dsa_track_list');
+      if (saved === 'blind75' || saved === 'neetcode150' || saved === 'all') {
+        setDsaTrackList(saved);
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  const handleTrackListChange = (track: TrackList) => {
+    setDsaTrackList(track);
+    try {
+      localStorage.setItem('handbook_dsa_track_list', track);
+    } catch {
+      // ignore
+    }
+  };
+
+  // Derive Blind 75 Progress Stats
+  const blind75Stats = useMemo(() => {
+    let dueCount = 0;
+    let masteredCount = 0;
+    for (const p of BLIND_75_PROBLEMS) {
+      const item = srsProgress[p.id];
+      if (SRS.isDue(item)) {
+        dueCount++;
+      } else if (item?.status === 'mastered') {
+        masteredCount++;
+      }
+    }
+    const total = BLIND_75_PROBLEMS.length;
+    return {
+      total,
+      due: dueCount,
+      mastered: masteredCount,
+      percent: total > 0 ? Math.round((masteredCount / total) * 100) : 0,
+    };
+  }, [srsProgress]);
+
+  // Derive NeetCode 150 Progress Stats
+  const nc150Stats = useMemo(() => {
     let dueCount = 0;
     let masteredCount = 0;
     for (const p of ALL_NEETCODE_PROBLEMS) {
@@ -112,18 +156,30 @@ export default function HomePage() {
         masteredCount++;
       }
     }
+    const total = ALL_NEETCODE_PROBLEMS.length;
     return {
-      total: ALL_NEETCODE_PROBLEMS.length,
+      total,
       due: dueCount,
       mastered: masteredCount,
-      new: ALL_NEETCODE_PROBLEMS.length - dueCount - masteredCount,
+      percent: total > 0 ? Math.round((masteredCount / total) * 100) : 0,
     };
   }, [srsProgress]);
 
-  // Due problems list
+  // Problems filtered for active track
+  const activeTrackProblems = useMemo(() => {
+    return filterProblemsByTrack(ALL_NEETCODE_PROBLEMS, dsaTrackList);
+  }, [dsaTrackList]);
+
+  // Active track stats
+  const activeTrackStats = useMemo(() => {
+    if (dsaTrackList === 'blind75') return blind75Stats;
+    return nc150Stats;
+  }, [dsaTrackList, blind75Stats, nc150Stats]);
+
+  // Due problems list for active track
   const dueProblems = useMemo(() => {
-    return ALL_NEETCODE_PROBLEMS.filter((p) => SRS.isDue(srsProgress[p.id]));
-  }, [srsProgress]);
+    return activeTrackProblems.filter((p) => SRS.isDue(srsProgress[p.id]));
+  }, [activeTrackProblems, srsProgress]);
 
   // Refresh notes map
   const refreshNotesMap = useCallback(() => {
@@ -275,22 +331,95 @@ export default function HomePage() {
       </div>
 
 
+      {/* DSA Track/List Switcher & Dual Progress Header */}
+      {activeTrack === 'dsa' && (
+        <div className="dsa-track-header">
+          {/* Left: Track list switcher */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--color-secondary)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+              Danh sách:
+            </span>
+            <div className="dsa-list-switcher">
+              <button
+                type="button"
+                className={`dsa-list-btn ${dsaTrackList === 'blind75' ? 'active' : ''}`}
+                onClick={() => handleTrackListChange('blind75')}
+              >
+                <span>Blind 75</span>
+                <span className="dsa-list-badge">75</span>
+              </button>
+              <button
+                type="button"
+                className={`dsa-list-btn ${dsaTrackList === 'neetcode150' ? 'active' : ''}`}
+                onClick={() => handleTrackListChange('neetcode150')}
+              >
+                <span>NeetCode 150</span>
+                <span className="dsa-list-badge">150</span>
+              </button>
+              <button
+                type="button"
+                className={`dsa-list-btn ${dsaTrackList === 'all' ? 'active' : ''}`}
+                onClick={() => handleTrackListChange('all')}
+              >
+                <span>Tất cả</span>
+                <span className="dsa-list-badge">150</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Right: Dual Progress Tracking */}
+          <div className="dual-progress-panel">
+            {/* Blind 75 Progress Card */}
+            <div className="progress-stat-card" title="Tiến độ hoàn thành Blind 75">
+              <div className="progress-stat-header">
+                <span>Blind 75</span>
+                <span className="progress-stat-val">
+                  {blind75Stats.mastered}/{blind75Stats.total} ({blind75Stats.percent}%)
+                </span>
+              </div>
+              <div className="progress-stat-track">
+                <div
+                  className="progress-stat-fill blind75"
+                  style={{ width: `${blind75Stats.percent}%` }}
+                />
+              </div>
+            </div>
+
+            {/* NeetCode 150 Progress Card */}
+            <div className="progress-stat-card" title="Tiến độ hoàn thành NeetCode 150">
+              <div className="progress-stat-header">
+                <span>NeetCode 150</span>
+                <span className="progress-stat-val">
+                  {nc150Stats.mastered}/{nc150Stats.total} ({nc150Stats.percent}%)
+                </span>
+              </div>
+              <div className="progress-stat-track">
+                <div
+                  className="progress-stat-fill nc150"
+                  style={{ width: `${nc150Stats.percent}%` }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* DSA Sub-tabs — chỉ hiện trong track DSA */}
       {activeTrack === 'dsa' && (
         <TabsNav<'roadmap' | 'neetcode-all' | 'neetcode-due' | 'calendar'>
           activeTab={activeMainView}
           onChange={handleTabChange}
           enableShortcuts={shortcutsEnabled && !isReminderModalOpen && !selectedNote}
-          style={{ marginTop: '12px', marginBottom: '20px' }}
+          style={{ marginTop: '4px', marginBottom: '20px' }}
           rightAction={
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
               {/* Nút noti đến hạn ôn tập */}
-              {srsStats.due > 0 && activeMainView !== 'neetcode-due' && (
+              {activeTrackStats.due > 0 && activeMainView !== 'neetcode-due' && (
                 <button
                   type="button"
                   className="due-noti-btn"
                   onClick={() => handleTabChange('neetcode-due')}
-                  title={`${srsStats.due} bài đến hạn ôn tập hôm nay`}
+                  title={`${activeTrackStats.due} bài đến hạn ôn tập hôm nay`}
                   aria-label="Xem bài đến hạn ôn tập"
                 >
                   {/* Bell SVG */}
@@ -308,7 +437,7 @@ export default function HomePage() {
                     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
                     <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
                   </svg>
-                  <span className="due-noti-badge">{srsStats.due}</span>
+                  <span className="due-noti-badge">{activeTrackStats.due}</span>
                 </button>
               )}
               <button
@@ -341,14 +470,14 @@ export default function HomePage() {
             },
             {
               id: 'neetcode-all',
-              label: 'NeetCode 150 (Tất cả)',
-              badge: `${srsStats.mastered} / ${srsStats.total}`,
+              label: dsaTrackList === 'blind75' ? 'Blind 75 (Tất cả)' : dsaTrackList === 'neetcode150' ? 'NeetCode 150 (Tất cả)' : 'Tất cả bài tập',
+              badge: `${activeTrackStats.mastered} / ${activeTrackStats.total}`,
             },
             {
               id: 'neetcode-due',
               label: 'Ôn tập hôm nay',
-              badge: srsStats.due > 0 ? srsStats.due : 0,
-              badgeStyle: srsStats.due > 0 ? { background: '#990f3d', color: '#ffffff', fontWeight: 700 } : undefined,
+              badge: dueProblems.length > 0 ? dueProblems.length : 0,
+              badgeStyle: dueProblems.length > 0 ? { background: '#990f3d', color: '#ffffff', fontWeight: 700 } : undefined,
             },
             {
               id: 'calendar',
@@ -608,24 +737,27 @@ export default function HomePage() {
               )}
             </div>
           ) : (
-            <TreeGraph />
+            <TreeGraph trackList={dsaTrackList} srsProgress={srsProgress} />
           )}
         </>
       )}
 
-      {/* VIEW 2: All NeetCode 150 Problems */}
+      {/* VIEW 2: All Track Problems */}
       {activeTrack === 'dsa' && activeMainView === 'neetcode-all' && (
         <div>
           <div style={{ marginBottom: '16px' }}>
             <h2 style={{ fontSize: '1.4rem', fontFamily: 'var(--font-display)', marginBottom: '4px' }}>
-              NeetCode 150 Problem Checklist
+              {dsaTrackList === 'blind75' ? 'Blind 75 Problem Checklist' : dsaTrackList === 'neetcode150' ? 'NeetCode 150 Problem Checklist' : 'Toàn Bộ Bài Tập DSA (150 bài)'}
             </h2>
             <p style={{ color: 'var(--color-secondary)', fontSize: '0.92rem' }}>
-              Danh sách đầy đủ 150 bài toán nền tảng phân chia theo 18 chủ đề, hỗ trợ lặp lại ngắt quãng và ghi chú.
+              {dsaTrackList === 'blind75'
+                ? 'Danh sách 75 bài toán trọng tâm và tinh gọn nhất (Blind 75), bao phủ 18 patterns cốt lõi.'
+                : 'Danh sách đầy đủ 150 bài toán nền tảng phân chia theo 18 chủ đề, hỗ trợ lặp lại ngắt quãng và ghi chú.'}
             </p>
           </div>
           <NeetCodeProblemList
-            problems={ALL_NEETCODE_PROBLEMS}
+            problems={activeTrackProblems}
+            trackList={dsaTrackList}
             showTopicColumn={true}
             onProgressUpdated={fetchSrsData}
           />
@@ -637,7 +769,7 @@ export default function HomePage() {
         <div>
           <div style={{ marginBottom: '16px' }}>
             <h2 style={{ fontSize: '1.4rem', fontFamily: 'var(--font-display)', marginBottom: '4px' }}>
-              Danh Sách Cần Ôn Tập Hôm Nay
+              Danh Sách Cần Ôn Tập Hôm Nay ({dsaTrackList === 'blind75' ? 'Blind 75' : dsaTrackList === 'neetcode150' ? 'NeetCode 150' : 'Tất cả'})
             </h2>
             <p style={{ color: 'var(--color-secondary)', fontSize: '0.92rem' }}>
               Các bài toán đã đến hạn ôn tập lặp lại ngắt quãng hôm nay ({SRS.getTodayStr()}).
@@ -654,10 +786,10 @@ export default function HomePage() {
               }}
             >
               <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.3rem', color: 'var(--color-primary)', marginBottom: '8px' }}>
-                Tất cả bài tập đã được ôn luyện xong!
+                Tất cả bài tập trong danh sách đã được ôn luyện xong!
               </h3>
               <p style={{ color: 'var(--color-secondary)', fontSize: '0.95rem' }}>
-                Hôm nay bạn không có bài nào quá hạn hoặc cần ôn tập. Hãy tiếp tục giải thêm bài mới!
+                Hôm nay bạn không có bài nào quá hạn hoặc cần ôn tập trong danh sách đang chọn. Hãy tiếp tục giải thêm bài mới!
               </p>
               <button
                 type="button"
@@ -665,12 +797,13 @@ export default function HomePage() {
                 style={{ marginTop: '16px' }}
                 onClick={() => handleTabChange('neetcode-all')}
               >
-                Xem danh sách 150 bài
+                Xem danh sách bài tập
               </button>
             </div>
           ) : (
             <NeetCodeProblemList
               problems={dueProblems}
+              trackList={dsaTrackList}
               showTopicColumn={true}
               onProgressUpdated={fetchSrsData}
             />
@@ -683,15 +816,16 @@ export default function HomePage() {
         <div>
           <div style={{ marginBottom: '16px' }}>
             <h2 style={{ fontSize: '1.4rem', fontFamily: 'var(--font-display)', marginBottom: '4px' }}>
-              Lịch Ôn Tập SRS (Spaced Repetition)
+              Lịch Ôn Tập SRS — {dsaTrackList === 'blind75' ? 'Blind 75' : dsaTrackList === 'neetcode150' ? 'NeetCode 150' : 'Tất cả bài tập'}
             </h2>
             <p style={{ color: 'var(--color-secondary)', fontSize: '0.92rem' }}>
-              Theo dõi và quản lý lịch trình ôn tập các bài toán NeetCode 150 theo từng ngày.
+              Theo dõi và quản lý lịch trình ôn tập các bài toán theo từng ngày theo thuật toán lặp lại ngắt quãng.
             </p>
           </div>
           <SrsCalendarView
             srsProgress={srsProgress}
             onProgressUpdated={fetchSrsData}
+            trackList={dsaTrackList}
           />
         </div>
       )}

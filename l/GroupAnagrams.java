@@ -2,25 +2,26 @@ package l;
 
 import java.util.*;
 
+import javax.swing.plaf.ListUI;
+
 public class GroupAnagrams {
+
     public List<List<String>> groupAnagrams(String[] strs) {
-        // get the freq array -> create key with that array.
-        // use that key put if absent to the List of that key
-        Map<String, List<String>> res = new HashMap<>();
-        
-        for(String s : strs) {
-            int[] template = new int[26];
+        // get the pattern, loop each, get pattern, piut in pattart
+        Map<String, List<String>> anagramBucket = new HashMap<>();
+
+        for (String s : strs) {
+            int[] pattern = new int[26];
             for (char c : s.toCharArray()) {
-                template[c - 'a']++; 
+                pattern[c - 'a']++;
             }
 
+            String key = Arrays.toString(pattern);
+            anagramBucket.putIfAbsent(key, new ArrayList<>());
+            anagramBucket.get(key).add(s);
+        }
 
-            String key = Arrays.toString(key);
-            res.putIfAbsent(key,   String key = template);
-        } 
-
-
-        return new ArrayList<>();
+        return new ArrayList<>(anagramBucket.values());
     }
 
     public static void main(String[] args) {

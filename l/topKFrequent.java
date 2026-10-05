@@ -22,6 +22,12 @@ import java.util.Map;
 
 public class topKFrequent {
   public int[] solution(int[] nums, int k) {
+    // using freq array
+    // 3 step
+    // get freq hasmap,sort with bucket, iterate backward
+    // map, key: the number, value: its frequency
+    // bucket is a Array of list stores the indexes are the existence, group them to
+    // bucket
     Map<Integer, Integer> seen = new HashMap<>();
 
     for (int num : nums) {
@@ -29,31 +35,28 @@ public class topKFrequent {
     }
 
     int max = nums.length + 1;
-    List<Integer>[] buckets = new List[max + 1];
-
+    List<Integer>[] buckets = new List[max];
     for (int key : seen.keySet()) {
       int freq = seen.get(key);
-      if (buckets[freq] == null) {
+      if (buckets[freq] == null)
         buckets[freq] = new ArrayList<>();
-      }
       buckets[freq].add(key);
     }
 
-    int idx = 0;
     int[] res = new int[k];
-    for (int i = nums.length; i >= 0; i--) {
+    int idx = 0;
+    for (int i = buckets.length - 1; i >= 0; i--) {
       if (buckets[i] != null) {
-        for (int key : buckets[i]) {
-          res[idx++] = key;
-          if (k == idx) {
+        for (int num : buckets[i]) {
+          res[idx++] = num;
+          if (idx == k) {
             return res;
           }
         }
-
       }
     }
-    return res;
 
+    return new int[] {};
   }
 
   public static void main(String[] args) {
