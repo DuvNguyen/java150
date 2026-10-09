@@ -1,5 +1,6 @@
 package l;
 
+import java.security.SignatureException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -7,36 +8,31 @@ import java.util.List;
 public class encodeDecodePractice {
 
     public String encode(List<String> strs) {
-
         StringBuilder res = new StringBuilder();
-
-        if (strs.isEmpty())
-            return "";
-
-        for (String str : strs) {
-            res.append(str.length()).append("#").append(str);
+        for (String s : strs) {
+            res.append(s.length()).append("#").append(s);
         }
 
         return res.toString();
     }
 
     public List<String> decode(String str) {
-        int idx = 0;
-        List<String> res = new ArrayList<>();
-        while (idx < str.length()) {
-            int j = str.indexOf("#", idx);
-            int length = Integer.parseInt(str.substring(idx, j));
+        List<String> res = new ArrayList<>(); // 5#hello5#world
+        int i = 0;
+        while (i < str.length()) {
+            int j = str.indexOf("#", i);
+            int length = Integer.parseInt(str.substring(i, j));
             int start = j + 1;
             int end = start + length;
             res.add(str.substring(start, end));
-            idx = end;
+            i = end;
         }
 
         return res;
     }
 
     public static void main(String[] args) {
-        encodeDecode sol = new encodeDecode();
+        encodeDecodePractice sol = new encodeDecodePractice();
 
         // Test Case 1: Các từ thông thường
         List<String> tc1 = Arrays.asList("Hello", "World");

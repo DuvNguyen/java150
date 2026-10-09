@@ -2782,3 +2782,51 @@ code, pre {
   background-color: #fff7ed !important;
 }
 
+/* Status Combobox — Financial Times Design System */
+.status-combobox-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-combobox-label {
+  font-family: var(--font-label);
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--color-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.status-combobox {
+  height: 32px;
+  padding: 0 10px;
+  font-family: var(--font-label);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  background-color: var(--color-surface, #FFF9F4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--rounded-md, 2px);
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+  outline: none;
+}
+
+.status-combobox:hover {
+  background-color: #f7eee4;
+  border-color: var(--color-secondary);
+}
+
+.status-combobox:focus {
+  border-color: var(--color-tertiary);
+  box-shadow: 0 0 0 1px var(--color-tertiary);
+}
+
+.status-combobox option {
+  background-color: var(--color-surface, #FFF9F4);
+  color: var(--color-primary);
+  font-family: var(--font-label);
+}
+

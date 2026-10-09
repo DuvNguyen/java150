@@ -66,6 +66,17 @@ export default function SystemDesignView() {
   }, []);
 
   // Update status handler
+  const handleStatusChange = useCallback((topicId: string, nextStatus: SystemDesignStatus) => {
+    setStatusMap((prev) => {
+      try {
+        localStorage.setItem(getSystemDesignStatusKey(topicId), nextStatus);
+      } catch {
+        // ignore
+      }
+      return { ...prev, [topicId]: nextStatus };
+    });
+  }, []);
+
   const handleToggleStatus = useCallback((topicId: string) => {
     setStatusMap((prev) => {
       const current = prev[topicId] || 'not-started';
@@ -227,7 +238,7 @@ export default function SystemDesignView() {
               margin: '0 0 12px 4px',
             }}
           >
-            Mục lục Lộ trình ({SYSTEM_DESIGN_MODULES.length} Modules)
+            Mục lục Lộ trình
           </h3>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -382,33 +393,22 @@ export default function SystemDesignView() {
               </h2>
             </div>
 
-            {/* Change Status Button */}
-            <button
-              type="button"
-              onClick={() => handleToggleStatus(activeTopic.id)}
-              className="btn btn-secondary"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                fontSize: '0.78rem',
-                padding: '6px 12px',
-              }}
-            >
-              <span>Trạng thái:</span>
-              <strong
-                style={{
-                  color:
-                    currentTopicStatus === 'done'
-                      ? '#059669'
-                      : currentTopicStatus === 'in-progress'
-                      ? '#d97706'
-                      : 'var(--color-primary)',
-                }}
+            {/* Status Combobox */}
+            <div className="status-combobox-wrapper">
+              <label htmlFor="sd-status-select" className="status-combobox-label">
+                Trạng thái:
+              </label>
+              <select
+                id="sd-status-select"
+                className="status-combobox"
+                value={currentTopicStatus}
+                onChange={(e) => handleStatusChange(activeTopic.id, e.target.value as SystemDesignStatus)}
               >
-                {STATUS_LABELS[currentTopicStatus]}
-              </strong>
-            </button>
+                <option value="not-started">Chưa học</option>
+                <option value="in-progress">Đang học</option>
+                <option value="done">Đã nắm vững</option>
+              </select>
+            </div>
           </div>
 
           <div style={{ padding: '20px 24px' }}>
@@ -517,7 +517,7 @@ export default function SystemDesignView() {
                 paddingBottom: '6px',
               }}
             >
-              Trọng Tâm Phỏng Vấn (System Design Interview Questions)
+              Trọng Tâm Phỏng Vấn
             </h3>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -605,7 +605,7 @@ export default function SystemDesignView() {
                   color: 'var(--color-primary)',
                 }}
               >
-                Ghi chú cá nhân (Lưu tự động vào LocalStorage):
+                Ghi chú cá nhân:
               </label>
               {saveNoteSuccess && (
                 <span style={{ fontSize: '0.75rem', color: '#059669', fontWeight: 600 }}>
@@ -718,10 +718,10 @@ export default function SystemDesignView() {
         >
           {[
             { id: 'all', label: 'Tất cả' },
-            { id: 'Book', label: 'Sách (Books)' },
-            { id: 'Roadmap', label: 'Lộ trình (Roadmap)' },
+            { id: 'Book', label: 'Sách' },
+            { id: 'Roadmap', label: 'Lộ trình' },
             { id: 'Open Source', label: 'Mã nguồn mở' },
-            { id: 'Course', label: 'Khóa học (Courses)' },
+            { id: 'Course', label: 'Khóa học' },
             { id: 'Engineering Blog', label: 'Engineering Blogs' },
           ].map((tab) => {
             const isActive = citationFilter === tab.id;

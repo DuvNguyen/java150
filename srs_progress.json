@@ -14,26 +14,26 @@
   "nc_3": {
     "id": "nc_3",
     "status": "mastered",
-    "lastSolved": "2026-10-03",
+    "lastSolved": "2026-10-07",
     "lastRating": "medium",
-    "nextReview": "2026-10-06",
-    "interval": 3,
+    "nextReview": "2026-10-14",
+    "interval": 7,
     "easeFactor": 2.45,
-    "repetitions": 1,
-    "note": "",
-    "updatedAt": 1791013740080
+    "repetitions": 2,
+    "note": "### 1. Pattern & Data Structure\n\n* Kỹ thuật chính: Sử dụng kỹ thuật phần bù.  a + b \\= c, thì b là phần bù của a, a là phần bù của b. Chỉ cần c - x \\= b thì x chắc chắn là a.&#x20;\n\n### 2. Key Intuition (Ý tưởng cốt lõi)\n\n* Ý tưởng phần bù\n\n### 3. Edge Cases & Tricky Points\n\n* Phải lưu được trong hasmap phần tử thứ i là key, và index i là value. Sau đó nếu như target - số đang xét \\= một số đã thêm vào hasmap -> thì cái số trong hasmap và số đang xét tổng ra số target và là phần bù của nhau\n\n### 4. Complexity\n\n* Time: `O(N)`\n* Space: `O(N)`",
+    "updatedAt": 1791360603632
   },
   "nc_4": {
     "id": "nc_4",
     "status": "mastered",
-    "lastSolved": "2026-10-05",
+    "lastSolved": "2026-10-08",
     "lastRating": "medium",
-    "nextReview": "2026-10-08",
-    "interval": 3,
+    "nextReview": "2026-10-15",
+    "interval": 7,
     "easeFactor": 2.2,
-    "repetitions": 2,
+    "repetitions": 3,
     "note": "### 1. Pattern & Data Structure\n\n* Kỹ thuật chính: Mảng tần suất cho từng String\n* Dùng Map lưu pattern anagram và value là danh sách các anagram match pattern đó\n\n### 2. Key Intuition (Ý tưởng cốt lõi)\n\n* **dùng mảng tần suất** để lấy được key.\n\n### 3. Edge Cases & Tricky Points\n\n* Tricky là ý tưởng có một hasmap chứa toàn bộ pattern của toàn bộ String, mình duyệt qua từng String, lấy pattern của nó rồi add nó nào danh sách của pattern đó là được.\n* chỉ cần loop qua từng chữ, mỗi chữ lấy pattern -> add vào trong value (danh sách các anagram của pattern đó)\n\n### 4. Complexity\n\n* Time: `O(N * K)`\n* Space: `O(N * K)`",
-    "updatedAt": 1791200553508
+    "updatedAt": 1791472078428
   },
   "nc_5": {
     "id": "nc_5",
@@ -62,14 +62,14 @@
   "nc_6": {
     "id": "nc_6",
     "status": "mastered",
-    "lastSolved": "2026-09-26",
+    "lastSolved": "2026-10-08",
     "lastRating": "medium",
-    "nextReview": "2026-09-29",
+    "nextReview": "2026-10-11",
     "interval": 3,
-    "easeFactor": 2.5,
-    "repetitions": 1,
-    "note": "- tại sao không dùng String operation?\n- encode String sẽ trông thế nào? tai sao?\n- điều kiện dừng vòng lặp khi decode?",
-    "updatedAt": 1790413806334
+    "easeFactor": 2.4,
+    "repetitions": 3,
+    "note": "### 1. Pattern & Data Structure\n\n* Kỹ thuật chính:&#x20;\n  * Khi encode: Gom các chuỗi thành list, chèn ở trước từng chuỗi là độ dài của nó và một dấu thăng để đánh dấu vị trí.\n  * dùng hàm indexOf của java\n\n### 2. Key Intuition (Ý tưởng cốt lõi)\n\n*\n\n### 3. Edge Cases & Tricky Points\n\n* dùng indexOf lấy vị trí dấu #\n* substring từ start -> end point\n* Dùng parseInt của Integer và phối hợp substring lấy được độ dài của từ (i, j)\n\n### 4. Complexity\n\n* Time: `O(n)`\n* Space: `O(...)`",
+    "updatedAt": 1791471153468
   },
   "nc_7": {
     "id": "nc_7",

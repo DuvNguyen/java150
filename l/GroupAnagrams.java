@@ -7,21 +7,24 @@ import javax.swing.plaf.ListUI;
 public class GroupAnagrams {
 
     public List<List<String>> groupAnagrams(String[] strs) {
-        // get the pattern, loop each, get pattern, piut in pattart
-        Map<String, List<String>> anagramBucket = new HashMap<>();
+        // String key pattern
+        // freq array 26 element
+
+        Map<String, List<String>> res = new HashMap<>();
 
         for (String s : strs) {
-            int[] pattern = new int[26];
+            int[] count = new int[26];
             for (char c : s.toCharArray()) {
-                pattern[c - 'a']++;
+                count[c - 'a']++;
             }
-
-            String key = Arrays.toString(pattern);
-            anagramBucket.putIfAbsent(key, new ArrayList<>());
-            anagramBucket.get(key).add(s);
+            String keyPattern = Arrays.toString(count);
+            if (res.get(keyPattern) == null) {
+                res.put(keyPattern, new ArrayList<>());
+            }
+            res.get(keyPattern).add(s);
         }
 
-        return new ArrayList<>(anagramBucket.values());
+        return new ArrayList<>(res.values());
     }
 
     public static void main(String[] args) {

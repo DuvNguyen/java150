@@ -367,6 +367,37 @@ export const SPRING_BOOT_MODULES: SpringBootModule[] = [
         ]
       },
       {
+        "id": "spring-profiles-multienv",
+        "slug": "spring-profiles",
+        "title": "Spring Profiles & Cấu hình Đa Môi trường",
+        "englishTitle": "Spring Profiles & Multi-Environment Configuration",
+        "summary": "Tách biệt cấu hình ứng dụng cho từng môi trường (dev, staging, prod) với application-{profile}.yml, biến môi trường và annotation @Profile.",
+        "estimatedMinutes": 20,
+        "originalRoadmapMarkdown": "# Spring Profiles\n\nQuản lý cấu hình linh hoạt cho từng môi trường triển khai thực tế.",
+        "coreConcepts": [
+          {
+            "heading": "1. Nguyên lý và Cơ chế Spring Profiles",
+            "points": [
+              "Tách file cấu hình: application.yml (cấu hình chung) kết hợp application-dev.yml, application-prod.yml, application-test.yml.",
+              "Kích hoạt Profile: Qua tham số dòng lệnh (--spring.profiles.active=prod), biến môi trường (SPRING_PROFILES_ACTIVE=prod), hoặc file cấu hình.",
+              "Annotation @Profile: Chỉ đăng ký Bean hoặc Configuration class khi profile tương ứng đang active (vd: @Profile(\"dev\") public DataSource devDataSource())."
+            ]
+          }
+        ],
+        "javaDeepDive": {
+          "title": "Cấu hình Datasource động theo Profile",
+          "description": "Sử dụng @Profile để nạp cấu hình cơ sở dữ liệu khác nhau giữa môi trường Dev (H2 in-memory) và Prod (PostgreSQL).",
+          "codeSnippet": "@Configuration\npublic class DatabaseConfig {\n    @Bean\n    @Profile(\"dev\")\n    public DataSource devDataSource() {\n        return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).build();\n    }\n\n    @Bean\n    @Profile(\"prod\")\n    public DataSource prodDataSource() {\n        HikariDataSource ds = new HikariDataSource();\n        ds.setJdbcUrl(System.getenv(\"DB_JDBC_URL\"));\n        return ds;\n    }\n}"
+        },
+        "interviewQA": [
+          {
+            "question": "Thứ tự ưu tiên nạp cấu hình (Property Resolution Order) trong Spring Boot hoạt động như thế nào?",
+            "answer": "Thứ tự ưu tiên từ cao xuống thấp: 1. Tham số dòng lệnh (Command line arguments: --server.port=8081). 2. Biến môi trường hệ điều hành (OS Environment variables: SPRING_APPLICATION_JSON). 3. Config file riêng theo profile nằm ngoài jar (file:./config/application-{profile}.yml). 4. Config file riêng theo profile đóng gói trong classpath jar. 5. File application.yml mặc định."
+          }
+        ]
+      },
+
+      {
         "id": "88-h3d7kb-VmUBsnUUXW_",
         "slug": "autoconfiguration",
         "title": "Autoconfiguration & @Conditional",
@@ -492,6 +523,37 @@ export const SPRING_BOOT_MODULES: SpringBootModule[] = [
           }
         ]
       },
+      {
+        "id": "global-exception-handling",
+        "slug": "global-exception-handling",
+        "title": "Xử Lý Lỗi Tập Trung (@RestControllerAdvice) & Validation",
+        "englishTitle": "Global Exception Handling & API Validation",
+        "summary": "Chuẩn hoá xử lý ngoại lệ REST API với @RestControllerAdvice, @ExceptionHandler, DTO Pattern và jakarta.validation (@Valid).",
+        "estimatedMinutes": 25,
+        "originalRoadmapMarkdown": "# Global Exception Handling\n\nChuẩn hoá response trả về cho client theo RFC 7807 (Problem Details).",
+        "coreConcepts": [
+          {
+            "heading": "1. Mẫu xử lý ngoại lệ chuẩn cấp Doanh nghiệp",
+            "points": [
+              "@RestControllerAdvice: Bắt toàn bộ ngoại lệ ném ra từ tất cả @RestController trong ứng dụng tại một điểm duy nhất (AOP interceptor).",
+              "@ExceptionHandler(MethodArgumentNotValidException.class): Bắt lỗi validation khi client gửi body không đúng quy chuẩn @Valid.",
+              "Chuẩn hoá DTO ApiResponse<T> hoặc ProblemDetail (Spring 6 / Boot 3): Đảm bảo mã lỗi, timestamp, message và chi tiết lỗi luôn đồng nhất."
+            ]
+          }
+        ],
+        "javaDeepDive": {
+          "title": "Cài đặt GlobalExceptionHandler chuẩn mực",
+          "description": "Bắt lỗi nghiệp vụ ResourceNotFoundException và lỗi @Valid gửi từ client.",
+          "codeSnippet": "@RestControllerAdvice\npublic class GlobalExceptionHandler {\n    @ExceptionHandler(ResourceNotFoundException.class)\n    public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException ex) {\n        ErrorResponse err = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage(), System.currentTimeMillis());\n        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);\n    }\n\n    @ExceptionHandler(MethodArgumentNotValidException.class)\n    public ResponseEntity<Map<String, String>> handleValidation(MethodArgumentNotValidException ex) {\n        Map<String, String> errors = new HashMap<>();\n        ex.getBindingResult().getFieldErrors().forEach(err -> errors.put(err.getField(), err.getDefaultMessage()));\n        return ResponseEntity.badRequest().body(errors);\n    }\n}"
+        },
+        "interviewQA": [
+          {
+            "question": "Sự khác biệt giữa @ControllerAdvice và @RestControllerAdvice là gì?",
+            "answer": "@RestControllerAdvice là tổ hợp của @ControllerAdvice và @ResponseBody. Mọi phương thức xử lý ngoại lệ trong @RestControllerAdvice sẽ tự động chuyển đổi đối tượng trả về thành JSON/XML để trả thẳng về client thay vì tìm kiếm view template HTML."
+          }
+        ]
+      },
+
       {
         "id": "QiNWE4sMTao3cVzjt3yPp",
         "slug": "spring-mvc",
@@ -701,6 +763,39 @@ export const SPRING_BOOT_MODULES: SpringBootModule[] = [
           }
         ]
       },
+      {
+        "id": "n-plus-one-problem",
+        "slug": "n-plus-one-problem",
+        "title": "Lỗi N+1 Problem & Tối Ưu Hibernate JPA (Vlad Mihalcea)",
+        "englishTitle": "N+1 Query Problem & JPA Performance Tuning",
+        "summary": "Nhận diện lỗi N+1 Query kinh điển và 3 giải pháp xử lý triệt để: JOIN FETCH, @EntityGraph và default_batch_fetch_size.",
+        "estimatedMinutes": 30,
+        "originalRoadmapMarkdown": "# N+1 Query Problem in JPA\n\nNguồn tham khảo chuẩn: Vlad Mihalcea - High-Performance Java Persistence.",
+        "coreConcepts": [
+          {
+            "heading": "1. Bản chất Lỗi N+1 Query",
+            "points": [
+              "Nguyên nhân: Khi truy vấn 1 danh sách N thực thể cha (1 query), và sau đó lặp qua từng phần tử để truy cập thực thể con liên quan (FetchType.LAZY), Hibernate tự động bắn thêm N câu query riêng lẻ -> Tổng cộng 1 + N câu lệnh SQL!",
+              "Hậu quả: Giết chết hiệu năng database khi N lớn (vd: 100 cha bắn 101 câu query thay vì 1 câu duy nhất).",
+              "Giải pháp 1 (Khuyên dùng): Sử dụng JPQL 'JOIN FETCH' để lấy toàn bộ cha và con trong đúng 1 câu SQL JOIN.",
+              "Giải pháp 2: Sử dụng '@EntityGraph' của Spring Data JPA để ghi đè kế hoạch nạp (fetch plan) một cách linh hoạt.",
+              "Giải pháp 3: Bật cấu hình 'spring.jpa.properties.hibernate.default_batch_fetch_size=20' để Hibernate gom nhóm truy vấn con bằng mệnh đề IN (?, ?, ...)."
+            ]
+          }
+        ],
+        "javaDeepDive": {
+          "title": "Xử lý N+1 bằng JOIN FETCH và @EntityGraph",
+          "description": "Minh hoạ câu truy vấn lấy danh sách User cùng toàn bộ Roles trong 1 câu SQL duy nhất.",
+          "codeSnippet": "public interface UserRepository extends JpaRepository<User, Long> {\n    // Cách 1: JPQL JOIN FETCH\n    @Query(\"SELECT u FROM User u JOIN FETCH u.roles WHERE u.active = true\")\n    List<User> findAllActiveWithRolesFetch();\n\n    // Cách 2: @EntityGraph nạp động\n    @EntityGraph(attributePaths = {\"roles\"})\n    List<User> findAllWithRoles();\n}"
+        },
+        "interviewQA": [
+          {
+            "question": "Tại sao FetchType.EAGER không giải quyết được lỗi N+1 mà thậm chí còn làm trầm trọng hơn?",
+            "answer": "Khi sử dụng JPQL (SELECT u FROM User u), JPA parser trước tiên tạo ra câu lệnh query User thuần tuý. Sau đó, vì quan hệ là EAGER, Hibernate buộc phải lập tức nạp tất cả thực thể con cho từng User vừa tải, dẫn đến bắn N câu query con ngay lập tức mà lập trình viên không hề hay biết! Vì vậy quy tắc vàng của Vlad Mihalcea là: LUÔN LUÔN đặt FetchType.LAZY cho mọi quan hệ (@OneToMany, @ManyToOne, @ManyToMany) và chỉ dùng JOIN FETCH khi cần thiết."
+          }
+        ]
+      },
+
       {
         "id": "H9Z0EvKT_148vD0mR-dUf",
         "slug": "transactions",
@@ -1016,6 +1111,37 @@ export const SPRING_BOOT_MODULES: SpringBootModule[] = [
           }
         ]
       },
+      {
+        "id": "unit-testing-mockito-junit5",
+        "slug": "unit-testing-mockito-junit5",
+        "title": "Unit Test Chuyên Sâu với JUnit 5 & Mockito (Tách biệt Integration Test)",
+        "englishTitle": "Isolated Unit Testing with JUnit 5 & Mockito",
+        "summary": "Viết Unit Test độc lập tốc độ cao cho tầng Service mà KHÔNG tải Spring ApplicationContext bằng @ExtendWith(MockitoExtension.class), @Mock, @InjectMocks.",
+        "estimatedMinutes": 25,
+        "originalRoadmapMarkdown": "# Unit Testing with JUnit 5 and Mockito\n\nKiểm thử đơn vị thuần túy không phụ thuộc framework.",
+        "coreConcepts": [
+          {
+            "heading": "1. Phân biệt Unit Test vs Integration Test",
+            "points": [
+              "Unit Test (JUnit 5 + Mockito): Chỉ kiểm tra logic thuần của 1 Class đơn lẻ. Giả lập (Mock) tất cả các phụ thuộc bên ngoài (Repository, 3rd party API). Chạy siêu tốc (~vài mili-giây) vì KHÔNG khởi động Spring Container.",
+              "Integration Test (@SpringBootTest): Khởi động toàn bộ Spring Context, kết nối Database thật/in-memory, kiểm thử sự phối hợp giữa nhiều tầng. Chạy chậm hơn hàng chục lần.",
+              "Các annotation cốt lõi: @ExtendWith(MockitoExtension.class), @Mock (tạo mock instance), @InjectMocks (tiêm các mock vào service cần test)."
+            ]
+          }
+        ],
+        "javaDeepDive": {
+          "title": "Unit Test chuẩn mẫu cho UserService",
+          "description": "Sử dụng Mockito when().thenReturn(), verify() và assertThrows() của JUnit 5.",
+          "codeSnippet": "@ExtendWith(MockitoExtension.class)\nclass UserServiceTest {\n    @Mock\n    private UserRepository userRepository;\n\n    @InjectMocks\n    private UserService userService;\n\n    @Test\n    void getUserById_whenUserExists_shouldReturnUserDto() {\n        // Given\n        User mockUser = new User(1L, \"levi@test.com\", \"Levi\");\n        when(userRepository.findById(1L)).thenReturn(Optional.of(mockUser));\n\n        // When\n        UserDto result = userService.getUserById(1L);\n\n        // Then\n        assertNotNull(result);\n        assertEquals(\"levi@test.com\", result.getEmail());\n        verify(userRepository, times(1)).findById(1L);\n    }\n}"
+        },
+        "interviewQA": [
+          {
+            "question": "Sự khác biệt giữa @Mock và @MockBean trong hệ sinh thái Spring Boot là gì?",
+            "answer": "@Mock là annotation của Mockito thuần túy, dùng trong Unit Test không nạp Spring Context (@ExtendWith(MockitoExtension.class)). Nó tạo ra một mock object bình thường. Trong khi đó, @MockBean là annotation của Spring Boot Test, dùng trong Integration Test để tạo mock object và THAY THẾ trực tiếp bean đó bên trong Spring ApplicationContext."
+          }
+        ]
+      },
+
       {
         "id": "5d1BERqTKNJMKiBcqa8Ie",
         "slug": "mock-mvc",

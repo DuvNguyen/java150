@@ -65,6 +65,17 @@ export default function SpringBootView() {
   }, []);
 
   // Update status handler
+  const handleStatusChange = useCallback((topicId: string, nextStatus: SpringBootStatus) => {
+    setStatusMap((prev) => {
+      try {
+        localStorage.setItem(getSpringBootStatusKey(topicId), nextStatus);
+      } catch {
+        // ignore
+      }
+      return { ...prev, [topicId]: nextStatus };
+    });
+  }, []);
+
   const handleToggleStatus = useCallback((topicId: string) => {
     setStatusMap((prev) => {
       const current = prev[topicId] || 'not-started';
@@ -512,41 +523,21 @@ export default function SpringBootView() {
               </div>
             </div>
 
-            {/* Status Toggle Button */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <button
-                type="button"
-                onClick={() => handleToggleStatus(currentTopic.id)}
-                style={{
-                  padding: '8px 14px',
-                  borderRadius: '8px',
-                  fontSize: '0.84rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  border: '1px solid',
-                  transition: 'all 0.2s ease',
-                  backgroundColor:
-                    statusMap[currentTopic.id] === 'done'
-                      ? '#e6f4ea'
-                      : statusMap[currentTopic.id] === 'in-progress'
-                      ? '#fef7e0'
-                      : 'var(--color-surface)',
-                  borderColor:
-                    statusMap[currentTopic.id] === 'done'
-                      ? '#137333'
-                      : statusMap[currentTopic.id] === 'in-progress'
-                      ? '#b06000'
-                      : 'var(--color-border)',
-                  color:
-                    statusMap[currentTopic.id] === 'done'
-                      ? '#137333'
-                      : statusMap[currentTopic.id] === 'in-progress'
-                      ? '#b06000'
-                      : 'var(--color-primary)',
-                }}
+            {/* Status Combobox */}
+            <div className="status-combobox-wrapper">
+              <label htmlFor="sb-status-select" className="status-combobox-label">
+                Trạng thái:
+              </label>
+              <select
+                id="sb-status-select"
+                className="status-combobox"
+                value={statusMap[currentTopic.id] || 'not-started'}
+                onChange={(e) => handleStatusChange(currentTopic.id, e.target.value as SpringBootStatus)}
               >
-                Trạng thái: {STATUS_LABELS[statusMap[currentTopic.id] || 'not-started']}
-              </button>
+                <option value="not-started">Chưa học</option>
+                <option value="in-progress">Đang học</option>
+                <option value="done">Đã nắm vững</option>
+              </select>
             </div>
           </div>
 

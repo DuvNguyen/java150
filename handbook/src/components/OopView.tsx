@@ -222,7 +222,7 @@ function PillarDetailPanel({
                 color: 'var(--color-tertiary)',
               }}
             >
-              Tính chất {pillar.order}/4
+              Chủ đề {pillar.order}/10
             </span>
           </div>
           <h2
@@ -258,11 +258,82 @@ function PillarDetailPanel({
             {pillar.tagline}
           </p>
         </div>
-        <StatusBadge status={status} onClick={() => onStatusChange(STATUS_NEXT[status])} />
+        <div className="status-combobox-wrapper">
+          <label htmlFor="oop-status-select" className="status-combobox-label">
+            Trạng thái:
+          </label>
+          <select
+            id="oop-status-select"
+            className="status-combobox"
+            value={status}
+            onChange={(e) => onStatusChange(e.target.value as OopStatus)}
+          >
+            <option value="not-started">Chưa học</option>
+            <option value="in-progress">Đang học</option>
+            <option value="done">Đã nắm</option>
+          </select>
+        </div>
       </div>
 
       {/* Body */}
       <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+
+
+        {/* Authoritative Citation Banner */}
+        {pillar.citation && (
+          <div
+            style={{
+              padding: '12px 16px',
+              backgroundColor: '#fffdfa',
+              border: '1px solid var(--color-border)',
+              borderLeft: '4px solid var(--color-tertiary)',
+              borderRadius: 'var(--rounded-md)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '6px',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
+              <span
+                style={{
+                  fontFamily: 'var(--font-label)',
+                  fontSize: '0.72rem',
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  color: 'var(--color-tertiary)',
+                }}
+              >
+                Trích dẫn nguồn chuẩn (Citation)
+              </span>
+              {pillar.citation.url && (
+                <a
+                  href={pillar.citation.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    fontSize: '0.76rem',
+                    color: 'var(--color-primary)',
+                    fontFamily: 'var(--font-label)',
+                    textDecoration: 'underline',
+                    fontWeight: 600,
+                  }}
+                >
+                  Tham khảo tài liệu gốc ↗
+                </a>
+              )}
+            </div>
+            <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--color-primary)', fontFamily: 'var(--font-display)' }}>
+              {pillar.citation.source} — {pillar.citation.author}
+            </div>
+            <div style={{ fontSize: '0.82rem', color: 'var(--color-secondary)', fontFamily: 'var(--font-mono)' }}>
+              {pillar.citation.itemOrChapter}
+            </div>
+            <div style={{ fontSize: '0.84rem', color: 'var(--color-primary)', fontStyle: 'italic', marginTop: '2px', lineHeight: '1.5' }}>
+              "{pillar.citation.keyTakeaway}"
+            </div>
+          </div>
+        )}
 
         {/* Description */}
         <div
@@ -597,7 +668,7 @@ export default function OopView() {
             marginBottom: '4px',
           }}
         >
-          Java OOP — 4 Tính Chất Nền Tảng
+          Java Core & OOP — Lộ Trình Kiến Thức Chuẩn Mực
         </h2>
         <p
           style={{
@@ -607,7 +678,7 @@ export default function OopView() {
             fontFamily: 'var(--font-body)',
           }}
         >
-          Học theo thứ tự từ 1 đến 4. Hoàn thành mỗi tính chất để mở khóa tính chất tiếp theo.
+          10 Chủ đề cốt lõi: OOP, Interface, equals/hashCode, Generics, Collections Internals, Stream API, Concurrency kèm trích dẫn chuẩn.
         </p>
         <ProgressBar value={doneCount} total={OOP_PILLARS.length} />
       </div>

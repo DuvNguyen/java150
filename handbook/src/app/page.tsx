@@ -11,6 +11,8 @@ import NeetCodeProblemList from '@/components/NeetCodeProblemList';
 import OopView from '@/components/OopView';
 import SystemDesignView from '@/components/SystemDesignView';
 import SpringBootView from '@/components/SpringBootView';
+import SqlDatabaseView from '@/components/SqlDatabaseView';
+import ToolsView from '@/components/ToolsView';
 import ReminderSettingsModal from '@/components/ReminderSettingsModal';
 import SrsCalendarView from '@/components/SrsCalendarView';
 import { Entry } from '@/components/FunctionTable';
@@ -25,7 +27,7 @@ interface SearchResultGroup {
 }
 
 export default function HomePage() {
-  const [activeTrack, setActiveTrack] = useState<'dsa' | 'oop' | 'system-design' | 'spring-boot'>('dsa');
+  const [activeTrack, setActiveTrack] = useState<'dsa' | 'oop' | 'sql' | 'spring-boot' | 'tools' | 'system-design'>('dsa');
   const [activeMainView, setActiveMainView] = useState<'roadmap' | 'neetcode-all' | 'neetcode-due' | 'calendar'>('roadmap');
   const [query, setQuery] = useState('');
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
@@ -312,10 +314,12 @@ export default function HomePage() {
         {(
           [
             { id: 'dsa', label: 'Java DSA', sub: 'NeetCode 150 + Cú pháp' },
-            { id: 'oop', label: 'Java OOP', sub: '4 tính chất cốt lõi' },
-            { id: 'system-design', label: 'System Design', sub: 'Roadmap 4 Modules' },
+            { id: 'oop', label: 'Core Java & OOP', sub: '10 Chủ đề cốt lõi' },
+            { id: 'sql', label: 'SQL & Database', sub: 'Top SQL 50 + RDBMS' },
             { id: 'spring-boot', label: 'Spring Boot', sub: 'Roadmap 6 Modules' },
-          ] as { id: 'dsa' | 'oop' | 'system-design' | 'spring-boot'; label: string; sub: string; disabled?: boolean }[]
+            { id: 'tools', label: 'Git, Docker & Dự Án', sub: 'Công cụ & Portfolio' },
+            { id: 'system-design', label: 'System Design', sub: 'Roadmap 4 Modules' },
+          ] as { id: 'dsa' | 'oop' | 'sql' | 'spring-boot' | 'tools' | 'system-design'; label: string; sub: string; disabled?: boolean }[]
         ).map((track) => (
           <button
             key={track.id}
@@ -496,6 +500,14 @@ export default function HomePage() {
       )}
 
       {/* ======================================== */}
+      {/* SQL & DATABASE TRACK */}
+      {activeTrack === 'sql' && (
+        <div style={{ marginTop: '20px' }}>
+          <SqlDatabaseView />
+        </div>
+      )}
+
+      {/* ======================================== */}
       {/* SYSTEM DESIGN TRACK */}
       {activeTrack === 'system-design' && (
         <div style={{ marginTop: '20px' }}>
@@ -508,6 +520,14 @@ export default function HomePage() {
       {activeTrack === 'spring-boot' && (
         <div style={{ marginTop: '20px' }}>
           <SpringBootView />
+        </div>
+      )}
+
+      {/* ======================================== */}
+      {/* TOOLS & PORTFOLIO TRACK */}
+      {activeTrack === 'tools' && (
+        <div style={{ marginTop: '20px' }}>
+          <ToolsView />
         </div>
       )}
 

@@ -878,7 +878,7 @@ export const SYSTEM_DESIGN_CITATIONS: SystemDesignCitation[] = [
     title: 'System Design Interview – An Insider\'s Guide (Volume 1 & 2)',
     author: 'Alex Xu & Sahn Lam (ByteByteGo)',
     type: 'Book',
-    url: 'https://bytebytego.com/',
+    url: 'https://bytebytego.com/courses/system-design-interview/a-framework-for-system-design-interviews',
     description: 'Nguồn tài liệu chuẩn mực về khung phỏng vấn 4 bước (4-Step Interview Framework) và các case studies kinh điển (Rate Limiter, Unique ID Generator, Chat System, YouTube, Payment System).',
     highlights: [
       'Khung 4 bước: 1. Hiểu bài toán & Scope -> 2. High-Level Design -> 3. Deep Dive -> 4. Wrap-up',
@@ -904,7 +904,7 @@ export const SYSTEM_DESIGN_CITATIONS: SystemDesignCitation[] = [
     title: 'The System Design Primer',
     author: 'Donne Martin (Open-source với >280k GitHub Stars)',
     type: 'Open Source',
-    url: 'https://github.com/donnemartin/system-design-primer',
+    url: 'https://github.com/donnemartin/system-design-primer#index-of-system-design-topics',
     description: 'Kho lưu trữ mã nguồn mở toàn diện nhất về System Design, tổng hợp có hệ thống các building blocks, trade-offs (đánh đổi kỹ thuật) và các câu hỏi phỏng vấn thực tế.',
     highlights: [
       'Tổng quan đầy đủ các thành phần: DNS, CDN, Load Balancer, Reverse Proxy, Caching, Asynchronism',
@@ -956,7 +956,7 @@ export const SYSTEM_DESIGN_CITATIONS: SystemDesignCitation[] = [
     title: 'Big Tech Engineering Blogs (Netflix, Uber, Meta, Discord)',
     author: 'Netflix TechBlog, Uber Eng, Meta Eng, Discord Eng',
     type: 'Engineering Blog',
-    url: 'https://netflixtechblog.com/',
+    url: 'https://netflixtechblog.com/fault-tolerance-in-a-high-volume-distributed-system-91ecd4dd4c7b',
     description: 'Nguồn học tập case studies thực chiến sống động nhất từ các kỹ sư đang trực tiếp vận hành hệ thống phục vụ hàng trăm triệu đến hàng tỷ người dùng trên toàn cầu.',
     highlights: [
       'Netflix TechBlog: Microservices resilience, Chaos Engineering (Simian Army), Multi-region Active-Active',
