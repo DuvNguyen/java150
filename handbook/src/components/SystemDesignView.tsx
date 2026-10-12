@@ -13,6 +13,7 @@ import {
 } from '@/lib/systemDesignData';
 import CodeBlock from '@/components/CodeBlock';
 import SystemDesignGraph from '@/components/SystemDesignGraph';
+import StatusCombobox from '@/components/StatusCombobox';
 
 const STATUS_LABELS: Record<SystemDesignStatus, string> = {
   'not-started': 'Chưa học',
@@ -394,21 +395,15 @@ export default function SystemDesignView() {
             </div>
 
             {/* Status Combobox */}
-            <div className="status-combobox-wrapper">
-              <label htmlFor="sd-status-select" className="status-combobox-label">
-                Trạng thái:
-              </label>
-              <select
-                id="sd-status-select"
-                className="status-combobox"
-                value={currentTopicStatus}
-                onChange={(e) => handleStatusChange(activeTopic.id, e.target.value as SystemDesignStatus)}
-              >
-                <option value="not-started">Chưa học</option>
-                <option value="in-progress">Đang học</option>
-                <option value="done">Đã nắm vững</option>
-              </select>
-            </div>
+            <StatusCombobox<SystemDesignStatus>
+              value={currentTopicStatus}
+              onChange={(val) => handleStatusChange(activeTopic.id, val)}
+              options={[
+                { value: 'not-started', label: 'Chưa học' },
+                { value: 'in-progress', label: 'Đang học' },
+                { value: 'done', label: 'Đã nắm vững' },
+              ]}
+            />
           </div>
 
           <div style={{ padding: '20px 24px' }}>

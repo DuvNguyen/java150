@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { OOP_PILLARS, OopPillar, OopStatus, getOopStatusKey } from '@/lib/oopData';
 import CodeBlock from '@/components/CodeBlock';
+import StatusCombobox from '@/components/StatusCombobox';
 
 // ============================================================
 // OOP View — Track học 4 tính chất OOP trong Java
@@ -258,21 +259,15 @@ function PillarDetailPanel({
             {pillar.tagline}
           </p>
         </div>
-        <div className="status-combobox-wrapper">
-          <label htmlFor="oop-status-select" className="status-combobox-label">
-            Trạng thái:
-          </label>
-          <select
-            id="oop-status-select"
-            className="status-combobox"
-            value={status}
-            onChange={(e) => onStatusChange(e.target.value as OopStatus)}
-          >
-            <option value="not-started">Chưa học</option>
-            <option value="in-progress">Đang học</option>
-            <option value="done">Đã nắm</option>
-          </select>
-        </div>
+        <StatusCombobox<OopStatus>
+          value={status}
+          onChange={onStatusChange}
+          options={[
+            { value: 'not-started', label: 'Chưa học' },
+            { value: 'in-progress', label: 'Đang học' },
+            { value: 'done', label: 'Đã nắm' },
+          ]}
+        />
       </div>
 
       {/* Body */}

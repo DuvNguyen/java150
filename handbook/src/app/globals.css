@@ -791,6 +791,39 @@ code, pre {
   transform: rotate(90deg) scale(0.92);
 }
 
+/* Open Antigravity IDE Button (Design System Compliant) */
+.ide-open-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 26px;
+  padding: 0 10px;
+  font-family: var(--font-label);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--rounded-md, 2px);
+  cursor: pointer;
+  white-space: nowrap;
+  box-sizing: border-box;
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+  line-height: 1;
+}
+
+.ide-open-btn:hover {
+  color: var(--color-tertiary);
+  border-color: var(--color-tertiary);
+  background-color: #fff4e8;
+}
+
+.ide-open-btn:active {
+  background-color: #ffe8d6;
+}
+
 /* Rich Editor Toolbar */
 .rich-editor-toolbar {
   display: flex;
@@ -2336,6 +2369,45 @@ code, pre {
   color: var(--color-secondary);
   margin-top: 1px;
   letter-spacing: 0.02em;
+}
+
+.track-guide-help-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background-color: transparent;
+  color: var(--color-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.15s ease;
+  user-select: none;
+  opacity: 0.75;
+}
+
+.track-guide-help-btn:hover {
+  background-color: var(--color-tertiary);
+  border-color: var(--color-tertiary);
+  color: #ffffff;
+  opacity: 1;
+}
+
+.track-selector-btn.active .track-guide-help-btn {
+  border-color: rgba(153, 15, 61, 0.4);
+  color: var(--color-tertiary);
+}
+
+.track-selector-btn.active .track-guide-help-btn:hover {
+  background-color: var(--color-tertiary);
+  border-color: var(--color-tertiary);
+  color: #ffffff;
 }
 
 /* ============================================================ */

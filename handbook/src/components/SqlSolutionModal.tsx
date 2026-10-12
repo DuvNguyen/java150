@@ -3,6 +3,7 @@
 import React from 'react';
 import { SqlProblem, SqlStatus } from '@/lib/sqlDatabaseData';
 import CodeBlock from '@/components/CodeBlock';
+import StatusCombobox from '@/components/StatusCombobox';
 
 interface Props {
   problem: SqlProblem | null;
@@ -155,21 +156,15 @@ export default function SqlSolutionModal({
               Mở bài trên LeetCode ↗
             </a>
 
-            <div className="status-combobox-wrapper">
-              <label htmlFor="modal-sql-status-select" className="status-combobox-label">
-                Trạng thái:
-              </label>
-              <select
-                id="modal-sql-status-select"
-                className="status-combobox"
-                value={status}
-                onChange={(e) => onStatusChange(e.target.value as SqlStatus)}
-              >
-                <option value="not-started">Chưa làm</option>
-                <option value="in-progress">Đang làm</option>
-                <option value="done">Đã hoàn thành</option>
-              </select>
-            </div>
+            <StatusCombobox<SqlStatus>
+              value={status}
+              onChange={onStatusChange}
+              options={[
+                { value: 'not-started', label: 'Chưa làm' },
+                { value: 'in-progress', label: 'Đang làm' },
+                { value: 'done', label: 'Đã hoàn thành' },
+              ]}
+            />
           </div>
 
           {/* Problem Summary */}

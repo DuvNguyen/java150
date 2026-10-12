@@ -11,6 +11,7 @@ import {
   getToolNoteKey,
 } from '@/lib/toolsData';
 import CodeBlock from '@/components/CodeBlock';
+import StatusCombobox from '@/components/StatusCombobox';
 
 export default function ToolsView() {
   const [selectedId, setSelectedId] = useState<string>(TOOLS_GUIDES[0].id);
@@ -265,21 +266,15 @@ export default function ToolsView() {
             </div>
 
             {/* Status Combobox */}
-            <div className="status-combobox-wrapper">
-              <label htmlFor={`tool-status-${selectedGuide.id}`} className="status-combobox-label">
-                Trạng thái:
-              </label>
-              <select
-                id={`tool-status-${selectedGuide.id}`}
-                className="status-combobox"
-                value={statusMap[selectedGuide.id] || 'not-started'}
-                onChange={(e) => handleStatusChange(selectedGuide.id, e.target.value as ToolStatus)}
-              >
-                <option value="not-started">Chưa học</option>
-                <option value="in-progress">Đang làm</option>
-                <option value="done">Đã nắm vững</option>
-              </select>
-            </div>
+            <StatusCombobox<ToolStatus>
+              value={statusMap[selectedGuide.id] || 'not-started'}
+              onChange={(val) => handleStatusChange(selectedGuide.id, val)}
+              options={[
+                { value: 'not-started', label: 'Chưa học' },
+                { value: 'in-progress', label: 'Đang làm' },
+                { value: 'done', label: 'Đã nắm vững' },
+              ]}
+            />
           </div>
 
           {/* Authoritative Citation Banner */}

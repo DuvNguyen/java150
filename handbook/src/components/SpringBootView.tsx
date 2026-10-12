@@ -11,6 +11,7 @@ import {
 } from '@/lib/springBootData';
 import CodeBlock from '@/components/CodeBlock';
 import SpringBootGraph from '@/components/SpringBootGraph';
+import StatusCombobox from '@/components/StatusCombobox';
 
 const STATUS_LABELS: Record<SpringBootStatus, string> = {
   'not-started': 'Chưa học',
@@ -524,21 +525,15 @@ export default function SpringBootView() {
             </div>
 
             {/* Status Combobox */}
-            <div className="status-combobox-wrapper">
-              <label htmlFor="sb-status-select" className="status-combobox-label">
-                Trạng thái:
-              </label>
-              <select
-                id="sb-status-select"
-                className="status-combobox"
-                value={statusMap[currentTopic.id] || 'not-started'}
-                onChange={(e) => handleStatusChange(currentTopic.id, e.target.value as SpringBootStatus)}
-              >
-                <option value="not-started">Chưa học</option>
-                <option value="in-progress">Đang học</option>
-                <option value="done">Đã nắm vững</option>
-              </select>
-            </div>
+            <StatusCombobox<SpringBootStatus>
+              value={statusMap[currentTopic.id] || 'not-started'}
+              onChange={(val) => handleStatusChange(currentTopic.id, val)}
+              options={[
+                { value: 'not-started', label: 'Chưa học' },
+                { value: 'in-progress', label: 'Đang học' },
+                { value: 'done', label: 'Đã nắm vững' },
+              ]}
+            />
           </div>
 
           {/* Summary Box */}

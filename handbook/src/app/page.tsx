@@ -15,6 +15,7 @@ import SqlDatabaseView from '@/components/SqlDatabaseView';
 import ToolsView from '@/components/ToolsView';
 import ReminderSettingsModal from '@/components/ReminderSettingsModal';
 import SrsCalendarView from '@/components/SrsCalendarView';
+import TrackGuideModal from '@/components/TrackGuideModal';
 import { Entry } from '@/components/FunctionTable';
 import { ALL_NEETCODE_PROBLEMS, BLIND_75_PROBLEMS, TrackList, filterProblemsByTrack } from '@/lib/neetcodeData';
 import { SrsProgressMap, SRS } from '@/lib/srs';
@@ -36,6 +37,7 @@ export default function HomePage() {
   const [selectedNote, setSelectedNote] = useState<{ entry: Entry; topicId: string } | null>(null);
   const [notesMap, setNotesMap] = useState<Record<string, boolean>>({});
   const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
+  const [guideModalTrack, setGuideModalTrack] = useState<'oop' | 'sql' | 'spring-boot' | 'tools' | 'system-design' | null>(null);
   const [shortcutsEnabled, setShortcutsEnabled] = useState(true);
 
   // Lưu trữ vị trí scroll của từng tab để tự động khôi phục khi chuyển qua lại (kể cả phím Q)
@@ -102,9 +104,9 @@ export default function HomePage() {
     fetchSrsData();
   }, [fetchSrsData]);
 
-  const [dsaTrackList, setDsaTrackList] = useState<TrackList>('blind75');
+  const [dsaTrackList, setDsaTrackList] = useState<TrackList>('neetcode150');
 
-  // Load saved track preference (default: 'blind75')
+  // Load saved track preference (default: 'neetcode150')
   useEffect(() => {
     try {
       const saved = localStorage.getItem('handbook_dsa_track_list');
@@ -122,6 +124,14 @@ export default function HomePage() {
       localStorage.setItem('handbook_dsa_track_list', track);
     } catch {
       // ignore
+    }
+  };
+
+  const handleOpenIde = async () => {
+    try {
+      await fetch('/api/ide/open', { method: 'POST' });
+    } catch (err) {
+      console.error('Error opening IDE:', err);
     }
   };
 
@@ -328,7 +338,31 @@ export default function HomePage() {
             onClick={() => !track.disabled && setActiveTrack(track.id)}
             className={`track-selector-btn${activeTrack === track.id ? ' active' : ''}`}
           >
-            <div className="track-selector-label">{track.label}</div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '6px' }}>
+              <div className="track-selector-label">{track.label}</div>
+              {track.id !== 'dsa' && (
+                <span
+                  role="button"
+                  tabIndex={0}
+                  className="track-guide-help-btn"
+                  title={`Cẩm nang Prompt & Review cho ${track.label}`}
+                  aria-label={`Hướng dẫn ${track.label}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setGuideModalTrack(track.id as 'oop' | 'sql' | 'spring-boot' | 'tools' | 'system-design');
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      setGuideModalTrack(track.id as 'oop' | 'sql' | 'spring-boot' | 'tools' | 'system-design');
+                    }
+                  }}
+                >
+                  ?
+                </span>
+              )}
+            </div>
             <div className="track-selector-sub">{track.sub}</div>
           </button>
         ))}
@@ -416,7 +450,15 @@ export default function HomePage() {
           enableShortcuts={shortcutsEnabled && !isReminderModalOpen && !selectedNote}
           style={{ marginTop: '4px', marginBottom: '20px' }}
           rightAction={
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+              <button
+                type="button"
+                onClick={handleOpenIde}
+                className="ide-open-btn"
+                title="Mở dự án java150 trong Antigravity IDE"
+              >
+                IDE
+              </button>
               {/* Nút noti đến hạn ôn tập */}
               {activeTrackStats.due > 0 && activeMainView !== 'neetcode-due' && (
                 <button
@@ -438,8 +480,8 @@ export default function HomePage() {
                     strokeLinejoin="round"
                     aria-hidden="true"
                   >
-                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
                   </svg>
                   <span className="due-noti-badge">{activeTrackStats.due}</span>
                 </button>
@@ -451,19 +493,19 @@ export default function HomePage() {
                 title="Cài đặt hệ thống & Phím tắt"
                 aria-label="Cài đặt"
               >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-              </svg>
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
               </button>
             </div>
           }
@@ -836,7 +878,7 @@ export default function HomePage() {
         <div>
           <div style={{ marginBottom: '16px' }}>
             <h2 style={{ fontSize: '1.4rem', fontFamily: 'var(--font-display)', marginBottom: '4px' }}>
-              Lịch Ôn Tập SRS — {dsaTrackList === 'blind75' ? 'Blind 75' : dsaTrackList === 'neetcode150' ? 'NeetCode 150' : 'Tất cả bài tập'}
+              Lịch Ôn Tập SRS
             </h2>
             <p style={{ color: 'var(--color-secondary)', fontSize: '0.92rem' }}>
               Theo dõi và quản lý lịch trình ôn tập các bài toán theo từng ngày theo thuật toán lặp lại ngắt quãng.
@@ -868,6 +910,15 @@ export default function HomePage() {
         shortcutsEnabled={shortcutsEnabled}
         onToggleShortcuts={setShortcutsEnabled}
       />
+
+      {/* Track Guide Modal (Prompting & Review Manual for non-DSA tracks) */}
+      {guideModalTrack && (
+        <TrackGuideModal
+          isOpen={Boolean(guideModalTrack)}
+          trackId={guideModalTrack}
+          onClose={() => setGuideModalTrack(null)}
+        />
+      )}
     </main>
   );
 }

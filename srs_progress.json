@@ -62,25 +62,25 @@
   "nc_6": {
     "id": "nc_6",
     "status": "mastered",
-    "lastSolved": "2026-10-08",
-    "lastRating": "medium",
-    "nextReview": "2026-10-11",
-    "interval": 3,
-    "easeFactor": 2.4,
-    "repetitions": 3,
+    "lastSolved": "2026-10-12",
+    "lastRating": "easy",
+    "nextReview": "2026-10-19",
+    "interval": 7,
+    "easeFactor": 2.55,
+    "repetitions": 4,
     "note": "### 1. Pattern & Data Structure\n\n* Kỹ thuật chính:&#x20;\n  * Khi encode: Gom các chuỗi thành list, chèn ở trước từng chuỗi là độ dài của nó và một dấu thăng để đánh dấu vị trí.\n  * dùng hàm indexOf của java\n\n### 2. Key Intuition (Ý tưởng cốt lõi)\n\n*\n\n### 3. Edge Cases & Tricky Points\n\n* dùng indexOf lấy vị trí dấu #\n* substring từ start -> end point\n* Dùng parseInt của Integer và phối hợp substring lấy được độ dài của từ (i, j)\n\n### 4. Complexity\n\n* Time: `O(n)`\n* Space: `O(...)`",
-    "updatedAt": 1791471153468
+    "updatedAt": 1791818272391
   },
   "nc_7": {
     "id": "nc_7",
     "status": "mastered",
-    "lastSolved": "2026-09-28",
-    "lastRating": "hard",
-    "nextReview": "2026-09-29",
-    "interval": 1,
+    "lastSolved": "2026-10-12",
+    "lastRating": "medium",
+    "nextReview": "2026-10-15",
+    "interval": 3,
     "easeFactor": 2.35,
-    "repetitions": 1,
-    "note": "- Try again without using division and still O(n)\n- learn the suffix & prefix technique",
-    "updatedAt": 1790598649390
+    "repetitions": 2,
+    "note": "### 1. Pattern & Data Structure\n\n* Kỹ thuật chính: Sử dụng mảng prefix và suffix lưu lại các kết quả tích của các phần tử bên trái và bên phải của index i (i là index của số trong mảng nums ban đầu)\n\n### 2. Key Intuition (Ý tưởng cốt lõi)\n\n*\n\n### 3. Edge Cases & Tricky Points\n\n* Tricky là khi phải hiểu, prefix(i) là tích các số ở trước i. Còn suffix(i) là tích các số sau i\n* kết quả là chỉ cần out\\[i] \\= prefix\\[i] \\* suffix\\[i];\n\n### 4. Complexity\n\n* Time: `O(N)`\n* Space: `O(N)`",
+    "updatedAt": 1791820499300
   }
 }

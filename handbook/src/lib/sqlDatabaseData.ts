@@ -1175,3 +1175,349 @@ export const SQL_STORAGE_KEY_PREFIX = 'sql_status_';
 export function getSqlStatusKey(problemOrTopicId: string): string {
   return `${SQL_STORAGE_KEY_PREFIX}${problemOrTopicId}`;
 }
+
+// ============================================================
+// SLACK DATABASE ARCHITECTURAL CHALLENGES (CÂU HỎI MỞ THỰC CHIẾN)
+// Các tình huống thực tế của Slack: Problem -> Bottleneck -> Tech Options -> Hint
+// ============================================================
+
+export interface SlackChallengeHint {
+  id: string;
+  title: string;
+  content: string;
+}
+
+export interface SlackChallenge {
+  id: string;
+  order: number;
+  title: string;
+  category: 'Storage & Keys' | 'Performance & Scale' | 'Data Isolation' | 'Concurrency & Messaging' | 'Query & Analytics';
+  difficulty: 'Medium' | 'Hard';
+  problemStatement: string;
+  contextSlack: string;
+  recommendedComplexity?: string;
+  tradeOffQuestions: string[];
+  hints: SlackChallengeHint[];
+  solution: {
+    industryBestPractice: string;
+    keyTechnologies: string[];
+    explanation: string;
+    comparison: {
+      option: string;
+      pros: string;
+      cons: string;
+    }[];
+  };
+}
+
+export const SLACK_SQL_CHALLENGES: SlackChallenge[] = [
+  {
+    id: 'slack-db-01',
+    order: 1,
+    title: 'Chiến Lược Khóa Chính (Primary Key) Cho Hàng Trăm Triệu Tin Nhắn',
+    category: 'Storage & Keys',
+    difficulty: 'Medium',
+    problemStatement: 'Bảng messages trong chat_db dự kiến đón nhận 50,000,000 tin nhắn mỗi tháng. Nếu chọn sai kiểu dữ liệu cho Khóa chính (id), hệ thống sẽ gặp hiện tượng nát chỉ mục B-Tree (Index Fragmentation) và sụt giảm thông lượng ghi I/O trầm trọng.',
+    contextSlack: 'Dịch vụ backend/chat ghi nhận tin nhắn từ hàng ngàn kênh đồng thời.',
+    recommendedComplexity: 'Không gian: 64-bit hoặc 128-bit time-ordered ID. Thời gian chèn B-Tree: O(log N) với 0% Page Splits.',
+    tradeOffQuestions: [
+      'Tại sao dùng Auto-increment / SERIAL truyền thống lại nguy hiểm trong hệ thống phân tán (Distributed System)?',
+      'Tại sao dùng UUID v4 ngẫu nhiên (Random UUID) lại gây thảm họa hiệu năng ghi (Write performance degrade) trên đĩa cứng?',
+      'Công nghệ/chuẩn ID nào vừa đảm bảo tính duy nhất toàn cục (Globally Unique) vừa giữ được tính tuần tự theo thời gian (Time-ordered)?'
+    ],
+    hints: [
+      {
+        id: 'h1',
+        title: 'Hint 1: Cơ Chế B-Tree Index Trên Ổ Đĩa',
+        content: 'B-Tree lưu trữ các key theo thứ tự tăng dần. Khi một khóa mới lớn hơn khóa cũ, nó luôn được chèn vào trang lá cuối cùng (bên phải nhất). Điều gì xảy ra với các trang dữ liệu trong RAM Buffer Pool nếu bạn chèn một giá trị băm hoàn toàn ngẫu nhiên?'
+      },
+      {
+        id: 'h2',
+        title: 'Hint 2: Nhược Điểm Của Database Centralized Counter',
+        content: 'Auto-increment phụ thuộc vào 1 máy chủ DB duy nhất để tăng số thứ tự. Khi bạn mở rộng quy mô (Sharding / Multi-Database), làm sao 2 server chat khác nhau cùng sinh ID mà không bị đụng độ mà không cần hỏi qua lại mạng?'
+      },
+      {
+        id: 'h3',
+        title: 'Hint 3: Kỹ Thuật Đóng Gói Timestamp Vào Đầu ID',
+        content: 'Hãy tìm hiểu cấu trúc của Twitter Snowflake (64-bit) hoặc chuẩn mới UUID v7 (128-bit). Điểm chung của chúng là: Những bit đầu tiên luôn dành cho mili-giây (Timestamp), theo sau là Node ID và số Sequence.'
+      }
+    ],
+    solution: {
+      industryBestPractice: 'Sử dụng Twitter Snowflake ID (64-bit bigint) hoặc UUID v7 (128-bit) cho bảng tin nhắn.',
+      keyTechnologies: ['UUID v7', 'Twitter Snowflake / Sonyflake', 'PostgreSQL bigint B-Tree Index'],
+      explanation: 'Các hệ thống chat lớn như Discord, Slack và Twitter đều dùng Snowflake/UUID v7. Do có timestamp ở những byte đầu, các tin nhắn mới luôn được chèn tuần tự vào bên phải của cây B-Tree, không làm xáo trộn các trang đĩa cũ, giữ RAM đệm luôn hiệu quả.',
+      comparison: [
+        {
+          option: 'BIGSERIAL / AUTO_INCREMENT',
+          pros: 'Nhẹ 8 bytes, B-Tree luôn ghi tuần tự vào trang cuối.',
+          cons: 'Lộ số lượng tin nhắn kinh doanh, không phân tán được.'
+        },
+        {
+          option: 'UUID v4 (Random)',
+          pros: 'Duy nhất toàn cầu, độc lập không phụ thuộc DB.',
+          cons: 'Gây Random Page Splits, nát cache RAM, phình to index gấp đôi.'
+        },
+        {
+          option: 'Twitter Snowflake / UUID v7',
+          pros: 'Vừa sắp xếp theo thời gian (Time-sortable), vừa phân tán độc lập, tối ưu tuyệt đối cho B-Tree.',
+          cons: 'Cần generator ở tầng ứng dụng Java.'
+        }
+      ]
+    }
+  },
+  {
+    id: 'slack-db-02',
+    order: 2,
+    title: 'Phân Trang Chat Stream: Cursor-based vs OFFSET/LIMIT',
+    category: 'Performance & Scale',
+    difficulty: 'Medium',
+    problemStatement: 'Khi người dùng cuộn xem lịch sử tin nhắn của một kênh (channel có 500,000 tin nhắn), nếu API dùng `page=1000&size=20`, Database PostgreSQL sẽ phải quét qua 20,000 dòng trước đó rồi mới lấy 20 dòng. Đồng thời, nếu có người chat tin mới trong lúc cuộn, người dùng sẽ bị xem trùng (duplicate) hoặc sót tin nhắn.',
+    contextSlack: 'Endpoint GET /channels/{id}/messages phục vụ infinite scroll của frontend.',
+    recommendedComplexity: 'Thời gian truy vấn: Luôn là O(log N) Index Seek bất kể xem tin nhắn từ 5 năm trước hay 5 phút trước.',
+    tradeOffQuestions: [
+      'Tại sao OFFSET 100000 lại khiến CPU và Disk I/O của PostgreSQL tăng vọt?',
+      'Làm thế nào để chuyển từ Page-based Pagination sang Keyset/Cursor-based Pagination?',
+      'Cần tạo Composite Index (chỉ mục hỗn hợp) thế nào để query phân trang chạy dưới 2 miligiây?'
+    ],
+    hints: [
+      {
+        id: 'h1',
+        title: 'Hint 1: Bản Chất Thực Sự Của Lệnh OFFSET',
+        content: 'Database KHÔNG THỂ nhảy cóc đến dòng thứ 100,000 nếu không có điều kiện WHERE. Nó bắt buộc phải đọc từ đĩa, duyệt qua 100,000 dòng rồi mới vứt bỏ chúng để giữ lại 20 dòng. Độ phức tạp là O(N).'
+      },
+      {
+        id: 'h2',
+        title: 'Hint 2: Tận Dụng Giá Trị Đã Biết Của Dòng Cuối Cùng',
+        content: 'Frontend của bạn luôn biết ID hoặc thời gian của tin nhắn cũ nhất đang hiển thị trên màn hình (`last_message_id`). Thay vì bảo DB "bỏ qua 100 trang", hãy bảo DB "lấy 20 tin có ID nhỏ hơn last_message_id".'
+      },
+      {
+        id: 'h3',
+        title: 'Hint 3: Thiết Kế Composite B-Tree Index Hỗ Trợ Keyset Seek',
+        content: 'Xem xét thứ tự các cột trong chỉ mục: Cột nào dùng điều kiện đẳng thức (=) và cột nào dùng so sánh phạm vi (< / > / ORDER BY)?'
+      }
+    ],
+    solution: {
+      industryBestPractice: 'Cursor-based Pagination kết hợp Composite Index `(channel_id, id DESC)`.',
+      keyTechnologies: ['Keyset Pagination', 'Composite B-Tree Index', 'Spring Data Slice instead of Page'],
+      explanation: 'Vì Snowflake ID hoặc UUID v7 đã chứa thời gian bên trong, câu query `WHERE channel_id = ? AND id < ? ORDER BY id DESC LIMIT 20` chỉ cần nhảy thẳng tới vị trí con trỏ trên Index và lấy đúng 20 dòng, thời gian thực thi là tức thì O(log N).',
+      comparison: [
+        {
+          option: 'OFFSET / LIMIT (Page-based)',
+          pros: 'Dễ làm, hỗ trợ nhảy cóc đến trang bất kỳ.',
+          cons: 'Càng về sau càng chậm O(N), dữ liệu bị trượt khi có tin nhắn mới rơi vào.'
+        },
+        {
+          option: 'Keyset / Cursor Pagination',
+          pros: 'Tốc độ không đổi O(log N), dữ liệu ổn định tuyệt đối khi có tin mới chèn vào.',
+          cons: 'Không thể bấm nhảy cóc tới trang số 50.'
+        }
+      ]
+    }
+  },
+  {
+    id: 'slack-db-03',
+    order: 3,
+    title: 'Kiến Trúc Cô Lập Dữ Liệu Đa Khách Hàng (Multi-Tenancy)',
+    category: 'Data Isolation',
+    difficulty: 'Hard',
+    problemStatement: 'Slack có hàng triệu Workspace (công ty/đội nhóm). Yêu cầu nghiêm ngặt: Dữ liệu của Công ty A TUYỆT ĐỐI không bao giờ được lọt sang Công ty B, kể cả khi lập trình viên vô tình viết thiếu câu điều kiện WHERE.',
+    contextSlack: 'Phân tách dữ liệu các workspace trong cùng cụm chat_db.',
+    recommendedComplexity: 'Bảo mật: Cô lập ở tầng Database Engine (Row-Level Security), bảo toàn Connection Pooling.',
+    tradeOffQuestions: [
+      'Nên cô lập dữ liệu ở mức Database riêng, Schema riêng, hay dùng chung bảng (Shared Table with workspace_id)?',
+      'Làm sao để bảo vệ ở cấp độ Database Engine để chống lỗi quên viết `WHERE workspace_id = ?`?',
+      'Chi phí tài nguyên (Connection Pool, RAM) của mỗi mô hình khác nhau thế nào khi có 10,000 workspace?'
+    ],
+    hints: [
+      {
+        id: 'h1',
+        title: 'Hint 1: Áp Lực Bộ Nhớ Khi Tách Quá Nhiều Database/Schema',
+        content: 'Mỗi database hoặc schema trong PostgreSQL đều chiếm tài nguyên catalog và connection pool. Nếu có 10,000 công ty sử dụng dịch vụ, bạn có đủ RAM để duy trì 10,000 pool kết nối không?'
+      },
+      {
+        id: 'h2',
+        title: 'Hint 2: Đừng Tin Tưởng Vào Việc Dev Nhớ Viết WHERE',
+        content: 'Nếu chỉ dựa vào dev viết `WHERE workspace_id = ?`, sớm muộn gì cũng có một lập trình viên junior viết sót và gây lộ dữ liệu toàn bộ công ty. Có cơ chế nào ở cấp Engine tự động tiêm điều kiện này không?'
+      },
+      {
+        id: 'h3',
+        title: 'Hint 3: Tính Năng PostgreSQL Row-Level Security (RLS)',
+        content: 'Tìm hiểu lệnh `ALTER TABLE messages ENABLE ROW LEVEL SECURITY;` và `CREATE POLICY ... USING (...)`. Kết hợp với việc set biến session trước khi thực thi query.'
+      }
+    ],
+    solution: {
+      industryBestPractice: 'Shared Table có `workspace_id` kết hợp PostgreSQL Row Level Security (RLS) hoặc Hibernate Multitenancy Filter.',
+      keyTechnologies: ['PostgreSQL RLS (ALTER TABLE ENABLE ROW LEVEL SECURITY)', 'HikariCP Session Connection', 'TenantContext ThreadLocal trong Spring'],
+      explanation: 'Sử dụng Row Level Security cho phép bạn định nghĩa chính sách `USING (workspace_id = current_setting(\'app.current_workspace_id\')::uuid)`. Khi dev chạy `SELECT * FROM messages`, PostgreSQL sẽ tự động thêm điều kiện lọc ngầm, ngăn chặn 100% rò rỉ dữ liệu.',
+      comparison: [
+        {
+          option: 'Database-per-tenant',
+          pros: 'Cách ly vật lý tuyệt đối, dễ backup riêng từng khách.',
+          cons: 'Lãng phí RAM kinh khủng, cạn kiệt connection pool khi nhiều khách.'
+        },
+        {
+          option: 'Schema-per-tenant',
+          pros: 'Dùng chung 1 DB, tách bạch bảng biểu.',
+          cons: 'Chậm catalog khi trên 1,000 schemas, khó migration đồng loạt.'
+        },
+        {
+          option: 'Shared Table + PostgreSQL RLS',
+          pros: 'Tối ưu tài nguyên nhất, DB tự động chặn truy vấn chéo kể cả khi dev quên WHERE.',
+          cons: 'Cần thiết lập session context trước mỗi query trong Spring.'
+        }
+      ]
+    }
+  },
+  {
+    id: 'slack-db-04',
+    order: 4,
+    title: 'Theo Dõi Tin Nhắn Chưa Đọc (Unread Message Count & Badges)',
+    category: 'Performance & Scale',
+    difficulty: 'Medium',
+    problemStatement: 'Mỗi kênh có hàng chục ngàn tin nhắn. Mỗi người dùng có huy hiệu số lượng tin chưa đọc. Nếu mỗi lần mở ứng dụng đều chạy `SELECT COUNT(*) FROM messages WHERE channel_id = ? AND created_at > user_last_seen_at`, với 100 thành viên trong kênh cùng online, DB sẽ phải đếm hàng triệu lượt, gây sập CPU.',
+    contextSlack: 'Sidebar hiển thị số lượng tin chưa đọc bên cạnh tên từng Channel.',
+    recommendedComplexity: 'Bộ nhớ: O(1) bản ghi cho mỗi cặp (User, Channel). Thời gian kiểm tra unread: O(1) so sánh ID.',
+    tradeOffQuestions: [
+      'Tại sao không nên tạo bảng trung gian `message_read_receipts` chứa từng dòng `(message_id, user_id, is_read)`?',
+      'Mô hình "Read Pointer" (Con trỏ đọc) lưu vết như thế nào để giảm thiểu số dòng dữ liệu?',
+      'Khi nào nên dùng Redis để hỗ trợ đếm thay vì tính toán liên tục trên PostgreSQL?'
+    ],
+    hints: [
+      {
+        id: 'h1',
+        title: 'Hint 1: Bùng Nổ Dữ Liệu Ghi (Write Amplification)',
+        content: 'Nếu một kênh có 5,000 người và có 1 tin nhắn mới, nếu bạn lưu cờ boolean cho từng người, bạn phải insert 5,000 dòng. Đây là nguyên nhân hàng đầu khiến DB bị quá tải.'
+      },
+      {
+        id: 'h2',
+        title: 'Hint 2: Con Người Đọc Tin Nhắn Theo Trình Tự Thời Gian',
+        content: 'Người dùng không đọc nhảy cóc tin nhắn số 1 rồi bỏ qua tin số 2 sang tin số 3. Họ cuộn từ trên xuống. Bạn có thật sự cần lưu trạng thái cho từng tin nhắn riêng lẻ không?'
+      },
+      {
+        id: 'h3',
+        title: 'Hint 3: Mô Hình Con Trỏ Đọc (Read Pointer Pattern)',
+        content: 'Chỉ cần lưu đúng một cột: `last_read_message_id`. Bất kỳ tin nhắn nào có `id > last_read_message_id` đều mặc định là chưa đọc.'
+      }
+    ],
+    solution: {
+      industryBestPractice: 'Pattern Read Pointer: Bảng `channel_members` lưu cột `last_read_message_id`.',
+      keyTechnologies: ['Read Pointer Pattern', 'Redis Hash (HGET/HSET last_read)', 'Kafka Read Event'],
+      explanation: 'Không ai lưu trạng thái đã đọc cho từng tin nhắn ở kênh chat lớn. Chỉ cần lưu `last_read_message_id`. Để hiển thị huy hiệu unread: lấy `MAX(id) - last_read_message_id` hoặc cache số lượng unread gần đúng trên Redis.',
+      comparison: [
+        {
+          option: 'Per-message Read Flag (Bảng trung gian N-N)',
+          pros: 'Biết chính xác ai đã đọc tin nào.',
+          cons: 'Bùng nổ dữ liệu khủng khiếp (1 tin x 1,000 người = 1,000 dòng DB).'
+        },
+        {
+          option: 'Read Pointer (last_read_message_id)',
+          pros: 'Dung lượng cực nhỏ gọn (1 dòng/user/channel), cập nhật cực nhanh.',
+          cons: 'Cần so sánh ID để biết số lượng unread thay vì đếm cờ boolean.'
+        }
+      ]
+    }
+  },
+  {
+    id: 'slack-db-05',
+    order: 5,
+    title: 'Xử Lý Tải Ghi Khổng Lồ (Write-Heavy Chat Stream) & Kafka Batching',
+    category: 'Concurrency & Messaging',
+    difficulty: 'Hard',
+    problemStatement: 'Vào giờ cao điểm, các kênh chat công ty nhận hàng chục ngàn tin nhắn/giây. Nếu mỗi tin nhắn từ WebSocket đều mở một JDBC Connection và gọi lệnh `INSERT INTO messages` ngay lập tức, connection pool của Spring Boot sẽ cạn kiệt và Database disk I/O sẽ bị tắc nghẽn (Disk bottleneck).',
+    contextSlack: 'Async chat persistence qua Apache Kafka port 9092.',
+    recommendedComplexity: 'Thông lượng: Tăng từ 2,000 tx/s lên 50,000+ msg/s nhờ Write-Behind & Multi-row Insert.',
+    tradeOffQuestions: [
+      'Tại sao Write-behind (ghi trễ qua Queue) lại tăng thông lượng (throughput) gấp 10 lần so với Write-through trực tiếp?',
+      'Nếu server sập trước khi tin nhắn được lưu từ Kafka vào PostgreSQL, làm sao đảm bảo không mất tin nhắn?',
+      'Làm thế nào để consumer ghi vào PostgreSQL theo Batch (`saveAll` / `COPY` / `INSERT VALUES (...) (...)`)?'
+    ],
+    hints: [
+      {
+        id: 'h1',
+        title: 'Hint 1: Chi Phí Round-trip Mạng Và Khóa Đĩa',
+        content: 'Mỗi lần chạy 1 lệnh INSERT đơn lẻ: 1 round-trip mạng, 1 lần ghi log WAL xuống đĩa. 1,000 lệnh INSERT rời rạc tốn thời gian gấp hàng chục lần so với 1 lệnh gộp 1,000 bản ghi.'
+      },
+      {
+        id: 'h2',
+        title: 'Hint 2: Tách Rời Tốc Độ Client Với Tốc Độ Ổ Đĩa',
+        content: 'Người dùng chat chỉ cần tin nhắn hiện lên màn hình người khác ngay lập tức. Việc tin nhắn nằm chắc chắn trên ổ cứng có cần phải xong trong 1 mili-giây không? Hàng đợi tin nhắn (Message Queue) đóng vai trò gì ở đây?'
+      },
+      {
+        id: 'h3',
+        title: 'Hint 3: Kỹ Thuật JDBC Batching Trong Spring Boot / PostgreSQL',
+        content: 'Tìm hiểu cấu hình PostgreSQL JDBC: `reWriteBatchedInserts=true` và cơ chế Batch Listener trong Spring Kafka: `@KafkaListener(batch = "true")`.'
+      }
+    ],
+    solution: {
+      industryBestPractice: 'Kafka Producer (acks=all) + Kafka Batch Consumer (PostgreSQL multi-row INSERT hoặc rewriteBatchedStatements).',
+      keyTechnologies: ['Apache Kafka', 'Spring Kafka @KafkaListener(batch = "true")', 'PostgreSQL Batch Insert JDBC rewriteBatchedStatements=true'],
+      explanation: 'Thay vì 500 câu lệnh INSERT riêng lẻ tốn 500 round-trips mạng và 500 lần ghi đĩa, Consumer đọc một batch 500 tin và ghi trong 1 câu lệnh duy nhất: `INSERT INTO messages VALUES (...), (...), ...`. Hiệu năng tăng vọt 20–50 lần.',
+      comparison: [
+        {
+          option: 'Ghi Đồng Bộ (Direct JDBC Insert)',
+          pros: 'Đơn giản, dữ liệu chắc chắn nằm trong DB trước khi ACK.',
+          cons: 'Dễ nghẽn cổ chai DB, sập connection pool khi tải đột biến.'
+        },
+        {
+          option: 'Write-Behind Với Kafka Batching',
+          pros: 'Chịu tải cực cao hàng chục ngàn tin/s, đĩa DB được bảo vệ tối đa.',
+          cons: 'Chấp nhận độ trễ lưu trữ nhỏ (Eventual Consistency), cần xử lý retry khi lỗi.'
+        }
+      ]
+    }
+  },
+  {
+    id: 'slack-db-06',
+    order: 6,
+    title: 'Tìm Kiếm Tin Nhắn Toàn Văn (Full-Text Search) Trong Kênh',
+    category: 'Query & Analytics',
+    difficulty: 'Medium',
+    problemStatement: 'Người dùng gõ tìm kiếm từ khóa trong thanh Search của Slack. Nếu dùng câu lệnh `SELECT * FROM messages WHERE content LIKE \'%keyword%\'`, Database sẽ phải duyệt toàn bộ bảng (Sequential Full Table Scan), không thể dùng B-Tree Index và làm đứng toàn bộ server DB.',
+    contextSlack: 'Tính năng tìm kiếm lịch sử hội thoại trên thanh Search của Slack.',
+    recommendedComplexity: 'Thời gian tìm kiếm: O(log N) với GIN Inverted Index thay vì O(N) Table Scan.',
+    tradeOffQuestions: [
+      'Tại sao B-Tree Index vô dụng với toán tử `LIKE \'%keyword%\'`?',
+      'PostgreSQL có giải pháp native nào để tìm kiếm toàn văn mà không cần dựng thêm Elasticsearch ngay từ đầu?',
+      'GIN Index (Generalized Inverted Index) và kiểu dữ liệu `tsvector` hoạt động như thế nào?'
+    ],
+    hints: [
+      {
+        id: 'h1',
+        title: 'Hint 1: Tại Sao Dấu Phép Tính % Ở Đầu Lại Phá Vỡ Index?',
+        content: 'B-Tree sắp xếp theo thứ tự bảng chữ cái từ trái sang phải. Nếu từ khóa bắt đầu bằng dấu `%` (ví dụ: `%spring%`), B-Tree hoàn toàn không biết bắt đầu tìm từ đâu và buộc phải duyệt từng dòng trong toàn bộ bảng.'
+      },
+      {
+        id: 'h2',
+        title: 'Hint 2: Chỉ Mục Đảo (Inverted Index) Hoạt Động Ra Sao?',
+        content: 'Thay vì ánh xạ "Tin nhắn 1 chứa những từ gì", Inverted Index lưu danh sách "Từ X xuất hiện trong những tin nhắn nào". Kiểu index nào trong PostgreSQL làm được điều này?'
+      },
+      {
+        id: 'h3',
+        title: 'Hint 3: Tính Năng Native Full-Text Search Trong PostgreSQL',
+        content: 'Tìm hiểu kiểu dữ liệu `tsvector` (chứa các từ đã qua chuẩn hóa stemming) và chỉ mục GIN (Generalized Inverted Index): `CREATE INDEX ON messages USING GIN(to_tsvector(\'english\', content))`. '
+      }
+    ],
+    solution: {
+      industryBestPractice: 'Giai đoạn đầu: Sử dụng PostgreSQL `tsvector` + `GIN Index`. Khi dữ liệu vượt 50 triệu tin: Dùng Elasticsearch qua Debezium/Kafka CDC.',
+      keyTechnologies: ['PostgreSQL tsvector & tsquery', 'GIN Index (CREATE INDEX ON messages USING GIN(to_tsvector(\'english\', content)))', 'Elasticsearch / OpenSearch'],
+      explanation: 'Với quy mô ban đầu, PostgreSQL Full-Text Search (FTS) với GIN Index đủ sức đáp ứng tìm kiếm dưới 10ms mà không tốn công vận hành thêm cụm Elasticsearch phức tạp.',
+      comparison: [
+        {
+          option: 'LIKE / ILIKE (\'%keyword%\')',
+          pros: 'Không cần cấu hình gì thêm.',
+          cons: 'Không dùng được index, quét toàn bảng O(N), sập server khi dữ liệu lớn.'
+        },
+        {
+          option: 'PostgreSQL Native tsvector + GIN Index',
+          pros: 'Nhanh dưới 10ms, đồng bộ tức thì với ACID của DB, không cần cụm server mới.',
+          cons: 'Tốn thêm dung lượng đĩa cho GIN index, tính năng xếp hạng mức cơ bản.'
+        },
+        {
+          option: 'Cụm Elasticsearch Riêng Biệt',
+          pros: 'Tìm kiếm cực mạnh, chấm điểm BM25, sửa lỗi chính tả.',
+          cons: 'Chi phí hạ tầng cao, phức tạp khi đồng bộ dữ liệu CDC qua Kafka.'
+        }
+      ]
+    }
+  }
+];

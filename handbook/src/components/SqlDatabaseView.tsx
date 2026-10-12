@@ -5,6 +5,8 @@ import {
   SQL_THEORY_TOPICS,
   LEETCODE_TOP_SQL_50,
   SQL_CITATIONS,
+  SLACK_SQL_CHALLENGES,
+  SlackChallenge,
   SqlTheoryTopic,
   SqlProblem,
   SqlStatus,
@@ -13,10 +15,11 @@ import {
 import CodeBlock from '@/components/CodeBlock';
 import TabsNav from '@/components/TabsNav';
 import SqlSolutionModal from '@/components/SqlSolutionModal';
+import StatusCombobox from '@/components/StatusCombobox';
 import { useAutoDropdownPosition } from '@/lib/useAutoDropdownPosition';
 
 export default function SqlDatabaseView() {
-  const [subTab, setSubTab] = useState<'top50' | 'theory'>('top50');
+  const [subTab, setSubTab] = useState<'top50' | 'theory' | 'slack'>('top50');
   const [statuses, setStatuses] = useState<Record<string, SqlStatus>>({});
   const [selectedTheoryId, setSelectedTheoryId] = useState<string>(SQL_THEORY_TOPICS[0].id);
   const [modalProblem, setModalProblem] = useState<SqlProblem | null>(null);
@@ -25,6 +28,13 @@ export default function SqlDatabaseView() {
   const [theoryNotes, setTheoryNotes] = useState<Record<string, string>>({});
   const [saveNoteSuccess, setSaveNoteSuccess] = useState<boolean>(false);
   const [openQaIndex, setOpenQaIndex] = useState<number | null>(null);
+
+  // States for Slack Architectural Challenges
+  const [openHintTabs, setOpenHintTabs] = useState<Record<string, boolean>>({});
+  const [openSolutions, setOpenSolutions] = useState<Record<string, boolean>>({});
+  const [slackSearch, setSlackSearch] = useState<string>('');
+  const [slackCategory, setSlackCategory] = useState<string>('all');
+  const [slackStatus, setSlackStatus] = useState<string>('all');
 
   // States for Citations
   const [citationFilter, setCitationFilter] = useState<string>('all');
@@ -55,6 +65,10 @@ export default function SqlDatabaseView() {
 
       const n = localStorage.getItem(`sql_theory_note_${t.id}`);
       if (n) loadedNotes[t.id] = n;
+    }
+    for (const c of SLACK_SQL_CHALLENGES) {
+      const s = localStorage.getItem(getSqlStatusKey(c.id)) as SqlStatus | null;
+      loaded[c.id] = s || 'not-started';
     }
     setStatuses(loaded);
     setTheoryNotes(loadedNotes);
@@ -110,6 +124,11 @@ export default function SqlDatabaseView() {
 
   const theoryDone = SQL_THEORY_TOPICS.filter((t) => statuses[t.id] === 'done').length;
 
+  const slackDone = SLACK_SQL_CHALLENGES.filter((c) => statuses[c.id] === 'done').length;
+  const slackInProgress = SLACK_SQL_CHALLENGES.filter((c) => statuses[c.id] === 'in-progress').length;
+  const slackNotStarted = SLACK_SQL_CHALLENGES.length - slackDone - slackInProgress;
+  const slackPercent = Math.round((slackDone / SLACK_SQL_CHALLENGES.length) * 100);
+
   // Categories list
   const categories = useMemo(() => {
     const cats: string[] = [];
@@ -135,6 +154,22 @@ export default function SqlDatabaseView() {
       return matchCat && matchDiff && matchStatus && matchQuery;
     });
   }, [searchQuery, difficultyFilter, statusFilter, categoryFilter, statuses]);
+
+  // Filtered Slack Challenges
+  const filteredSlackChallenges = useMemo(() => {
+    return SLACK_SQL_CHALLENGES.filter((c) => {
+      const matchCat = slackCategory === 'all' || c.category === slackCategory;
+      const matchStatus =
+        slackStatus === 'all' ||
+        (statuses[c.id] || 'not-started') === slackStatus;
+      const matchQuery =
+        !slackSearch.trim() ||
+        c.title.toLowerCase().includes(slackSearch.toLowerCase()) ||
+        c.problemStatement.toLowerCase().includes(slackSearch.toLowerCase()) ||
+        c.category.toLowerCase().includes(slackSearch.toLowerCase());
+      return matchCat && matchStatus && matchQuery;
+    });
+  }, [slackSearch, slackCategory, slackStatus, statuses]);
 
   // Grouped problems by category
   const groupedProblems = useMemo(() => {
@@ -185,7 +220,7 @@ export default function SqlDatabaseView() {
       </div>
 
       {/* Tabs Navigation */}
-      <TabsNav<'top50' | 'theory'>
+      <TabsNav<'top50' | 'theory' | 'slack'>
         activeTab={subTab}
         onChange={(tab) => setSubTab(tab)}
         tabs={[
@@ -199,6 +234,12 @@ export default function SqlDatabaseView() {
             id: 'theory',
             label: 'Lý Thuyết RDBMS & Index',
             badge: `${theoryDone}/${SQL_THEORY_TOPICS.length}`,
+          },
+          {
+            id: 'slack',
+            label: 'Slack DB Architecture',
+            badge: `${slackDone}/${SLACK_SQL_CHALLENGES.length}`,
+            badgeStyle: { background: '#0f5132', color: '#ffffff', fontWeight: 700 },
           },
         ]}
         style={{ marginBottom: '20px' }}
@@ -768,21 +809,15 @@ export default function SqlDatabaseView() {
               </div>
 
               {/* Status Combobox */}
-              <div className="status-combobox-wrapper">
-                <label htmlFor={`theory-status-${selectedTheory.id}`} className="status-combobox-label">
-                  Trạng thái:
-                </label>
-                <select
-                  id={`theory-status-${selectedTheory.id}`}
-                  className="status-combobox"
-                  value={statuses[selectedTheory.id] || 'not-started'}
-                  onChange={(e) => handleStatusChange(selectedTheory.id, e.target.value as SqlStatus)}
-                >
-                  <option value="not-started">Chưa học</option>
-                  <option value="in-progress">Đang học</option>
-                  <option value="done">Đã nắm vững</option>
-                </select>
-              </div>
+              <StatusCombobox<SqlStatus>
+                value={statuses[selectedTheory.id] || 'not-started'}
+                onChange={(val) => handleStatusChange(selectedTheory.id, val)}
+                options={[
+                  { value: 'not-started', label: 'Chưa học' },
+                  { value: 'in-progress', label: 'Đang học' },
+                  { value: 'done', label: 'Đã nắm vững' },
+                ]}
+              />
             </div>
 
             {/* Authoritative Citation Banner */}
@@ -1238,6 +1273,464 @@ export default function SqlDatabaseView() {
           </div>
         </div>
       </div>
+      )}
+
+      {/* ============================================================ */}
+      {/* TAB 3: SLACK DB ARCHITECTURAL CHALLENGES (CÂU HỎI MỞ THỰC CHIẾN) */}
+      {/* ============================================================ */}
+      {subTab === 'slack' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          {/* Quick Stats Bar */}
+          <div className="srs-summary-strip">
+            <div className="srs-stat-pill">
+              <span className="srs-pill-label">Tổng bài toán:</span>
+              <span className="srs-pill-value">{SLACK_SQL_CHALLENGES.length}</span>
+            </div>
+            <div className="srs-stat-pill">
+              <span className="srs-pill-label">Đã nắm vững:</span>
+              <span className="srs-pill-value" style={{ color: '#0f5132' }}>{slackDone} ({slackPercent}%)</span>
+            </div>
+            <div className="srs-stat-pill">
+              <span className="srs-pill-label">Đang nghiên cứu:</span>
+              <span className="srs-pill-value" style={{ color: '#856404' }}>{slackInProgress}</span>
+            </div>
+            <div className="srs-stat-pill">
+              <span className="srs-pill-label">Chưa xem:</span>
+              <span className="srs-pill-value">{slackNotStarted}</span>
+            </div>
+          </div>
+
+          {/* Intro Box */}
+          <div
+            style={{
+              padding: '16px 20px',
+              backgroundColor: '#fff4e8',
+              border: '1px solid #ffd4a8',
+              borderRadius: 'var(--rounded-md, 2px)',
+            }}
+          >
+            <div
+              style={{
+                fontFamily: 'var(--font-label)',
+                fontSize: '0.78rem',
+                fontWeight: 700,
+                textTransform: 'uppercase',
+                color: 'var(--color-tertiary)',
+                letterSpacing: '0.06em',
+                marginBottom: '4px',
+              }}
+            >
+              Thực Chiến Dự Án Slack • Database Architecture Challenges
+            </div>
+            <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--color-primary)', lineHeight: 1.5 }}>
+              Thay vì chỉ giải đố thuật toán query (LeetCode), đây là các bài toán kiến trúc dữ liệu cốt lõi khi xây dựng hệ thống chat Slack với PostgreSQL, Spring Boot, Redis và Kafka. Mỗi bài toán đặt ra bài toán hóc búa, các phương án kỹ thuật và <strong>Hint (Gợi ý Best Practice)</strong> để bạn tự suy ngẫm giải pháp.
+            </p>
+          </div>
+
+          {/* Filters Bar */}
+          <div className="neetcode-controls-bar">
+            <div className="neetcode-search-box">
+              <input
+                type="text"
+                className="search-input"
+                value={slackSearch}
+                onChange={(e) => setSlackSearch(e.target.value)}
+                placeholder="Tìm kiếm bài toán Slack DB (ví dụ: 'Snowflake', 'Cursor', 'RLS', 'Kafka')..."
+                style={{ width: '100%' }}
+              />
+            </div>
+            <div className="neetcode-filter-group">
+              <div className="filter-pill-container">
+                <select
+                  value={slackCategory}
+                  onChange={(e) => setSlackCategory(e.target.value)}
+                  className="filter-pill-select"
+                >
+                  <option value="all">Tất cả chủ đề</option>
+                  <option value="Storage & Keys">Storage & Keys</option>
+                  <option value="Performance & Scale">Performance & Scale</option>
+                  <option value="Data Isolation">Data Isolation</option>
+                  <option value="Concurrency & Messaging">Concurrency & Messaging</option>
+                  <option value="Query & Analytics">Query & Analytics</option>
+                </select>
+              </div>
+              <div className="filter-pill-container">
+                <select
+                  value={slackStatus}
+                  onChange={(e) => setSlackStatus(e.target.value)}
+                  className="filter-pill-select"
+                >
+                  <option value="all">Tất cả trạng thái</option>
+                  <option value="not-started">Chưa học</option>
+                  <option value="in-progress">Đang nghiên cứu</option>
+                  <option value="done">Đã nắm</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Challenges List */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            {filteredSlackChallenges.map((challenge) => {
+              const currentStatus = statuses[challenge.id] || 'not-started';
+
+              return (
+                <div
+                  key={challenge.id}
+                  style={{
+                    border: '1px solid var(--color-border)',
+                    borderRadius: 'var(--rounded-md, 2px)',
+                    backgroundColor: 'var(--color-surface)',
+                    overflow: 'hidden',
+                  }}
+                >
+                  {/* Card Header */}
+                  <div
+                    style={{
+                      padding: '14px 18px',
+                      backgroundColor: 'var(--color-neutral)',
+                      borderBottom: '1px solid var(--color-border)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      flexWrap: 'wrap',
+                      gap: '12px',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                      <span
+                        style={{
+                          fontFamily: 'var(--font-mono)',
+                          fontSize: '0.78rem',
+                          fontWeight: 700,
+                          backgroundColor: '#e6ded5',
+                          padding: '2px 8px',
+                          borderRadius: 'var(--rounded-sm, 2px)',
+                          color: 'var(--color-primary)',
+                        }}
+                      >
+                        #{challenge.order}
+                      </span>
+                      <h3
+                        style={{
+                          margin: 0,
+                          fontSize: '1.05rem',
+                          fontFamily: 'var(--font-display)',
+                          color: 'var(--color-primary)',
+                        }}
+                      >
+                        {challenge.title}
+                      </h3>
+                      <span
+                        style={{
+                          fontSize: '0.72rem',
+                          fontFamily: 'var(--font-label)',
+                          fontWeight: 700,
+                          padding: '2px 8px',
+                          borderRadius: '10px',
+                          backgroundColor: challenge.difficulty === 'Hard' ? '#fde8e8' : '#e0f2fe',
+                          color: challenge.difficulty === 'Hard' ? '#991b1b' : '#0369a1',
+                        }}
+                      >
+                        {challenge.difficulty}
+                      </span>
+                      <span
+                        style={{
+                          fontSize: '0.72rem',
+                          fontFamily: 'var(--font-label)',
+                          fontWeight: 600,
+                          color: 'var(--color-secondary)',
+                          border: '1px solid var(--color-border)',
+                          padding: '1px 7px',
+                          borderRadius: '10px',
+                        }}
+                      >
+                        {challenge.category}
+                      </span>
+                    </div>
+
+                    {/* Status Selector */}
+                    <div>
+                      <StatusCombobox
+                        value={currentStatus}
+                        onChange={(newStatus) => {
+                          const s = newStatus as SqlStatus;
+                          setStatuses((prev) => ({ ...prev, [challenge.id]: s }));
+                          localStorage.setItem(getSqlStatusKey(challenge.id), s);
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Card Body */}
+                  <div style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                    {/* Problem Statement */}
+                    <div>
+                      <div
+                        style={{
+                          fontSize: '0.75rem',
+                          fontWeight: 700,
+                          textTransform: 'uppercase',
+                          color: 'var(--color-tertiary)',
+                          fontFamily: 'var(--font-label)',
+                          letterSpacing: '0.06em',
+                          marginBottom: '4px',
+                        }}
+                      >
+                        Bài Toán Thực Tế (Problem Statement)
+                      </div>
+                      <p style={{ margin: 0, fontSize: '0.92rem', color: 'var(--color-primary)', lineHeight: 1.55 }}>
+                        {challenge.problemStatement}
+                      </p>
+                      <div style={{ marginTop: '6px', fontSize: '0.8rem', color: 'var(--color-secondary)', fontStyle: 'italic' }}>
+                        Bối cảnh Slack: {challenge.contextSlack}
+                      </div>
+                    </div>
+
+                    {/* Open Questions / Dilemmas (Chất vấn ban đầu) */}
+                    <div
+                      style={{
+                        padding: '12px 14px',
+                        backgroundColor: '#faf8f5',
+                        borderLeft: '3px solid var(--color-primary)',
+                        borderRadius: '0 var(--rounded-md) var(--rounded-md) 0',
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontSize: '0.75rem',
+                          fontWeight: 700,
+                          textTransform: 'uppercase',
+                          color: 'var(--color-primary)',
+                          fontFamily: 'var(--font-label)',
+                          letterSpacing: '0.06em',
+                          marginBottom: '6px',
+                        }}
+                      >
+                        Câu Hỏi Mở Cần Suy Ngẫm & Nghiên Cứu (Questions to Research)
+                      </div>
+                      <ul style={{ margin: 0, paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        {challenge.tradeOffQuestions.map((q, qIdx) => (
+                          <li key={qIdx} style={{ fontSize: '0.86rem', color: 'var(--color-primary)', lineHeight: 1.45 }}>
+                            {q}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* NeetCode Style Accordion Stack */}
+                    <div style={{ display: 'flex', flexDirection: 'column', borderTop: '1px solid var(--color-border)', marginTop: '4px' }}>
+                      {/* Section 1: Recommended Complexity (Giống NeetCode) */}
+                      {challenge.recommendedComplexity && (
+                        <div style={{ borderBottom: '1px solid var(--color-border-light)' }}>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const key = `${challenge.id}-complexity`;
+                              setOpenHintTabs((prev) => ({ ...prev, [key]: !prev[key] }));
+                            }}
+                            style={{
+                              width: '100%',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                              padding: '10px 4px',
+                              background: 'transparent',
+                              border: 'none',
+                              cursor: 'pointer',
+                              color: 'var(--color-primary)',
+                              fontSize: '0.85rem',
+                              fontWeight: 600,
+                              textAlign: 'left',
+                            }}
+                          >
+                            <span style={{ fontSize: '0.75rem', color: 'var(--color-secondary)' }}>
+                              {openHintTabs[`${challenge.id}-complexity`] ? '▼' : '▶'}
+                            </span>
+                            <span>Recommended Architectural Complexity & Goals</span>
+                          </button>
+                          {openHintTabs[`${challenge.id}-complexity`] && (
+                            <div style={{ padding: '0 4px 12px 20px', fontSize: '0.84rem', color: 'var(--color-secondary)', lineHeight: 1.5 }}>
+                              <code>{challenge.recommendedComplexity}</code>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Section 2: Progressive Hints (Hint 1, Hint 2, Hint 3) */}
+                      {challenge.hints.map((hint, hIdx) => {
+                        const hintKey = `${challenge.id}-${hint.id}`;
+                        const isOpen = Boolean(openHintTabs[hintKey]);
+
+                        return (
+                          <div key={hint.id} style={{ borderBottom: '1px solid var(--color-border-light)' }}>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setOpenHintTabs((prev) => ({ ...prev, [hintKey]: !prev[hintKey] }))
+                              }
+                              style={{
+                                width: '100%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                padding: '10px 4px',
+                                background: 'transparent',
+                                border: 'none',
+                                cursor: 'pointer',
+                                color: 'var(--color-primary)',
+                                fontSize: '0.85rem',
+                                fontWeight: 600,
+                                textAlign: 'left',
+                              }}
+                            >
+                              <span style={{ fontSize: '0.75rem', color: 'var(--color-secondary)' }}>
+                                {isOpen ? '▼' : '▶'}
+                              </span>
+                              <span>{hint.title}</span>
+                            </button>
+                            {isOpen && (
+                              <div
+                                style={{
+                                  padding: '4px 14px 12px 20px',
+                                  fontSize: '0.86rem',
+                                  color: 'var(--color-primary)',
+                                  lineHeight: 1.5,
+                                  backgroundColor: '#fffdfa',
+                                  borderLeft: '2px solid #ffd4a8',
+                                  marginBottom: '8px',
+                                }}
+                              >
+                                {hint.content}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+
+                      {/* Section 3: Final Solution & Trade-offs (Ẩn mặc định, chỉ mở khi cần chốt đáp án) */}
+                      <div style={{ borderBottom: '1px solid var(--color-border-light)' }}>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setOpenSolutions((prev) => ({ ...prev, [challenge.id]: !prev[challenge.id] }))
+                          }
+                          style={{
+                            width: '100%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            padding: '10px 4px',
+                            background: 'transparent',
+                            border: 'none',
+                            cursor: 'pointer',
+                            color: 'var(--color-tertiary)',
+                            fontSize: '0.85rem',
+                            fontWeight: 700,
+                            textAlign: 'left',
+                          }}
+                        >
+                          <span style={{ fontSize: '0.75rem' }}>
+                            {openSolutions[challenge.id] ? '▼' : '▶'}
+                          </span>
+                          <span>Đáp Án & So Sánh Trade-Offs (Solution & Best Practice)</span>
+                        </button>
+
+                        {openSolutions[challenge.id] && (
+                          <div
+                            style={{
+                              marginTop: '8px',
+                              marginBottom: '12px',
+                              padding: '16px',
+                              backgroundColor: '#f0fdf4',
+                              border: '1px solid #bbf7d0',
+                              borderRadius: 'var(--rounded-md, 2px)',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              gap: '12px',
+                            }}
+                          >
+                            <div>
+                              <div style={{ fontSize: '0.74rem', fontWeight: 700, textTransform: 'uppercase', color: '#166534', fontFamily: 'var(--font-label)' }}>
+                                Industry Best Practice:
+                              </div>
+                              <div style={{ fontSize: '0.92rem', fontWeight: 700, color: '#14532d', marginTop: '2px' }}>
+                                {challenge.solution.industryBestPractice}
+                              </div>
+                            </div>
+
+                            <div style={{ fontSize: '0.86rem', color: '#166534', lineHeight: 1.5 }}>
+                              {challenge.solution.explanation}
+                            </div>
+
+                            {/* Options Comparison Table */}
+                            <div>
+                              <div style={{ fontSize: '0.74rem', fontWeight: 700, textTransform: 'uppercase', color: '#166534', marginBottom: '6px' }}>
+                                Đánh Giá Các Phương Án:
+                              </div>
+                              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '8px' }}>
+                                {challenge.solution.comparison.map((c, cIdx) => (
+                                  <div
+                                    key={cIdx}
+                                    style={{
+                                      padding: '10px',
+                                      backgroundColor: '#ffffff',
+                                      borderRadius: 'var(--rounded-sm, 2px)',
+                                      border: '1px solid #bbf7d0',
+                                      fontSize: '0.8rem',
+                                    }}
+                                  >
+                                    <div style={{ fontWeight: 700, color: 'var(--color-primary)', marginBottom: '4px' }}>
+                                      {c.option}
+                                    </div>
+                                    <div style={{ color: '#0f5132', marginBottom: '2px' }}>
+                                      <strong>+ Ưu:</strong> {c.pros}
+                                    </div>
+                                    <div style={{ color: '#991b1b' }}>
+                                      <strong>- Nhược:</strong> {c.cons}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Tech Tags */}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', marginTop: '4px' }}>
+                              <span style={{ fontSize: '0.72rem', fontWeight: 600, color: '#166534' }}>
+                                Từ khóa kỹ thuật:
+                              </span>
+                              {challenge.solution.keyTechnologies.map((tech, tIdx) => (
+                                <code
+                                  key={tIdx}
+                                  style={{
+                                    fontSize: '0.75rem',
+                                    padding: '1px 6px',
+                                    backgroundColor: '#dcfce7',
+                                    color: '#15803d',
+                                    borderRadius: 'var(--rounded-sm, 2px)',
+                                    border: '1px solid #bbf7d0',
+                                  }}
+                                >
+                                  {tech}
+                                </code>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+
+            {filteredSlackChallenges.length === 0 && (
+              <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--color-secondary)' }}>
+                Không tìm thấy bài toán kiến trúc phù hợp với bộ lọc.
+              </div>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );
