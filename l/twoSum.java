@@ -16,16 +16,17 @@ public class twoSum {
     }
 
     public static int[] twoSum(int[] nums, int target) {
+        // seen hashmap key: the complement if absent, value: the index
+        // and if the next time we use target minus the num and get a value in hasmap.
+        // those 2 will the the two sum
         Map<Integer, Integer> seen = new HashMap<>();
 
         for (int i = 0; i < nums.length; i++) {
             int complement = target - nums[i];
-
             if (seen.containsKey(complement)) {
-                return new int[] { seen.get(complement), i };
+                return new int[] { seen.get(complement), };
             }
-
-            seen.put(nums[i], i);
+            seen.putIfAbsent(num, i);
         }
 
         return new int[] {};

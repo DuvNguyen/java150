@@ -656,11 +656,15 @@ export default function NeetCodeProblemList({
         onSaveNote={handleSaveNoteOnly}
       />
 
-      {/* Java Source Viewer Modal */}
+      {/* Java Code & Practice Workspace Modal */}
       <JavaCodeViewerModal
         problem={selectedProblemForCode}
         isOpen={Boolean(selectedProblemForCode)}
         onClose={() => setSelectedProblemForCode(null)}
+        onOpenSrsReview={(p) => {
+          setSelectedProblemForCode(null);
+          setSelectedProblemForReview(p);
+        }}
       />
     </div>
   );
@@ -721,7 +725,8 @@ export default function NeetCodeProblemList({
             <button
               type="button"
               className="problem-name-btn"
-              onClick={() => setSelectedProblemForReview(problem)}
+              onClick={() => setSelectedProblemForCode(problem)}
+              title="Mở không gian luyện tập & viết mã nguồn"
             >
               {problem.name}
             </button>
@@ -898,7 +903,7 @@ export default function NeetCodeProblemList({
                     setSelectedProblemForCode(problem);
                   }}
                 >
-                  Xem lời giải Java
+                  Viết code
                 </button>
 
                 <button

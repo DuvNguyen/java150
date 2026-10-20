@@ -2,29 +2,27 @@ package l;
 
 import java.util.*;
 
-import javax.swing.plaf.ListUI;
-
 public class GroupAnagrams {
 
     public List<List<String>> groupAnagrams(String[] strs) {
-        // String key pattern
-        // freq array 26 element
+        // TODO: Cài đặt giải thuật của bạn ở đây
+        // hashmap key: pattern, value the list contains same kind
 
-        Map<String, List<String>> res = new HashMap<>();
+        Map<String, List<String>> anagramBucket = new HashMap<>();
 
         for (String s : strs) {
             int[] count = new int[26];
             for (char c : s.toCharArray()) {
                 count[c - 'a']++;
             }
-            String keyPattern = Arrays.toString(count);
-            if (res.get(keyPattern) == null) {
-                res.put(keyPattern, new ArrayList<>());
+            String key = Arrays.toString(count);
+            if (anagramBucket.get(key) == null) {
+                anagramBucket.put(key, new ArrayList<>());
             }
-            res.get(keyPattern).add(s);
+            anagramBucket.get(key).add(s);
         }
 
-        return new ArrayList<>(res.values());
+        return new ArrayList<>(anagramBucket.values());
     }
 
     public static void main(String[] args) {
@@ -34,25 +32,3 @@ public class GroupAnagrams {
         System.out.println("Output: " + sol.groupAnagrams(strs));
     }
 }
-
-/*
- * input: string array
- * -> output: sublists which is the same anagrams
- * 
- * need a function which boolean the anagram
- * store in hashmap <String, String>
- * 
- * 
- * init hashmap iterate in that haspmap if ana assign new value by current array
- * append. Or assign the whole new array
- * 
- * 
- * hashmap seen:
- * 
- * loop strs ->
- * check x, if
- * put in the value
- * 
- */
-
-// This solved the problem but fail the time limit

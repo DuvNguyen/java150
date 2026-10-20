@@ -1033,12 +1033,16 @@ export default function SrsCalendarView({ srsProgress, onProgressUpdated, trackL
         />
       )}
 
-      {/* Java Code Modal */}
+      {/* Java Code & Practice Workspace Modal */}
       {codeProblem && (
         <JavaCodeViewerModal
           isOpen={Boolean(codeProblem)}
           problem={codeProblem}
           onClose={() => setCodeProblem(null)}
+          onOpenSrsReview={(p) => {
+            setCodeProblem(null);
+            setReviewProblem(p);
+          }}
         />
       )}
     </div>

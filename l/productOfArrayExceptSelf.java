@@ -3,75 +3,82 @@ package l;
 import java.util.Arrays;
 
 public class productOfArrayExceptSelf {
+
     public int[] productExceptSelf(int[] nums) {
-        int[] output = new int[nums.length];
-        int product = 1;
+        // TODO: Cài đặt giải thuật của bạn ở đây
+        // Lưu ý: Không dùng phép chia (division) và độ phức tạp thời gian O(n)
+        // prefix and suffix store the product after and before i 
+            int[] prefix = new int[nums.length];
+            int[] suffix = new int[nums.length];
 
-        int count0 = 0;
-        for (int num : nums) {
-            if (num == 0) {
-                count0++;
-                if (count0 > 1) {
-                    return new int[nums.length];
-                }
-                continue;
-            }
-            product = product * num;
+        //prefix
+        prefix[0] = 1;
+        for(int i = 1; i < nums.length; i++) {
+            prefix[i] = prefix[i - 1] * nums[i - 1];
+        }        
+
+
+
+        int n = nums.length;
+        suffix[n - 1] = 1;
+        for(int i = n - 2; i >= 0; i--) {
+            suffix[i] = suffix[i + 1] * nums[i + 1];
         }
 
-        for (int i = 0; i < output.length; i++) {
-            if (count0 == 1 && nums[i] != 0) {
-                output[i] = 0;
-                continue;
-            }
-
-            if (nums[i] == 0 && count0 == 1) {
-                output[i] = product;
-                continue;
-            }
-
-            output[i] = product / nums[i];
+        int[] out = new int[nums.length];
+        for(int i = 0; i < nums.length; i++) {
+            out[i] = prefix[i] * suffix[i];
         }
 
-        return output;
+        return out;
     }
 
     public static void main(String[] args) {
         productOfArrayExceptSelf solver = new productOfArrayExceptSelf();
 
-        // Test case 1: Cơ bản (các số dương)
-        int[] nums1 = { 1, 2, 4, 6 };
-        System.out.println("Test 1:");
-        System.out.println("Input:    " + Arrays.toString(nums1));
-        System.out.println("Output:   " + Arrays.toString(solver.productExceptSelf(nums1)));
-        System.out.println("Expected: [48, 24, 12, 8]\n");
+        // 5 Test Cases kiểm thử:
+        int[][] testInputs = {
+            // Test 1: Cơ bản các số dương
+            { 1, 2, 4, 6 },
 
-        // Test case 2: Có 1 số 0 và số âm
-        int[] nums2 = { -1, 0, 1, 2, 3 };
-        System.out.println("Test 2:");
-        System.out.println("Input:    " + Arrays.toString(nums2));
-        System.out.println("Output:   " + Arrays.toString(solver.productExceptSelf(nums2)));
-        System.out.println("Expected: [0, -6, 0, 0, 0]\n");
+            // Test 2: Có 1 số 0 và số âm
+            { -1, 0, 1, 2, 3 },
 
-        // Test case 3: Có nhiều hơn một số 0 (toàn bộ kết quả sẽ là 0)
-        int[] nums3 = { 0, 4, 0 };
-        System.out.println("Test 3:");
-        System.out.println("Input:    " + Arrays.toString(nums3));
-        System.out.println("Output:   " + Arrays.toString(solver.productExceptSelf(nums3)));
-        System.out.println("Expected: [0, 0, 0]\n");
+            // Test 3: Có nhiều hơn một số 0 (kết quả toàn bộ là 0)
+            { 0, 4, 0 },
 
-        // Test case 4: Mảng có 2 phần tử (kích thước tối thiểu theo ràng buộc)
-        int[] nums4 = { 2, 3 };
-        System.out.println("Test 4:");
-        System.out.println("Input:    " + Arrays.toString(nums4));
-        System.out.println("Output:   " + Arrays.toString(solver.productExceptSelf(nums4)));
-        System.out.println("Expected: [3, 2]\n");
+            // Test 4: Mảng có 2 phần tử (kích thước tối thiểu)
+            { 2, 3 },
 
-        // Test case 5: Các số âm xen kẽ
-        int[] nums5 = { -1, -2, -3, -4 };
-        System.out.println("Test 5:");
-        System.out.println("Input:    " + Arrays.toString(nums5));
-        System.out.println("Output:   " + Arrays.toString(solver.productExceptSelf(nums5)));
-        System.out.println("Expected: [-24, -12, -8, -6]\n");
+            // Test 5: Các số âm xen kẽ
+            { -1, -2, -3, -4 }
+        };
+
+        int[][] expectedOutputs = {
+            { 48, 24, 12, 8 },
+            { 0, -6, 0, 0, 0 },
+            { 0, 0, 0 },
+            { 3, 2 },
+            { -24, -12, -8, -6 }
+        };
+
+        int passed = 0;
+        for (int i = 0; i < testInputs.length; i++) {
+            int[] input = testInputs[i];
+            int[] expected = expectedOutputs[i];
+            int[] actual = solver.productExceptSelf(input);
+
+            boolean isMatch = Arrays.equals(expected, actual);
+            if (isMatch) passed++;
+
+            System.out.println("=== Test Case " + (i + 1) + " ===");
+            System.out.println("Input   : " + Arrays.toString(input));
+            System.out.println("Expected: " + Arrays.toString(expected));
+            System.out.println("Actual  : " + Arrays.toString(actual));
+            System.out.println("Result  : " + (isMatch ? "PASSED" : "FAILED"));
+            System.out.println();
+        }
+
+        System.out.println("Tổng kết: " + passed + "/" + testInputs.length + " test cases passed.");
     }
 }

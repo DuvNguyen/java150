@@ -4,6 +4,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { OOP_PILLARS, OopPillar, OopStatus, getOopStatusKey } from '@/lib/oopData';
 import CodeBlock from '@/components/CodeBlock';
 import StatusCombobox from '@/components/StatusCombobox';
+import JavaCodeViewerModal, { CodeWorkspaceProblem } from '@/components/JavaCodeViewerModal';
+import { getOopExercisePracticeItem } from '@/lib/oopExercises';
 
 // ============================================================
 // OOP View — Track học 4 tính chất OOP trong Java
@@ -183,10 +185,12 @@ function PillarDetailPanel({
   pillar,
   status,
   onStatusChange,
+  onSelectExercise,
 }: {
   pillar: OopPillar;
   status: OopStatus;
   onStatusChange: (status: OopStatus) => void;
+  onSelectExercise: (item: CodeWorkspaceProblem) => void;
 }) {
   return (
     <div
@@ -424,29 +428,111 @@ function PillarDetailPanel({
         {/* Exercises */}
         <section>
           <SectionLabel>Bài tập thực hành</SectionLabel>
-          <ol
+          <div
             style={{
-              paddingLeft: '20px',
               display: 'flex',
               flexDirection: 'column',
-              gap: '10px',
-              margin: 0,
+              gap: '12px',
             }}
           >
-            {pillar.exercises.map((ex, i) => (
-              <li
-                key={i}
-                style={{
-                  fontSize: '0.9rem',
-                  lineHeight: '1.65',
-                  color: 'var(--color-primary)',
-                  fontFamily: 'var(--font-body)',
-                }}
-              >
-                {ex}
-              </li>
-            ))}
-          </ol>
+            {pillar.exercises.map((ex, i) => {
+              const item = getOopExercisePracticeItem(pillar, i);
+              const isTheory = item.kind === 'theory';
+              return (
+                <div
+                  key={i}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    justifyContent: 'space-between',
+                    gap: '16px',
+                    padding: '14px 16px',
+                    backgroundColor: '#ffffff',
+                    border: '1px solid var(--color-border)',
+                    borderRadius: 'var(--rounded-md, 2px)',
+                  }}
+                >
+                  <div style={{ flex: 1 }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        marginBottom: '6px',
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontFamily: 'var(--font-label)',
+                          fontSize: '0.72rem',
+                          fontWeight: 700,
+                          color: 'var(--color-secondary)',
+                          letterSpacing: '0.04em',
+                        }}
+                      >
+                        BÀI {i + 1}
+                      </span>
+                      <span
+                        style={{
+                          fontFamily: 'var(--font-label)',
+                          fontSize: '0.68rem',
+                          fontWeight: 600,
+                          color: isTheory ? 'var(--color-tertiary)' : 'var(--color-secondary)',
+                          backgroundColor: isTheory ? 'var(--color-neutral)' : 'var(--color-surface)',
+                          border: '1px solid var(--color-border-light)',
+                          padding: '1px 6px',
+                          borderRadius: '2px',
+                          textTransform: 'uppercase',
+                        }}
+                      >
+                        {isTheory ? 'Lý thuyết' : 'Lập trình'}
+                      </span>
+                      <span
+                        style={{
+                          fontFamily: 'var(--font-mono)',
+                          fontSize: '0.72rem',
+                          color: 'var(--color-secondary)',
+                          backgroundColor: 'var(--color-surface)',
+                          border: '1px solid var(--color-border-light)',
+                          padding: '1px 6px',
+                          borderRadius: '2px',
+                        }}
+                      >
+                        {item.javaFilePath}
+                      </span>
+                    </div>
+
+                    <p
+                      style={{
+                        fontSize: '0.92rem',
+                        lineHeight: '1.65',
+                        color: 'var(--color-primary)',
+                        fontFamily: 'var(--font-body)',
+                        margin: 0,
+                      }}
+                    >
+                      {ex}
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="btn btn-secondary btn-sm"
+                    onClick={() => onSelectExercise(item)}
+                    style={{
+                      whiteSpace: 'nowrap',
+                      padding: '6px 14px',
+                      fontSize: '0.78rem',
+                      alignSelf: 'center',
+                    }}
+                    title={isTheory ? 'Mở không gian soạn câu trả lời lý thuyết' : 'Mở không gian viết code và lưu vào repo local'}
+                  >
+                    {isTheory ? 'Viết câu trả lời' : 'Viết code'}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
         </section>
 
         {/* Common Mistakes */}
@@ -639,6 +725,8 @@ export default function OopView() {
     });
   }, []);
 
+  const [selectedExercise, setSelectedExercise] = useState<CodeWorkspaceProblem | null>(null);
+
   const doneCount = OOP_PILLARS.filter((p) => statuses[p.id] === 'done').length;
   const inProgressCount = OOP_PILLARS.filter((p) => statuses[p.id] === 'in-progress').length;
 
@@ -718,8 +806,18 @@ export default function OopView() {
           pillar={selectedPillar}
           status={statuses[selectedPillar.id] || 'not-started'}
           onStatusChange={(s) => handleStatusChange(selectedPillar.id, s)}
+          onSelectExercise={(item) => setSelectedExercise(item)}
         />
       </div>
+
+      {/* Code & Practice Workspace Modal for Core Java Exercises */}
+      {selectedExercise && (
+        <JavaCodeViewerModal
+          isOpen={Boolean(selectedExercise)}
+          problem={selectedExercise}
+          onClose={() => setSelectedExercise(null)}
+        />
+      )}
     </div>
   );
 }
