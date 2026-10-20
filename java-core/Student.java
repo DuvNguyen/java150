@@ -13,9 +13,11 @@ public class Student {
     private double gpa;
 
     public boolean setGpa(double gpa) {
-        if(0.0 > gpa > 4.0) {
-            throw new IllegalArgumentException;
+        if(0.0 > gpa || gpa > 4.0) {
+            throw new IllegalArgumentException("gpa should not be less than 0 or greater than 4");
         }
+        this.gpa = gpa;
+        return true;
     }
 
     public Student(String name, int age, double gpa) {

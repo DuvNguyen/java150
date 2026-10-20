@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { OOP_PILLARS, OopPillar, OopStatus, getOopStatusKey } from '@/lib/oopData';
+import { OOP_PILLARS, OOP_CITATIONS, OopPillar, OopStatus, getOopStatusKey } from '@/lib/oopData';
 import CodeBlock from '@/components/CodeBlock';
 import StatusCombobox from '@/components/StatusCombobox';
 import JavaCodeViewerModal, { CodeWorkspaceProblem } from '@/components/JavaCodeViewerModal';
@@ -726,6 +726,7 @@ export default function OopView() {
   }, []);
 
   const [selectedExercise, setSelectedExercise] = useState<CodeWorkspaceProblem | null>(null);
+  const [citationFilter, setCitationFilter] = useState<string>('all');
 
   const doneCount = OOP_PILLARS.filter((p) => statuses[p.id] === 'done').length;
   const inProgressCount = OOP_PILLARS.filter((p) => statuses[p.id] === 'in-progress').length;
@@ -810,7 +811,261 @@ export default function OopView() {
         />
       </div>
 
-      {/* Code & Practice Workspace Modal for Core Java Exercises */}
+      {/* ============================================================ */}
+      {/* FOOTER SECTION: TÀI LIỆU NGUỒN GỐC & TRÍCH DẪN UY TÍN */}
+      {/* ============================================================ */}
+      <div
+        style={{
+          marginTop: '32px',
+          padding: '24px',
+          borderRadius: '4px',
+          border: '1px solid var(--color-border)',
+          backgroundColor: '#fffdfa',
+        }}
+      >
+        {/* Header */}
+        <div style={{ marginBottom: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+            <span
+              style={{
+                fontSize: '0.72rem',
+                fontFamily: 'var(--font-label)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                padding: '2px 8px',
+                borderRadius: '2px',
+                backgroundColor: 'var(--color-neutral)',
+                border: '1px solid var(--color-border)',
+                color: 'var(--color-secondary)',
+                fontWeight: 700,
+              }}
+            >
+              Citations & Knowledge Sources
+            </span>
+          </div>
+          <h3
+            style={{
+              fontSize: '1.25rem',
+              fontFamily: 'var(--font-display)',
+              color: 'var(--color-primary)',
+              margin: '6px 0 4px 0',
+            }}
+          >
+            Tài Liệu Tham Khảo & Trích Dẫn Uy Tín
+          </h3>
+          <p
+            style={{
+              fontSize: '0.88rem',
+              color: 'var(--color-secondary)',
+              margin: 0,
+              lineHeight: 1.5,
+            }}
+          >
+            Tổng hợp các tác phẩm kinh điển của kiến trúc sư Java, đặc tả chính thức từ Oracle và mã nguồn OpenJDK làm nền tảng cho 10 chuyên đề Java Core & OOP.
+          </p>
+        </div>
+
+        {/* Callout Box */}
+        <div
+          style={{
+            padding: '12px 16px',
+            backgroundColor: '#fef8f0',
+            border: '1px solid #fde68a',
+            borderLeft: '4px solid #f59e0b',
+            borderRadius: '2px',
+            marginBottom: '20px',
+            fontSize: '0.85rem',
+            lineHeight: 1.6,
+            color: '#78350f',
+          }}
+        >
+          <strong>Định hướng Học tập & Phỏng vấn Core Java:</strong> Nắm vững lý thuyết hướng đối tượng kết hợp với <em>Effective Java (Joshua Bloch)</em> giúp bạn viết mã nguồn sạch, tránh bẫy rò rỉ bộ nhớ hay phá vỡ hợp đồng dữ liệu. Khi phỏng vấn từ mức Middle trở lên, việc hiểu sâu <em>Java Memory Model (JCIP)</em> và <em>cơ chế Treeify của HashMap (OpenJDK 21)</em> chính là chìa khóa chứng minh năng lực kỹ thuật vượt trội.
+        </div>
+
+        {/* Filter Pills */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            flexWrap: 'wrap',
+            marginBottom: '18px',
+          }}
+        >
+          {[
+            { id: 'all', label: 'Tất cả' },
+            { id: 'Book', label: 'Sách Kinh Điển' },
+            { id: 'Official Spec', label: 'Tài Liệu & Đặc Tả' },
+            { id: 'Open Source', label: 'Mã Nguồn Mở' },
+            { id: 'Engineering Guide', label: 'Hướng Dẫn Kỹ Thuật' },
+          ].map((tab) => {
+            const isActive = citationFilter === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setCitationFilter(tab.id)}
+                style={{
+                  padding: '5px 12px',
+                  fontSize: '0.76rem',
+                  fontFamily: 'var(--font-label)',
+                  fontWeight: isActive ? 700 : 600,
+                  letterSpacing: '0.04em',
+                  borderRadius: '2px',
+                  border: isActive ? '1px solid var(--color-primary)' : '1px solid var(--color-border)',
+                  backgroundColor: isActive ? 'var(--color-primary)' : 'var(--color-surface)',
+                  color: isActive ? '#ffffff' : 'var(--color-primary)',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Citations Grid */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+            gap: '16px',
+            alignItems: 'stretch',
+          }}
+        >
+          {OOP_CITATIONS.filter(
+            (c) => citationFilter === 'all' || c.type === citationFilter
+          ).map((item) => (
+            <div
+              key={item.id}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                padding: '16px 18px',
+                borderRadius: '2px',
+                border: '1px solid var(--color-border)',
+                backgroundColor: 'var(--color-surface)',
+                gap: '10px',
+                height: '100%',
+                boxSizing: 'border-box',
+              }}
+            >
+              {/* Type badge & Author */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+                <span
+                  style={{
+                    fontSize: '0.68rem',
+                    fontFamily: 'var(--font-label)',
+                    fontWeight: 700,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.08em',
+                    padding: '3px 8px',
+                    borderRadius: '2px',
+                    backgroundColor: 'var(--color-neutral)',
+                    color: 'var(--color-primary)',
+                    border: '1px solid var(--color-border)',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {item.typeLabel}
+                </span>
+                <span
+                  style={{
+                    fontSize: '0.75rem',
+                    fontFamily: 'var(--font-mono)',
+                    color: 'var(--color-secondary)',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    textAlign: 'right',
+                    flex: 1,
+                  }}
+                >
+                  {item.author}
+                </span>
+              </div>
+
+              {/* Title & Link */}
+              <div>
+                <a
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    fontSize: '0.94rem',
+                    fontWeight: 700,
+                    fontFamily: 'var(--font-display)',
+                    color: 'var(--color-primary)',
+                    textDecoration: 'none',
+                    lineHeight: 1.35,
+                    display: 'inline-block',
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.textDecoration = 'underline')}
+                  onMouseLeave={(e) => (e.currentTarget.style.textDecoration = 'none')}
+                >
+                  {item.title} &#8599;
+                </a>
+                {item.subtitle && (
+                  <div style={{ fontSize: '0.78rem', color: 'var(--color-secondary)', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
+                    {item.subtitle}
+                  </div>
+                )}
+              </div>
+
+              {/* Description */}
+              <p style={{ fontSize: '0.84rem', color: 'var(--color-secondary)', margin: 0, lineHeight: 1.5, flex: 1 }}>
+                {item.description}
+              </p>
+
+              {/* Highlights */}
+              {item.highlights && item.highlights.length > 0 && (
+                <div
+                  style={{
+                    backgroundColor: 'var(--color-neutral)',
+                    padding: '8px 10px',
+                    borderRadius: '2px',
+                    border: '1px solid var(--color-border-light)',
+                  }}
+                >
+                  <div style={{ fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--color-primary)', marginBottom: '4px' }}>
+                    Điểm mấu chốt:
+                  </div>
+                  <ul style={{ margin: 0, paddingLeft: '16px', display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                    {item.highlights.map((hl, hIdx) => (
+                      <li key={hIdx} style={{ fontSize: '0.78rem', color: 'var(--color-primary)', lineHeight: 1.4 }}>
+                        {hl}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Applicable Pillars */}
+              {item.pillars && item.pillars.length > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: 'auto', paddingTop: '4px' }}>
+                  {item.pillars.map((pil, pIdx) => (
+                    <span
+                      key={pIdx}
+                      style={{
+                        fontSize: '0.68rem',
+                        fontFamily: 'var(--font-mono)',
+                        padding: '2px 6px',
+                        borderRadius: '2px',
+                        backgroundColor: 'var(--color-neutral)',
+                        border: '1px solid var(--color-border-light)',
+                        color: 'var(--color-secondary)',
+                      }}
+                    >
+                      {pil}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
       {selectedExercise && (
         <JavaCodeViewerModal
           isOpen={Boolean(selectedExercise)}

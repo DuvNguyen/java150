@@ -1165,3 +1165,105 @@ export const OOP_STORAGE_KEY_PREFIX = 'oop_status_';
 export function getOopStatusKey(pillarId: string): string {
   return `${OOP_STORAGE_KEY_PREFIX}${pillarId}`;
 }
+
+// ============================================================
+// Footnote Citations & Authoritative Knowledge Sources
+// Dùng cho Footer Citations Section của tab Java Core & OOP
+// ============================================================
+
+export interface OopTrackCitation {
+  id: string;
+  title: string;
+  subtitle?: string;
+  author: string;
+  type: 'Book' | 'Official Spec' | 'Open Source' | 'Engineering Guide';
+  typeLabel: string;
+  url: string;
+  description: string;
+  highlights: string[];
+  pillars: string[];
+}
+
+export const OOP_CITATIONS: OopTrackCitation[] = [
+  {
+    id: 'effective-java',
+    title: 'Effective Java (3rd Edition)',
+    subtitle: '90 Best Practices cho thiết kế Class, Quản lý Đối tượng & Lambdas',
+    author: 'Joshua Bloch (Cựu Chief Java Architect tại Sun Microsystems)',
+    type: 'Book',
+    typeLabel: 'Sách Kinh Điển',
+    url: 'https://www.oreilly.com/library/view/effective-java-3rd/9780134686097/',
+    description: 'Bộ quy chuẩn thiết kế kinh điển của hệ sinh thái Java. Hướng dẫn chi tiết nguyên tắc bất biến (Immutability), hợp đồng equals/hashCode, ưu tiên Composition hơn Kế thừa, và nguyên lý PECS cho Generics.',
+    highlights: [
+      'Item 10 & 11: Luôn override hashCode khi override equals, tuân thủ đúng 5 tính chất của equals.',
+      'Item 17 & 18: Tối giản khả năng thay đổi (minimize mutability) và ưu tiên Composition thay vì Kế thừa.',
+      'Item 31 & 50: Bounded Wildcards (Producer Extends, Consumer Super) và Phòng thủ sao chép (Defensive Copying).',
+    ],
+    pillars: ['Tính Đóng Gói', 'Kế Thừa & Đa Hình', 'equals & hashCode', 'Generics & PECS'],
+  },
+  {
+    id: 'jcip',
+    title: 'Java Concurrency in Practice (JCIP)',
+    subtitle: 'Chuẩn mực đa luồng, Java Memory Model & Đồng bộ hóa',
+    author: 'Brian Goetz (Java Language Architect tại Oracle) & Doug Lea',
+    type: 'Book',
+    typeLabel: 'Sách Kinh Điển',
+    url: 'https://jcip.net/',
+    description: 'Tác phẩm gối đầu giường của các kỹ sư Java về xử lý đa luồng, giải mã cơ chế đồng bộ hóa, quy tắc Happens-Before của Java Memory Model (JMM), Thread Pool và tối ưu cấu trúc dữ liệu Concurrent.',
+    highlights: [
+      'Quản lý Mutable Shared State: Bản chất thread-safety là kiểm soát truy cập đồng thời vào vùng nhớ có thể thay đổi.',
+      'JMM & Happens-Before: Đảm bảo tính hiển thị (Visibility) bộ nhớ giữa các CPU Core qua volatile và synchronized.',
+      'Executor Framework: Tuyệt đối không new Thread() trực tiếp, luôn phân bổ qua ThreadPoolExecutor và chặn rò rỉ bộ nhớ.',
+    ],
+    pillars: ['Đa Luồng & Đồng Thời', 'Thread Pools', 'JMM & Happens-Before'],
+  },
+  {
+    id: 'oracle-dev-java',
+    title: 'Dev.java & The Java Language Specification (JLS)',
+    subtitle: 'Tài liệu chính thức và đặc tả kỹ thuật Java SE 21 từ Oracle',
+    author: 'Oracle Java Platform Group',
+    type: 'Official Spec',
+    typeLabel: 'Tài Liệu & Đặc Tả',
+    url: 'https://dev.java/',
+    description: 'Cổng đào tạo chính thống và tài liệu đặc tả ngôn ngữ Java của Oracle. Nguồn tra cứu chuẩn xác nhất về cú pháp ngôn ngữ, Virtual Threads, Records, Sealed Classes/Interfaces và Stream API.',
+    highlights: [
+      'Modern OOP: Record Classes (bất biến dữ liệu) và Sealed Classes/Interfaces (kiểm soát toàn diện cây kế thừa).',
+      'Virtual Threads & Project Loom: Luồng siêu nhẹ ở cấp JVM giúp xử lý hàng triệu kết nối I/O đồng thời.',
+      'Stream API & Functional: Lazy evaluation, Short-circuiting và loại bỏ triệt để NullPointerException với Optional.',
+    ],
+    pillars: ['Modern Java & Streams', 'Interface & Abstract Class', 'Xử Lý Ngoại Lệ'],
+  },
+  {
+    id: 'openjdk-source',
+    title: 'OpenJDK 21 Source Code (java.base)',
+    subtitle: 'Mã nguồn gốc Java Standard Library & Collections Framework',
+    author: 'OpenJDK Community & Java Core Libs Team',
+    type: 'Open Source',
+    typeLabel: 'Mã Nguồn Mở',
+    url: 'https://github.com/openjdk/jdk/tree/master/src/java.base',
+    description: 'Mã nguồn gốc triển khai các cấu trúc dữ liệu cốt lõi trong java.util và java.util.concurrent. Cung cấp góc nhìn thực tế về cách đội ngũ kỹ sư Java tối ưu hiệu năng đến từng phép toán dịch bit.',
+    highlights: [
+      'HashMap Internals: Phép băm XOR dịch bit (h ^ (h >>> 16)), mảng bucket Node<K,V> và Treeify threshold = 8.',
+      'ArrayList Capacity: Thuật toán tăng trưởng 1.5x (newCap = oldCap + (oldCap >> 1)) kết hợp System.arraycopy.',
+      'ConcurrentHashMap: Tối ưu lock striping theo từng bucket head node bằng kỹ thuật CAS và synchronized nội bộ.',
+    ],
+    pillars: ['Collections Internals', 'HashMap Deep Dive', 'ArrayList vs LinkedList'],
+  },
+  {
+    id: 'baeldung-java',
+    title: 'Baeldung Java CS & Architecture Tutorials',
+    subtitle: 'Cẩm nang kỹ thuật thực hành và kiến trúc JVM chuyên sâu',
+    author: 'Eugen Paraschiv & Baeldung Engineering Authors',
+    type: 'Engineering Guide',
+    typeLabel: 'Hướng Dẫn Kỹ Thuật',
+    url: 'https://www.baeldung.com/category/java/',
+    description: 'Kho bài viết kỹ thuật thực hành Java uy tín hàng đầu, chuyên giải thích chi tiết cấu trúc bộ nhớ JVM (Heap, Stack, Metaspace), vòng đời Garbage Collection và các câu hỏi phỏng vấn thực tế.',
+    highlights: [
+      'JVM Memory Model: Phân biệt Stack (Method Frame, biến nguyên thủy) và Heap (Vùng nhớ cấp phát Object).',
+      'Deep Dive Collections: Bảng so sánh chi tiết độ phức tạp thời gian O(1), O(log N) và bộ nhớ của từng Collections.',
+      'Design Patterns trong Java: Triển khai chuẩn mẫu Singleton, Factory, Builder, Strategy và Observer trong Java hiện đại.',
+    ],
+    pillars: ['Design Patterns', 'JVM Memory', 'Thực Hành Best Practices'],
+  },
+];
+
