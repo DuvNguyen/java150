@@ -42,7 +42,7 @@ export default function StatusCombobox<T extends string>({
   }, []);
 
   const selectedOption = options.find((opt) => opt.value === value) || options[0];
-  const hasValue = value !== 'not-started';
+  const hasValue = value !== 'not-started' && value !== 'all' && value !== 'default';
 
   return (
     <div className={`custom-combobox-wrap ${className}`} ref={containerRef}>

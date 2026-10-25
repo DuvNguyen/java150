@@ -12,17 +12,40 @@ public class Student {
     private int age;
     private double gpa;
 
-    public boolean setGpa(double gpa) {
+    public void setGpa(double gpa) {
         if(0.0 > gpa || gpa > 4.0) {
             throw new IllegalArgumentException("gpa should not be less than 0 or greater than 4");
         }
         this.gpa = gpa;
-        return true;
+    }
+
+    public void nameSetter(String name) {
+        this.name = name;
+    }
+
+    public String nameGetter() {
+        return this.name;
+    }
+
+     public void ageSetter(int age) {
+        this.age= age;
+    }
+
+    public int ageGetter() {
+        return this.age;
+    }
+    
+     public void gpaSetter(double gpa) {
+        this.gpa = gpa;
+    }
+
+    public double gpaGetter() {
+        return this.gpa;
     }
 
     public Student(String name, int age, double gpa) {
         this.name = name;
         this.age = age;
-        
+        setGpa(gpa);
     }
 }

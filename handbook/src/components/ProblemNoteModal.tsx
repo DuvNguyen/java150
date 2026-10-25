@@ -10,7 +10,7 @@ const MDXNoteEditor = dynamic(() => import('./MDXNoteEditor'), {
   loading: () => (
     <div
       style={{
-        height: '320px',
+        height: '340px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -21,7 +21,7 @@ const MDXNoteEditor = dynamic(() => import('./MDXNoteEditor'), {
         fontSize: '0.85rem',
       }}
     >
-      Đang tải trình soạn thảo trực quan...
+      Đang tải trình soạn thảo Monaco...
     </div>
   ),
 });
@@ -63,7 +63,7 @@ export default function ProblemNoteModal({
     : 0;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div
         className="modal-box srs-confirm-modal"
         onClick={(e) => e.stopPropagation()}
@@ -116,7 +116,7 @@ export default function ProblemNoteModal({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
           {/* Status info bar */}
           <div
             style={{
@@ -176,7 +176,7 @@ export default function ProblemNoteModal({
                 fontWeight: 600,
               }}
             >
-              Ghi chú trực quan (WYSIWYG Markdown)
+              Ghi chú cá nhân (WYSIWYG Markdown)
             </span>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <button
@@ -229,11 +229,15 @@ export default function ProblemNoteModal({
             <button type="button" className="btn btn-secondary" onClick={onClose}>
               Hủy
             </button>
-            <button type="submit" className="btn btn-primary">
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => onSaveNote(problem, note)}
+            >
               Lưu ghi chú
             </button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );

@@ -16,7 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Link href="/">
             <h1>Java DSA</h1>
           </Link>
-          <span className="subtitle">Syntax Reference</span>
+          <span className="subtitle">Learning and tracking</span>
         </header>
         {children}
       </body>

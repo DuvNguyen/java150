@@ -119,6 +119,8 @@ export const SRS = {
     const prevInterval = currentProgress?.interval || 0;
     let nextInterval = 1;
 
+    const EASY_BONUS = 1.3;
+
     if (rating === 'again') {
       nextInterval = 0;
       repetitions = 0;
@@ -129,20 +131,29 @@ export const SRS = {
       // Tránh phạt quá nặng dẫn đến Ease Hell (-0.10 thay vì -0.15)
       easeFactor = Math.max(this.MIN_EASE_FACTOR, easeFactor - 0.1);
     } else if (rating === 'medium') {
-      if (prevInterval < 3) {
+      if (repetitions === 1 || prevInterval < 2) {
         nextInterval = 3; // Lần đầu chọn Medium: 3 ngày
+      } else if (repetitions === 2 || prevInterval < 4) {
+        nextInterval = Math.max(6, Math.round(prevInterval * easeFactor)); // Lần 2: tối thiểu 6-7 ngày
       } else {
-        nextInterval = Math.max(4, Math.round(prevInterval * easeFactor));
+        nextInterval = Math.max(prevInterval + 2, Math.round(prevInterval * easeFactor));
       }
       // Cơ chế hồi phục Ease Hell: nếu Ease Factor đang thấp (< 2.2), tự động phục hồi nhẹ
       if (easeFactor < 2.2) {
         easeFactor = Math.min(this.DEFAULT_EASE_FACTOR, easeFactor + 0.1);
       }
     } else if (rating === 'easy') {
-      if (prevInterval < 7) {
+      if (repetitions === 1 && prevInterval < 2) {
         nextInterval = 7; // Lần đầu chọn Easy: 7 ngày
+      } else if (repetitions === 2 || prevInterval < 6) {
+        // Lần 2 chọn Easy hoặc chuyển từ Medium (interval thấp) sang Easy: 10 - 14 ngày
+        nextInterval = Math.max(10, Math.round(Math.max(prevInterval, 4) * easeFactor * EASY_BONUS));
       } else {
-        nextInterval = Math.max(7, Math.round(prevInterval * easeFactor));
+        // Lần 3 trở đi: nhân với easeFactor và EASY_BONUS, đảm bảo tăng tối thiểu prevInterval + 4 ngày
+        nextInterval = Math.max(
+          prevInterval + 4,
+          Math.round(prevInterval * easeFactor * EASY_BONUS)
+        );
       }
       // Tăng Ease Factor (phục hồi nhanh hơn nếu đang ở mức thấp < 2.2)
       const boost = easeFactor < 2.2 ? 0.25 : 0.15;

@@ -315,8 +315,8 @@ export default function HomePage() {
     <main className="page-container">
       {/* Page Header */}
       <div className="tree-page-intro" style={{ marginBottom: '16px' }}>
-        <h1>Java Learning Platform</h1>
-        <p>Nền tảng học lập trình Java toàn diện: DSA (NeetCode 150), OOP (4 tính chất), System Design, Spring Boot.</p>
+        <h1>Java Learning</h1>
+        <p>Nền tảng học lập trình Java</p>
       </div>
 
       {/* === TRACK SELECTOR — dùng CSS classes từ design system === */}

@@ -6,57 +6,38 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/*
-    return a int array which contain the key appears the most top down
-
-    hasmap seen <>
-
-    1st get fequency (confused)
-
-    2nd bucket sort - which I would want to call bucket setup
-        note: size of the buckets array is nums length + 1, we use the index to be the freq
-        some key can have the same freq
-    iterate with idx i-- to form each
-
-*/
-
 public class topKFrequent {
   public int[] solution(int[] nums, int k) {
-    // using freq array
-    // 3 step
-    // get freq hasmap,sort with bucket, iterate backward
-    // map, key: the number, value: its frequency
-    // bucket is a Array of list stores the indexes are the existence, group them to
-    // bucket
-    Map<Integer, Integer> seen = new HashMap<>();
-
-    for (int num : nums) {
+    // TODO: Cài đặt giải thuật tại đây
+    Map<Integer, Integer> seen = new HashMap<>();    
+    
+    for(int num : nums) {
       seen.put(num, seen.getOrDefault(num, 0) + 1);
     }
 
-    int max = nums.length + 1;
-    List<Integer>[] buckets = new List[max];
-    for (int key : seen.keySet()) {
-      int freq = seen.get(key);
-      if (buckets[freq] == null)
+    List<Integer>[] buckets = new List[nums.length + 1];
+    for(Map.Entry<Integer, Integer> entry : seen.entrySet()) {
+      int freq = entry.getValue();
+      if(buckets[freq] == null) {
         buckets[freq] = new ArrayList<>();
-      buckets[freq].add(key);
+      }
+      buckets[freq].add(entry.getKey()); 
     }
 
     int[] res = new int[k];
     int idx = 0;
-    for (int i = buckets.length - 1; i >= 0; i--) {
-      if (buckets[i] != null) {
-        for (int num : buckets[i]) {
+    for (int i = nums.length; i >= 0; i--) {
+      if(buckets[i] != null) {
+        for(int num : buckets[i]) {
           res[idx++] = num;
-          if (idx == k) {
+          if(idx == k) {
             return res;
           }
         }
       }
     }
 
-    return new int[] {};
+    return new int[k];
   }
 
   public static void main(String[] args) {
@@ -79,5 +60,3 @@ public class topKFrequent {
     System.out.println("Expected: [7]");
   }
 }
-
-//

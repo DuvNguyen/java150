@@ -171,14 +171,34 @@ export default function JavaCodeViewerModal({
     }
   }, [problem, filePath, code]);
 
-  // Launch or focus Antigravity IDE
+  // Launch or focus Antigravity IDE (creates file if not exists)
   const handleOpenInIde = async () => {
     setIdeMessage('Đang mở IDE...');
     try {
-      const res = await fetch('/api/ide/open', { method: 'POST' });
+      const res = await fetch('/api/ide/open', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          file: filePath || problem?.javaFilePath,
+          content: code,
+          shouldSave: !fileExists || hasUnsavedChanges,
+        }),
+      });
       const data = await res.json();
       if (data.success) {
-        setIdeMessage('Đã mở trong Antigravity IDE');
+        if (data.created || !fileExists) {
+          setFileExists(true);
+          setOriginalCode(code);
+          if (data.file) {
+            setFilePath(data.file);
+          }
+          setIdeMessage('Đã tạo file & mở trong IDE');
+        } else if (hasUnsavedChanges) {
+          setOriginalCode(code);
+          setIdeMessage('Đã đồng bộ & mở trong IDE');
+        } else {
+          setIdeMessage('Đã mở trong Antigravity IDE');
+        }
       } else {
         setIdeMessage('Không thể mở Antigravity IDE');
       }
@@ -231,7 +251,7 @@ export default function JavaCodeViewerModal({
   const fileName = filePath ? filePath.split('/').pop() || (isTheory ? 'Answer.md' : 'Solution.java') : `${problem.name.replace(/[^a-zA-Z0-9]/g, '')}.${isTheory ? 'md' : 'java'}`;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div
         className="modal-box code-workspace-modal"
         onClick={(e) => e.stopPropagation()}

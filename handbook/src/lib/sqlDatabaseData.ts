@@ -157,8 +157,8 @@ ORDER BY total_spent DESC;`,
     id: 'indexing-and-performance',
     order: 2,
     title: 'B-Tree Index, Clustered vs Non-Clustered & Tối Ưu',
-    englishTitle: 'B-Tree Indexing & Query Optimization',
-    summary: 'Bản chất vật lý của B-Tree Index, so sánh Clustered Index vs Secondary Index và những trường hợp Index bị vô hiệu hoá.',
+    englishTitle: 'B-Tree Indexing, GIN, HNSW & Query Optimization',
+    summary: 'Bản chất vật lý của B-Tree Index, so sánh Clustered vs Secondary Index, các loại Index chuyên biệt hiện đại (GIN, HNSW cho Vector/AI) và kỹ thuật chống vô hiệu hoá Index.',
     citation: {
       source: 'Use The Index, Luke!',
       author: 'Markus Winand',
@@ -167,27 +167,56 @@ ORDER BY total_spent DESC;`,
       keyTakeaway: 'Index không làm câu lệnh SQL chạy nhanh hơn một cách kỳ diệu; nó chỉ giúp Database Engine tránh Full Table Scan bằng cách thu hẹp phạm vi quét dữ liệu (Index Range Scan).'
     },
     corePoints: [
-      'Cấu trúc B-Tree: Cây cân bằng tự duy trì với độ phức tạp tìm kiếm O(log N). Các node lá (leaf nodes) là danh sách liên kết đôi hỗ trợ range query (<, >, BETWEEN) cực nhanh.',
+      'Cấu trúc B-Tree (Cây cân bằng): Chuẩn mực vàng cho dữ liệu 1 chiều (Scalar Data) có thể so sánh lớn/nhỏ (=, <, >, BETWEEN, ORDER BY) với độ phức tạp O(log N). Node lá liên kết đôi hỗ trợ Range Scan mượt mà.',
       'Clustered Index: Dữ liệu vật lý của toàn bộ bảng được sắp xếp theo đúng thứ tự của Index này (thường là Primary Key). Một bảng chỉ có duy nhất 1 Clustered Index.',
       'Non-Clustered Index (Secondary Index): Cây Index riêng biệt mà node lá chứa con trỏ trỏ về dòng dữ liệu thực tế (hoặc trỏ về Clustered Key).',
+      'Covering Index & Index Only Scan: Đỉnh cao tối ưu truy vấn khi Index chứa đủ 100% cột trong SELECT và WHERE. Database Engine đọc thẳng từ RAM (Buffer Pool) mà không tốn bất kỳ Disk Lookup (Random I/O) nào.',
       'Quy tắc Leftmost Prefix trong Composite Index: Index (A, B, C) chỉ có tác dụng khi câu lệnh WHERE có sử dụng A, hoặc A và B, hoặc A, B, C. Nếu chỉ WHERE B thì Index hoàn toàn vô dụng.',
-      'Các trường hợp làm mất Index: Dùng hàm trên cột (WHERE YEAR(created_at) = 2024), toán tử LIKE "%abc", ép kiểu ngầm định (implicit casting).'
+      'GIN Index (Generalized Inverted Index): Chỉ mục đảo ngược dành cho dữ liệu đa giá trị: cột JSON/JSONB (@>), Arrays, và văn bản Full-Text Search (tsvector @@ tsquery). Bóc tách từng token/khóa thành index key, tìm kiếm cực nhanh.',
+      'HNSW Index (Hierarchical Navigable Small World): Dành riêng cho dữ liệu đa chiều (Vector Embeddings 768/1024/1536 chiều trong AI/RAG/pgvector). Vì Vector không có khái niệm so sánh lớn/nhỏ 1 chiều nên B-Tree bất lực; HNSW dùng mạng đồ thị đa tầng tìm lân cận gần nhất (ANN) theo Cosine distance với độ trễ < 15ms.',
+      'Các trường hợp làm mất Index: Dùng hàm trên cột (WHERE YEAR(created_at) = 2024), toán tử LIKE "%abc" (bắt đầu bằng ký tự đại diện), ép kiểu ngầm định (implicit casting), hoặc phủ định (!=, <>).'
     ],
     sqlExample: {
-      title: 'Tối ưu hoá câu query để tận dụng Index Range Scan',
-      query: `-- SAI: Dùng hàm bọc cột khiến Database Engine phải tính toán từng dòng -> Full Table Scan
+      title: 'Tối ưu hoá câu query để tận dụng B-Tree, GIN và Vector HNSW',
+      query: `-- 1. B-TREE INDEX: Tận dụng Index Range Scan thay vì Full Table Scan
+-- SAI: Dùng hàm bọc cột khiến DB Engine phải tính toán từng dòng -> Full Table Scan
 SELECT * FROM users WHERE YEAR(created_at) = 2024;
 
--- ĐÚNG: Giữ nguyên cột index, chuyển đổi hằng số so sánh -> Index Range Scan cực nhanh!
+-- ĐÚNG: Giữ nguyên cột index, chuyển đổi hằng số so sánh -> B-Tree Range Scan cực nhanh!
 SELECT * FROM users 
 WHERE created_at >= '2024-01-01 00:00:00' 
-  AND created_at <  '2025-01-01 00:00:00';`,
-      explanation: 'Khi cột created_at được đánh B-Tree Index, việc so sánh trực tiếp khoảng thời gian giúp DB Engine nhảy thẳng tới node lá đầu tiên của năm 2024 và quét tuần tự đến hết năm 2024, bỏ qua hàng triệu dòng khác.'
+  AND created_at <  '2025-01-01 00:00:00';
+
+-- 2. GIN INDEX: Tìm kiếm siêu tốc trên tài liệu JSONB & Full-Text Search
+CREATE INDEX idx_products_meta ON products USING gin (attributes);
+SELECT * FROM products WHERE attributes @> '{"brand": "Apple", "in_stock": true}';
+
+-- 3. HNSW INDEX (pgvector): Tìm kiếm tương đồng ngữ nghĩa trong AI / Clinical RAG
+CREATE INDEX idx_chunks_hnsw ON clinical_guideline_chunks 
+USING hnsw (embedding vector_cosine_ops) WITH (m = 16, ef_construction = 64);
+
+SELECT content, 1 - (embedding <=> '[0.015, -0.042, ...]'::vector) AS similarity 
+FROM clinical_guideline_chunks 
+ORDER BY embedding <=> '[0.015, -0.042, ...]'::vector 
+LIMIT 3;`,
+      explanation: 'Khi cột created_at được đánh B-Tree Index, việc so sánh trực tiếp khoảng thời gian giúp DB Engine nhảy thẳng tới node lá đầu tiên của năm 2024 và quét tuần tự đến hết năm 2024. Với dữ liệu JSONB hoặc Full-Text, GIN Index bóc tách các giá trị con để tìm kiếm ngay lập tức. Với Vector AI, HNSW duyệt theo đồ thị nhiều tầng để tìm Top K đoạn văn bản gần nhất trong vài mili-giây.'
     },
     interviewQA: [
       {
         question: 'Tại sao không nên đánh Index trên mọi cột trong bảng?',
         answer: '1. Tốn dung lượng ổ đĩa và bộ nhớ RAM (để giữ index trong buffer pool). 2. Làm chậm nghiêm trọng các thao tác ghi (INSERT, UPDATE, DELETE) vì mỗi lần thay đổi dữ liệu, database phải cập nhật lại cấu trúc cân bằng của B-Tree và thực hiện phân tách node (page split). 3. Với các cột có độ phân tán thấp (Low Cardinality - ví dụ: gender với 2 giá trị M/F), Optimizer thường bỏ qua Index và quét thẳng toàn bảng.'
+      },
+      {
+        question: 'Tại sao B-Tree Index không thể dùng để tìm kiếm Vector Embeddings trong AI hoặc Full-Text Search? Giải pháp thay thế là gì?',
+        answer: 'B-Tree dựa trên nguyên lý so sánh thứ tự 1 chiều (Scalar ordering: A < B < C). Vector Embeddings trong AI là không gian đa chiều (ví dụ 768 hoặc 1536 chiều), không tồn tại khái niệm "vector A lớn hơn vector B" mà chỉ có "khoảng cách góc / độ tương đồng" (Cosine Distance, Euclidean Distance). Do đó B-Tree không thể phân nhánh. Để giải quyết, CSDL hiện đại (như PostgreSQL + pgvector) sử dụng chỉ mục đồ thị HNSW (Hierarchical Navigable Small World) hoặc phân cụm IVFFlat. Với tìm kiếm văn bản và JSONB, CSDL dùng GIN (Generalized Inverted Index) để lập chỉ mục từng từ/khóa riêng lẻ.'
+      },
+      {
+        question: 'Covering Index (Index Only Scan) là gì và tại sao nó lại là kỹ thuật tối ưu hóa tối thượng trong các hệ thống High Throughput?',
+        answer: 'Covering Index là index bao hàm toàn bộ các cột cần thiết cho câu truy vấn (cả cột trong WHERE, JOIN và SELECT). Khi câu query chạy, Database Engine chỉ cần đọc dữ liệu trực tiếp từ B-Tree Index nằm sẵn trong RAM (Buffer Pool) mà hoàn toàn không cần thực hiện Disk Lookup (Table Access by Index RowID). Điều này giúp loại bỏ 100% chi phí Random I/O, tăng tốc độ truy vấn lên gấp 5-10 lần.'
+      },
+      {
+        question: 'So sánh Clustered Index và Non-Clustered Index: Cấu trúc vật lý và chi phí truy vấn khác nhau ra sao?',
+        answer: 'Clustered Index sắp xếp dữ liệu vật lý thực tế của bảng theo đúng thứ tự của index (mỗi bảng chỉ có duy nhất 1 Clustered Index, thường là Primary Key). Khi tìm theo Clustered Index, node lá chứa trực tiếp toàn bộ dữ liệu của dòng. Non-Clustered Index (Secondary Index) là một cây B-Tree riêng biệt, node lá chỉ chứa giá trị của cột được đánh index kèm con trỏ (RowID hoặc Clustered Key) trỏ về bảng chính. Do đó, Non-Clustered Index có thể tốn thêm một bước tra cứu dữ liệu (Bookmark Lookup / Table Access).'
       }
     ]
   },

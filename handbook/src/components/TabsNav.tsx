@@ -64,13 +64,19 @@ export default function TabsNav<T extends string = string>({
     if (!enableShortcuts) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Bỏ qua khi đang nhập liệu trong input/textarea/editor
+      // 0. Bỏ qua hoàn toàn khi đang có bất kỳ modal nào mở trên trang
+      if (document.querySelector('.modal-overlay, .modal-box, [role="dialog"]')) {
+        return;
+      }
+
+      // Bỏ qua khi đang nhập liệu trong input/textarea/editor/monaco/modal
       const activeEl = document.activeElement;
       const isTyping =
         activeEl &&
         (activeEl.tagName === 'INPUT' ||
           activeEl.tagName === 'TEXTAREA' ||
-          (activeEl as HTMLElement).isContentEditable);
+          (activeEl as HTMLElement).isContentEditable ||
+          Boolean(activeEl.closest('.monaco-editor, .monaco-markdown-wrapper, .modal-box, [role="dialog"]')));
 
       if (isTyping) return;
 

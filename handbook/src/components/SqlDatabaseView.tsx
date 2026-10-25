@@ -18,6 +18,22 @@ import SqlSolutionModal from '@/components/SqlSolutionModal';
 import StatusCombobox from '@/components/StatusCombobox';
 import { useAutoDropdownPosition } from '@/lib/useAutoDropdownPosition';
 
+const SLACK_CATEGORY_OPTIONS = [
+  { value: 'all', label: 'Tất cả chủ đề' },
+  { value: 'Storage & Keys', label: 'Storage & Keys' },
+  { value: 'Performance & Scale', label: 'Performance & Scale' },
+  { value: 'Data Isolation', label: 'Data Isolation' },
+  { value: 'Concurrency & Messaging', label: 'Concurrency & Messaging' },
+  { value: 'Query & Analytics', label: 'Query & Analytics' },
+];
+
+const SLACK_STATUS_FILTER_OPTIONS = [
+  { value: 'all', label: 'Tất cả trạng thái' },
+  { value: 'not-started', label: 'Chưa học' },
+  { value: 'in-progress', label: 'Đang nghiên cứu' },
+  { value: 'done', label: 'Đã nắm' },
+];
+
 export default function SqlDatabaseView() {
   const [subTab, setSubTab] = useState<'top50' | 'theory' | 'slack'>('top50');
   const [statuses, setStatuses] = useState<Record<string, SqlStatus>>({});
@@ -1339,33 +1355,19 @@ export default function SqlDatabaseView() {
                 style={{ width: '100%' }}
               />
             </div>
-            <div className="neetcode-filter-group">
-              <div className="filter-pill-container">
-                <select
-                  value={slackCategory}
-                  onChange={(e) => setSlackCategory(e.target.value)}
-                  className="filter-pill-select"
-                >
-                  <option value="all">Tất cả chủ đề</option>
-                  <option value="Storage & Keys">Storage & Keys</option>
-                  <option value="Performance & Scale">Performance & Scale</option>
-                  <option value="Data Isolation">Data Isolation</option>
-                  <option value="Concurrency & Messaging">Concurrency & Messaging</option>
-                  <option value="Query & Analytics">Query & Analytics</option>
-                </select>
-              </div>
-              <div className="filter-pill-container">
-                <select
-                  value={slackStatus}
-                  onChange={(e) => setSlackStatus(e.target.value)}
-                  className="filter-pill-select"
-                >
-                  <option value="all">Tất cả trạng thái</option>
-                  <option value="not-started">Chưa học</option>
-                  <option value="in-progress">Đang nghiên cứu</option>
-                  <option value="done">Đã nắm</option>
-                </select>
-              </div>
+            <div className="neetcode-filter-group" style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+              <StatusCombobox
+                value={slackCategory}
+                onChange={(val) => setSlackCategory(val)}
+                label="Chủ đề:"
+                options={SLACK_CATEGORY_OPTIONS}
+              />
+              <StatusCombobox
+                value={slackStatus}
+                onChange={(val) => setSlackStatus(val)}
+                label="Trạng thái:"
+                options={SLACK_STATUS_FILTER_OPTIONS}
+              />
             </div>
           </div>
 

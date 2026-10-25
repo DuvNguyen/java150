@@ -2,14 +2,14 @@
   "nc_2": {
     "id": "nc_2",
     "status": "mastered",
-    "lastSolved": "2026-10-03",
+    "lastSolved": "2026-10-25",
     "lastRating": "medium",
-    "nextReview": "2026-10-22",
-    "interval": 19,
+    "nextReview": "2026-12-14",
+    "interval": 50,
     "easeFactor": 2.65,
-    "repetitions": 3,
+    "repetitions": 4,
     "note": "",
-    "updatedAt": 1791015304891
+    "updatedAt": 1792910110178
   },
   "nc_3": {
     "id": "nc_3",
@@ -38,26 +38,26 @@
   "nc_5": {
     "id": "nc_5",
     "status": "mastered",
-    "lastSolved": "2026-10-05",
-    "lastRating": "medium",
-    "nextReview": "2026-10-21",
-    "interval": 16,
-    "easeFactor": 2.35,
-    "repetitions": 5,
-    "note": "### 1. Pattern & Data Structure\n\n* Kỹ thuật chính:\n  * &#x20;Dùng pattern đếm tần suất.\n  * duyệt keyset của hashmap đó để khởi tạo bucket\n  * duyệt ngược bucket để có được mảng kết quả\n\n### 2. Key Intuition (Ý tưởng cốt lõi)\n\n* Dùng bucket sort, khi mà các tần suất xuất hiện của các số sẽ được sort theo thức tự tăng dần, vì chúng ta lưu theo index, index i thì ô nhớ i đó lưu các số có tần suất xuất hiện i lần.\n\n### 3. Edge Cases & Tricky Points\n\n* tricky là cách mà chúng ta lưu được vào bucket, và dùng map để lưu tần suất xuất hiện của mảng nums ban đầu\n\n### 4. Complexity\n\n* Time: `O(N)`\n* Space: `O(N)`",
-    "updatedAt": 1791201952042
+    "lastSolved": "2026-10-25",
+    "lastRating": "hard",
+    "nextReview": "2026-10-27",
+    "interval": 2,
+    "easeFactor": 2.25,
+    "repetitions": 6,
+    "note": "### 1. Pattern & Data Structure\n\n* Kỹ thuật chính:\n  * &#x20;Dùng pattern đếm tần suất.\n  * duyệt keyset của hashmap đó để khởi tạo bucket\n  * duyệt ngược bucket để có được mảng kết quả\n\n### 2. Key Intuition (Ý tưởng cốt lõi)\n\n* Dùng bucket sort, khi mà các tần suất xuất hiện của các số sẽ được sort theo thức tự tăng dần, vì chúng ta lưu theo index, index i thì ô nhớ i đó lưu các số có tần suất xuất hiện i lần.\n\n### 3. Edge Cases & Tricky Points\n\n* tricky là cách mà chúng ta lưu được vào bucket, và dùng map để lưu tần suất xuất hiện của mảng nums ban đầu\n* can use the entry entry set for Map to access both key and value of the seen Map at the same time. Should use that for less time complexity.\n\n### 4. Complexity\n\n* Time: `O(N)`\n* Space: `O(N)`",
+    "updatedAt": 1792912578068
   },
   "nc_1": {
     "id": "nc_1",
     "status": "mastered",
-    "lastSolved": "2026-10-03",
+    "lastSolved": "2026-10-25",
     "lastRating": "easy",
-    "nextReview": "2026-10-21",
-    "interval": 18,
-    "easeFactor": 2.65,
-    "repetitions": 3,
+    "nextReview": "2026-12-26",
+    "interval": 62,
+    "easeFactor": 2.8,
+    "repetitions": 4,
     "note": "",
-    "updatedAt": 1791011812702
+    "updatedAt": 1792909725817
   },
   "nc_6": {
     "id": "nc_6",
@@ -76,11 +76,23 @@
     "status": "mastered",
     "lastSolved": "2026-10-19",
     "lastRating": "easy",
-    "nextReview": "2026-10-26",
-    "interval": 7,
+    "nextReview": "2026-11-02",
+    "interval": 14,
     "easeFactor": 2.5,
     "repetitions": 3,
     "note": "### 1. Pattern & Data Structure\n\n* Kỹ thuật chính: Sử dụng mảng prefix và suffix lưu lại các kết quả tích của các phần tử bên trái và bên phải của index i (i là index của số trong mảng nums ban đầu)\n\n### 2. Key Intuition (Ý tưởng cốt lõi)\n\n*\n\n### 3. Edge Cases & Tricky Points\n\n* Tricky là khi phải hiểu, prefix(i) là tích các số ở trước i. Còn suffix(i) là tích các số sau i\n* kết quả là chỉ cần out\\[i] \\= prefix\\[i] \\* suffix\\[i];\n\n### 4. Complexity\n\n* Time: `O(N)`\n* Space: `O(N)`",
     "updatedAt": 1792423850838
+  },
+  "nc_8": {
+    "id": "nc_8",
+    "status": "mastered",
+    "lastSolved": "2026-10-26",
+    "lastRating": "medium",
+    "nextReview": "2026-10-29",
+    "interval": 3,
+    "easeFactor": 2.5,
+    "repetitions": 1,
+    "note": "### 1. Pattern & Data Structure\n- Kỹ thuật chính: sử dụng 3 set cho 3 đơn vị rows, cols, box\n- trong đó, box \n\n### 2. Key Intuition (Ý tưởng cốt lõi)\n- duyệt qua từng phần tử (i,i), sử dụng set để thực hiện kép kiểm tra duplicate đồng thời thêm phần tử vào set. nếu phát hiện phần tử đã có trong set của cột, hàng, hoặc box đó. Thì trả về false.\n\n### 3. Edge Cases & Tricky Points\n- Điểm tricky là khi chúng ta biết công thức xác định vị trí của box, tức là các ô 3x3, tổng có 9 ô index từ 0-8.\n- tiếp theo là khi đổi tư duy từ duyệt từng hàng + từng cột -> duyệt từng phần tử và kiểm tra phần tử đó trong cột và hàng đó bằng set.\n- công thức là: boxIndex = (i / 3) * 3 + (j / 3)\n\n### 4. Complexity\n- Time: `O(n^2)`\n- Space: `O(n)`",
+    "updatedAt": 1792949009535
   }
 }
